@@ -9,6 +9,7 @@
   },
   "scripts": {
     "android": "yarn workspace mobile android",
+    "desktop": "yarn workspace mobile desktop",
     "compile": "tsc -b --incremental",
     "ios": "yarn workspace mobile  ios",
     "studio": "yarn workspace mobile studio",
