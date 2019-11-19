@@ -26,6 +26,12 @@ export function App() {
           )}
           <View style={styles.body}>
             <View style={styles.sectionContainer}>
+              <Text style={styles.sectionTitle}>Unity Wallet</Text>
+              <Text style={styles.sectionDescription}>
+                This is hello word!
+              </Text>
+            </View>
+            <View style={styles.sectionContainer}>
               <Text style={styles.sectionTitle}>Code sharing using Monorepo</Text>
               <Text style={styles.sectionDescription}>
                 Edit <Text style={styles.highlight}>packages/components/App.tsx</Text> to change this
@@ -66,6 +72,7 @@ const styles = StyleSheet.create({
   },
   sectionContainer: {
     marginTop: 32,
+    marginBottom: 32,
     paddingHorizontal: 24,
   },
   sectionTitle: {

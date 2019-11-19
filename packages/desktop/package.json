@@ -2,9 +2,10 @@
   "name": "desktop",
   "version": "0.0.1",
   "private": true,
+  "main": "index.js",
   "scripts": {
-    "start": "node_modules/.bin/babel-node index.js",
-    "build": "node_modules/.bin/babel index.js -d bin/",
+    "start": "npm run build && node dist/index.js",
+    "build": "babel src --out-dir dist --extensions=.ts,.tsx --presets=@babel/preset-env,@babel/preset-react,@babel/preset-typescript",
     "pack": "electron-builder --dir",
     "dist": "electron-builder"
   },
@@ -12,11 +13,19 @@
     "proton-native": "latest"
   },
   "devDependencies": {
+    "@babel/cli": "latest",
+    "@babel/core": "latest",
+    "@babel/node": "latest",
+    "@babel/preset-env": "latest",
+    "@babel/preset-react": "latest",
+    "@babel/preset-stage-0": "latest",
+    "@babel/preset-typescript": "latest",
+    "@babel/register": "latest",
+    "@types/proton-native": "latest",
+    "tslint": "latest",
     "electron-builder": "latest",
-    "babel-cli": "latest",
-    "babel-preset-env": "latest",
-    "babel-preset-stage-0": "latest",
-    "babel-preset-react": "latest"
+    "concurrently": "5.0.0",
+    "typescript": "3.6.4"
   },
   "build": {
     "protonNodeVersion": "current",
