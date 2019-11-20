@@ -1,4 +1,4 @@
-package com.myprojectname;
+package com.unitywallet;
 
 import android.app.Application;
 import android.content.Context;
