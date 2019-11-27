@@ -1,0 +1,84 @@
+{
+  "name": "unity-wallet",
+  "description": "Unity Wallet (Creat React Native + React Native Web + Electron)",
+  "version": "0.0.1",
+  "private": true,
+  "homepage": "./",
+  "main": "public/electron.js",
+  "author": {
+    "name": "Your Name",
+    "email": "your.email@domain.com",
+    "url": "https://your-website.com"
+  },
+  "jest": {
+    "preset": "react-native"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "build": {
+    "appId": "some.id.ofyours",
+    "productName": "MyApp",
+    "copyright": "Copyright © 2019 ${author}",
+    "files": [
+      "build/**/*",
+      "node_modules/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    },
+    "win": {
+      "category": "your.app.category.type",
+      "iconUrl": "path-to-icon.png"
+    },
+    "mac": {
+      "category": "your.app.category.type",
+      "iconUrl": "path-to-icon.png"
+    }
+  },
+  "dependencies": {
+    "electron": "^7.1.2",
+    "react": "16.9.0",
+    "react-art": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-native": "0.61.5",
+    "react-native-web": "^0.11.7",
+    "react-scripts": "^3.2.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.7.4",
+    "@babel/runtime": "^7.7.4",
+    "@react-native-community/eslint-config": "^0.0.5",
+    "babel-jest": "^24.9.0",
+    "concurrently": "^5.0.0",
+    "cross-env": "^6.0.3",
+    "electron-builder": "^21.2.0",
+    "electron-is-dev": "^1.1.0",
+    "eslint": "^6.7.1",
+    "jest": "^24.9.0",
+    "metro-react-native-babel-preset": "^0.57.0",
+    "react-test-renderer": "16.9.0",
+    "wait-on": "^3.3.0"
+  },
+  "scripts": {
+    "web": "react-scripts start",
+    "web-build": "react-scripts build",
+    "desktop": "concurrently \"cross-env BROWSER=none yarn web\" \"wait-on http://localhost:3000 && electron .\"",
+    "desktop-build": "concurrently \"yarn build\" \"electron-builder install-app-deps\"",
+    "desktop-pack": "build -mw",
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+    "test": "jest",
+    "lint": "eslint ."
+  }
+}
