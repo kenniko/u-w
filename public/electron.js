@@ -14,7 +14,7 @@ function createWindow() {
     height: 620,
     minHeight: 500,
     center: true,
-    show: false,
+    show: true,
   });
   mainWindow.loadURL(isDev ? 'http://localhost:3000' : `file://${path.join(__dirname, '../build/index.html')}`);
   if (isDev) {

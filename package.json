@@ -37,16 +37,17 @@
       "buildResources": "assets"
     },
     "win": {
-      "category": "your.app.category.type",
-      "iconUrl": "path-to-icon.png"
+      "icon": "public/icon.png",
+      "target": "nsis",
+      "legalTrademarks": "Unity Wallet"
     },
     "mac": {
-      "category": "your.app.category.type",
-      "iconUrl": "path-to-icon.png"
+      "category": "public.app-category.business",
+      "icon": "public/icon.png",
+      "target": "dmg"
     }
   },
   "dependencies": {
-    "electron": "^7.1.2",
     "react": "16.9.0",
     "react-art": "^16.12.0",
     "react-dom": "^16.12.0",
@@ -61,6 +62,7 @@
     "babel-jest": "^24.9.0",
     "concurrently": "^5.0.0",
     "cross-env": "^6.0.3",
+    "electron": "^7.1.2",
     "electron-builder": "^21.2.0",
     "electron-is-dev": "^1.1.0",
     "eslint": "^6.7.1",
@@ -79,6 +81,7 @@
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "dist-all": "electron-builder -mw"
   }
 }
