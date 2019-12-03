@@ -38,7 +38,8 @@ const App: () => React$Node = () => {
           <View style={styles.body}>
             <View style={styles.sectionContainer}>
               <Text style={styles.sectionTitle}>
-                Unity Wallet on {currentPlatform === 'web' ? 'Web' : 'Mobile'}
+                Unity Wallet on
+                {currentPlatform === 'web' ? 'Web' : 'Mobile'}
               </Text>
               <Text style={styles.sectionDescription}>
                 Hello <Text style={styles.highlight}>Words</Text>
