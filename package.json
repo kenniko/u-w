@@ -6,9 +6,9 @@
   "homepage": "./",
   "main": "public/electron.js",
   "author": {
-    "name": "Your Name",
+    "name": "Unity Dev",
     "email": "your.email@domain.com",
-    "url": "https://your-website.com"
+    "url": "https://unity.sg"
   },
   "jest": {
     "preset": "react-native"
