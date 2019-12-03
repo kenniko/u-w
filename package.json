@@ -47,12 +47,13 @@
     "mac": {
       "category": "public.app-category.business",
       "icon": "public/icon.png",
-      "target": "dmg"
+      "target": "dmg",
+      "identity": "private/unity.pfx"
     },
     "linux": {
       "category": "Utility",
       "icon": "public/icon.png",
-      "target": "AppImage "
+      "target": "AppImage"
     }
   },
   "dependencies": {
