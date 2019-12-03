@@ -27,24 +27,32 @@
   },
   "build": {
     "appId": "some.id.ofyours",
-    "productName": "MyApp",
+    "productName": "Unity Wallet",
     "copyright": "Copyright © 2019 ${author}",
     "files": [
       "build/**/*",
       "node_modules/**/*"
     ],
     "directories": {
-      "buildResources": "assets"
+      "buildResources": "build"
     },
     "win": {
       "icon": "public/icon.png",
       "target": "nsis",
-      "legalTrademarks": "Unity Wallet"
+      "legalTrademarks": "Unity Wallet",
+      "publisherName": "unity",
+      "certificateFile": "private/unity.pfx",
+      "verifyUpdateCodeSignature": false
     },
     "mac": {
       "category": "public.app-category.business",
       "icon": "public/icon.png",
       "target": "dmg"
+    },
+    "linux": {
+      "category": "Utility",
+      "icon": "public/icon.png",
+      "target": "AppImage "
     }
   },
   "dependencies": {
@@ -55,7 +63,8 @@
     "react-native-elements": "^1.2.7",
     "react-native-responsive-ui": "^2.1.1",
     "react-native-web": "^0.11.7",
-    "react-scripts": "^3.2.0"
+    "react-scripts": "^3.2.0",
+    "electron-is-dev": "^1.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.7.4",
@@ -66,7 +75,6 @@
     "cross-env": "^6.0.3",
     "electron": "^7.1.2",
     "electron-builder": "^21.2.0",
-    "electron-is-dev": "^1.1.0",
     "eslint": "^6.7.1",
     "jest": "^24.9.0",
     "metro-react-native-babel-preset": "^0.57.0",
@@ -77,13 +85,16 @@
     "web": "react-scripts start",
     "web-build": "react-scripts build",
     "desktop": "concurrently \"cross-env BROWSER=none yarn web\" \"wait-on http://localhost:3000 && electron .\"",
-    "desktop-build": "concurrently \"yarn build\" \"electron-builder install-app-deps\"",
-    "desktop-pack": "build -mw",
+    "desktop-build": "concurrently \"rm -rf build dist && yarn web-build\" \"wait-on build/index.html && npx electron-builder -mwl --publish never\"",
+    "desktop-build-mac": "concurrently \"rm -rf build dist && yarn web-build\" \"wait-on build/index.html && npx electron-builder -m --publish never\"",
+    "desktop-build-win": "concurrently \"rm -rf build dist && yarn web-build\" \"wait-on build/index.html && npx electron-builder -w --publish never\"",
+    "desktop-build-linux": "concurrently \"rm -rf build dist && yarn web-build\" \"wait-on build/index.html && npx electron-builder -l --publish never\"",
+    "desktop-ship": "concurrently \"yarn web-build\" \"wait-on build/index.html npx electron-builder -mwl -p always\"",
     "android": "react-native run-android",
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
     "lint": "eslint .",
-    "dist-all": "electron-builder -mw"
+    "make-cert-win": "npx electron-builder create-self-signed-cert -p unity"
   }
 }
