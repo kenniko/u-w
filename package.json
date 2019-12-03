@@ -39,10 +39,7 @@
     "win": {
       "icon": "public/icon.png",
       "target": "nsis",
-      "legalTrademarks": "Unity Wallet",
-      "publisherName": "unity",
-      "certificateFile": "private/unity.pfx",
-      "verifyUpdateCodeSignature": false
+      "legalTrademarks": "Unity Wallet"
     },
     "mac": {
       "category": "public.app-category.business",
@@ -61,8 +58,7 @@
     "react-dom": "^16.12.0",
     "react-native": "0.61.5",
     "react-native-web": "^0.11.7",
-    "react-scripts": "^3.2.0",
-    "electron-is-dev": "^1.1.0"
+    "react-scripts": "^3.2.0"
   },
   "devDependencies": {
     "@babel/core": "^7.7.4",
@@ -82,7 +78,7 @@
   "scripts": {
     "web": "react-scripts start",
     "web-build": "react-scripts build",
-    "desktop": "concurrently \"cross-env BROWSER=none yarn web\" \"wait-on http://localhost:3000 && electron .\"",
+    "desktop": "concurrently \"cross-env BROWSER=none yarn web\" \"wait-on http://localhost:3000 && electron electron-dev.js\"",
     "desktop-build": "concurrently \"rm -rf build dist && yarn web-build\" \"wait-on build/index.html && npx electron-builder -mwl --publish never\"",
     "desktop-build-mac": "concurrently \"rm -rf build dist && yarn web-build\" \"wait-on build/index.html && npx electron-builder -m --publish never\"",
     "desktop-build-win": "concurrently \"rm -rf build dist && yarn web-build\" \"wait-on build/index.html && npx electron-builder -w --publish never\"",

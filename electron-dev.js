@@ -15,7 +15,10 @@ function createWindow() {
     center: true,
     show: true,
   });
-  mainWindow.loadURL(`file://${path.join(__dirname, '../build/index.html')}`);
+  mainWindow.loadURL('http://localhost:3000');
+  //   // Open the DevTools.
+  //   BrowserWindow.addDevToolsExtension('<location to your react chrome extension>');
+  //   mainWindow.webContents.openDevTools();
   mainWindow.on('closed', () => (mainWindow = null));
 }
 
