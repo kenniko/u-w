@@ -16,12 +16,24 @@ import {
   StatusBar,
   Platform,
 } from 'react-native';
+import isElectron from 'is-electron';
+import packageJson from '../package.json';
 
 import {AppHeader} from './AppHeader';
 import {AppInstruction} from './AppInstruction';
 
+let currentPlatform = Platform.OS;
+let appVersion = packageJson.version;
+if (isElectron()) {
+  currentPlatform = 'desktop';
+  window.ipcRenderer.send('app_version');
+  window.ipcRenderer.on('app_version', (event, arg) => {
+    window.ipcRenderer.removeAllListeners('app_version');
+    appVersion = arg.version;
+  });
+}
+
 const App: () => React$Node = () => {
-  const currentPlatform = Platform.OS;
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -38,12 +50,16 @@ const App: () => React$Node = () => {
           <View style={styles.body}>
             <View style={styles.sectionContainer}>
               <Text style={styles.sectionTitle}>
-                Unity Wallet on
-                {currentPlatform === 'web' ? 'Web' : 'Mobile'}
+                Unity Wallet {appVersion} on{' '}
+                <Text style={styles.textCapitalize}>{currentPlatform}</Text>
               </Text>
               <Text style={styles.sectionDescription}>
                 Hello <Text style={styles.highlight}>Words</Text>
               </Text>
+            </View>
+            <View style={styles.sectionContainer}>
+              <Text style={styles.sectionTitle}>Version</Text>
+              <Text style={styles.sectionDescription}>{appVersion}</Text>
             </View>
             <View style={styles.sectionContainer}>
               <Text style={styles.sectionTitle}>Platform</Text>
@@ -74,6 +90,9 @@ const styles = StyleSheet.create({
   },
   body: {
     backgroundColor: 'white',
+  },
+  textCapitalize: {
+    textTransform: 'capitalize',
   },
   sectionContainer: {
     marginTop: 32,
