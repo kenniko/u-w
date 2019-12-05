@@ -34,8 +34,7 @@
     "productName": "Unity Wallet",
     "copyright": "Copyright © 2019 ${author}",
     "publish": {
-      "provider": "github",
-      "token": "4ac49488939e5f45f62d35e253f5b65920d4c705"
+      "provider": "github"
     },
     "files": [
       "build/**/*",
