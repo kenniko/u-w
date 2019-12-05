@@ -21,7 +21,6 @@ DerivedData
 
 # Electron Build
 dist/
-electron-builder.yml
 
 # Android/IntelliJ
 build/

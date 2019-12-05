@@ -1,7 +1,7 @@
 {
   "name": "unity-wallet",
   "description": "Unity Wallet (Creat React Native + React Native Web + Electron)",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "homepage": "./",
   "main": "public/electron.js",
@@ -33,6 +33,10 @@
     "appId": "some.id.ofyours",
     "productName": "Unity Wallet",
     "copyright": "Copyright © 2019 ${author}",
+    "publish": {
+      "provider": "github",
+      "token": "4ac49488939e5f45f62d35e253f5b65920d4c705"
+    },
     "files": [
       "build/**/*",
       "node_modules/**/*"

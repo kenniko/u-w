@@ -15,7 +15,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     width: '100%',
     height: 200,
-    backgroundColor: 'gray',
+    backgroundColor: 'blue',
   },
   text: {
     fontSize: 36,
