@@ -23,6 +23,10 @@
       const message = document.getElementById('message');
       const restartButton = document.getElementById('restart-button');
 
+      ipcRenderer.on('check_for_updates', () => {
+        console.log('check_for_updates');
+      });
+
       ipcRenderer.on('update_available', () => {
         ipcRenderer.removeAllListeners('update_available');
         message.innerText = 'A new update is available. Downloading now...';

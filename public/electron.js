@@ -21,16 +21,16 @@ function createWindow() {
   });
   if (isDev) {
     mainWindow.loadURL('http://localhost:3000');
-    setInterval(() => {
-      console.log('check update');
-      mainWindow.webContents.send('update_available');
-    }, 10000);
   } else {
     mainWindow.loadURL(`file://${path.join(__dirname, '../build/index.html')}`);
+    console.log('check for updates');
+    mainWindow.webContents.send('check_for_updates');
+    autoUpdater.checkForUpdates();
     setInterval(() => {
-      console.log('check update');
+      console.log('check for updates');
+      mainWindow.webContents.send('check_for_updates');
       autoUpdater.checkForUpdates();
-    }, 20000);
+    }, 60000);
   }
   mainWindow.on('closed', () => (mainWindow = null));
 }
@@ -57,12 +57,15 @@ autoUpdater.on('update-available', () => {
   console.log('update-available');
   mainWindow.webContents.send('update_available');
 });
+autoUpdater.on('update-not-available', () => {
+  console.log('update-not-available');
+  mainWindow.webContents.send('update_available');
+});
 autoUpdater.on('update-downloaded', () => {
   console.log('update-downloaded');
   mainWindow.webContents.send('update_downloaded');
 });
 autoUpdater.on('error', message => {
-  alert('There was a problem updating the application');
   console.error('There was a problem updating the application');
   console.error(message);
 });
