@@ -19,12 +19,12 @@ function createWindow() {
       preload: __dirname + '/preload.js',
     },
   });
-  mainWindow.loadURL(
-    isDev
-      ? 'http://localhost:3000'
-      : `file://${path.join(__dirname, '../build/index.html')}`,
-  );
-  if (!isDev) autoUpdater.checkForUpdates();
+  if (isDev) {
+    mainWindow.loadURL('http://localhost:3000');
+  } else {
+    mainWindow.loadURL(`file://${path.join(__dirname, '../build/index.html')}`);
+    autoUpdater.checkForUpdates();
+  }
   mainWindow.on('closed', () => (mainWindow = null));
 }
 
