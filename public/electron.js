@@ -24,14 +24,8 @@ function createWindow() {
       ? 'http://localhost:3000'
       : `file://${path.join(__dirname, '../build/index.html')}`,
   );
-  // if (isDev) {
-  // Open the DevTools.
-  //BrowserWindow.addDevToolsExtension('<location to your react chrome extension>');
-  // mainWindow.webContents.openDevTools();
-  // }
+  if (!isDev) autoUpdater.checkForUpdates();
   mainWindow.on('closed', () => (mainWindow = null));
-
-  autoUpdater.checkForUpdatesAndNotify();
 }
 
 app.on('ready', createWindow);
@@ -57,6 +51,11 @@ autoUpdater.on('update-available', () => {
 });
 autoUpdater.on('update-downloaded', () => {
   mainWindow.webContents.send('update_downloaded');
+});
+autoUpdater.on('error', message => {
+  alert('There was a problem updating the application');
+  console.error('There was a problem updating the application');
+  console.error(message);
 });
 ipcMain.on('restart_app', () => {
   autoUpdater.quitAndInstall();

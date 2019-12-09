@@ -1,14 +1,15 @@
 {
   "name": "unity-wallet",
   "description": "Unity Wallet (Creat React Native + React Native Web + Electron)",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "private": true,
   "homepage": "./",
   "main": "public/electron.js",
+  "license": "MIT",
   "author": {
-    "name": "Your Name",
-    "email": "your.email@domain.com",
-    "url": "https://your-website.com"
+    "name": "Unity Team",
+    "email": "hello@unity.sg",
+    "url": "https://www.unity.sg"
   },
   "jest": {
     "preset": "react-native"
@@ -30,26 +31,31 @@
     "url": "https://github.com/ayahdirumah/unity-wallet.git"
   },
   "build": {
-    "appId": "some.id.ofyours",
+    "appId": "com.unity.wallet",
     "productName": "Unity Wallet",
     "copyright": "Copyright © 2019 ${author}",
     "publish": {
       "provider": "github"
     },
     "files": [
-      "build/**/*",
-      "node_modules/**/*"
+      "build/**/*"
     ],
     "directories": {
       "buildResources": "build"
     },
     "win": {
+      "compression": "maximum",
+      "target": "nsis-web",
       "icon": "public/icon.png",
-      "target": "nsis",
       "legalTrademarks": "Unity Wallet",
       "publisherName": "unity",
       "certificateFile": "private/unity.pfx",
       "verifyUpdateCodeSignature": false
+    },
+    "nsisWeb": {
+      "allowToChangeInstallationDirectory": true,
+      "oneClick": false,
+      "createDesktopShortcut": true
     },
     "mac": {
       "category": "public.app-category.business",
@@ -58,7 +64,7 @@
       "identity": "private/unity.pfx"
     },
     "linux": {
-      "category": "Utility",
+      "category": "Productivity",
       "icon": "public/icon.png",
       "target": "AppImage "
     }
