@@ -1,7 +1,7 @@
 {
   "name": "unity-wallet",
   "description": "Unity Wallet (Creat React Native + React Native Web + Electron)",
-  "version": "0.0.4",
+  "version": "0.0.10",
   "private": true,
   "homepage": "./",
   "main": "public/electron.js",
@@ -49,7 +49,6 @@
       "icon": "public/icon.png",
       "legalTrademarks": "Unity Wallet",
       "publisherName": "unity",
-      "certificateFile": "private/unity.pfx",
       "verifyUpdateCodeSignature": false
     },
     "nsisWeb": {
@@ -77,6 +76,8 @@
     "react-art": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-native": "0.61.5",
+    "react-native-elements": "^1.2.7",
+    "react-native-responsive-ui": "^2.1.1",
     "react-native-web": "^0.11.7",
     "react-scripts": "^3.2.0"
   },

@@ -21,9 +21,16 @@ function createWindow() {
   });
   if (isDev) {
     mainWindow.loadURL('http://localhost:3000');
+    setInterval(() => {
+      console.log('check update');
+      mainWindow.webContents.send('update_available');
+    }, 10000);
   } else {
     mainWindow.loadURL(`file://${path.join(__dirname, '../build/index.html')}`);
-    autoUpdater.checkForUpdates();
+    setInterval(() => {
+      console.log('check update');
+      autoUpdater.checkForUpdates();
+    }, 20000);
   }
   mainWindow.on('closed', () => (mainWindow = null));
 }
@@ -47,9 +54,11 @@ ipcMain.on('app_version', event => {
 });
 
 autoUpdater.on('update-available', () => {
+  console.log('update-available');
   mainWindow.webContents.send('update_available');
 });
 autoUpdater.on('update-downloaded', () => {
+  console.log('update-downloaded');
   mainWindow.webContents.send('update_downloaded');
 });
 autoUpdater.on('error', message => {
