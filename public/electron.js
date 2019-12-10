@@ -19,8 +19,13 @@ function createWindow() {
       preload: __dirname + '/preload.js',
     },
   });
+
   if (isDev) {
-    mainWindow.loadURL('http://localhost:3000');
+    // mainWindow.loadURL('http://localhost:3000');
+    mainWindow.loadFile('../build/index.html');
+    console.log('check for updates');
+    mainWindow.webContents.send('check_for_updates');
+    autoUpdater.checkForUpdates();
   } else {
     mainWindow.loadURL(`file://${path.join(__dirname, '../build/index.html')}`);
     console.log('check for updates');
