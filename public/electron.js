@@ -60,8 +60,8 @@ autoUpdater.on('download-progress', data => {
 autoUpdater.on('update-downloaded', () => {
   mainWindow.webContents.send('update_downloaded');
 });
-autoUpdater.on('error', message => {
-  mainWindow.webContents.send('error', message);
+autoUpdater.on('error', err => {
+  mainWindow.webContents.send('error', err);
 });
 ipcMain.on('restart_app', () => {
   autoUpdater.quitAndInstall(true, true);
