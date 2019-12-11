@@ -21,21 +21,14 @@ function createWindow() {
   });
 
   if (isDev) {
-    // mainWindow.loadURL('http://localhost:3000');
-    mainWindow.loadFile('../build/index.html');
-    console.log('check for updates');
-    mainWindow.webContents.send('check_for_updates');
+    mainWindow.loadURL('http://localhost:3000');
     autoUpdater.checkForUpdates();
   } else {
     mainWindow.loadURL(`file://${path.join(__dirname, '../build/index.html')}`);
-    console.log('check for updates');
-    mainWindow.webContents.send('check_for_updates');
     autoUpdater.checkForUpdates();
     setInterval(() => {
-      console.log('check for updates');
-      mainWindow.webContents.send('check_for_updates');
       autoUpdater.checkForUpdates();
-    }, 60000);
+    }, 300000); // check every 5 minutes
   }
   mainWindow.on('closed', () => (mainWindow = null));
 }
@@ -58,22 +51,18 @@ ipcMain.on('app_version', event => {
   event.sender.send('app_version', {version: app.getVersion()});
 });
 
-autoUpdater.on('update-available', () => {
-  console.log('update-available');
-  mainWindow.webContents.send('update_available');
+autoUpdater.on('update-available', info => {
+  mainWindow.webContents.send('update_available', info);
 });
-autoUpdater.on('update-not-available', () => {
-  console.log('update-not-available');
-  mainWindow.webContents.send('update_available');
+autoUpdater.on('download-progress', data => {
+  mainWindow.webContents.send('download_progress', data);
 });
 autoUpdater.on('update-downloaded', () => {
-  console.log('update-downloaded');
   mainWindow.webContents.send('update_downloaded');
 });
 autoUpdater.on('error', message => {
-  console.error('There was a problem updating the application');
-  console.error(message);
+  mainWindow.webContents.send('error', message);
 });
 ipcMain.on('restart_app', () => {
-  autoUpdater.quitAndInstall();
+  autoUpdater.quitAndInstall(true, true);
 });

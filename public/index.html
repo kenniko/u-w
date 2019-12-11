@@ -21,24 +21,41 @@
     <script>
       const notification = document.getElementById('notification');
       const message = document.getElementById('message');
+      const closeButton = document.getElementById('close-button');
       const restartButton = document.getElementById('restart-button');
 
-      ipcRenderer.on('check_for_updates', () => {
-        console.log('check_for_updates');
+      ipcRenderer.on('update_available', (event, info) => {
+        // ipcRenderer.removeAllListeners('update_available');
+        message.innerText = 'A new update is available. Downloading v'+info.version+' now...';
+        closeButton.innerText = 'Close';
+        notification.classList.remove('hidden');
+        notification.classList.add('show');
       });
 
-      ipcRenderer.on('update_available', () => {
-        ipcRenderer.removeAllListeners('update_available');
-        message.innerText = 'A new update is available. Downloading now...';
+      ipcRenderer.on('download_progress', (event, data) => {
+        // ipcRenderer.removeAllListeners('download_progress');
+        const percent = Math.floor(data.percent);
+        const speed = (data.bytesPerSecond > 1024 * 1024) ? Math.round(data.bytesPerSecond / 1024 / 1024, 2) + '  Mb/s' : Math.round(data.bytesPerSecond / 1024, 2) + '  kb/s';
+        message.innerText = 'Downloading v'+info.version+'... '+percent+'% ('+speed+')';
+        closeButton.innerText = 'Close';
         notification.classList.remove('hidden');
         notification.classList.add('show');
       });
 
       ipcRenderer.on('update_downloaded', () => {
-        ipcRenderer.removeAllListeners('update_downloaded');
-        message.innerText =
-          'Update Downloaded. It will be installed on restart. Restart now?';
+        // ipcRenderer.removeAllListeners('update_downloaded');
+        message.innerText = 'Update Downloaded. It will be installed on restart. Restart now?';
+        closeButton.innerText = 'Later';
         restartButton.classList.remove('hidden');
+        notification.classList.remove('hidden');
+        notification.classList.add('show');
+      });
+
+      ipcRenderer.on('error', (event, message) => {
+        // ipcRenderer.removeAllListeners('error');
+        message.innerText = 'Error on update.';
+        console.log(message);
+        closeButton.innerText = 'Close';
         notification.classList.remove('hidden');
         notification.classList.add('show');
       });
