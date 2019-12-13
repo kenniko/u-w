@@ -6,7 +6,7 @@
  * @flow
  */
 
-import React from 'react';
+import React, { Component } from 'react';
 import {
   SafeAreaView,
   StyleSheet,
@@ -22,6 +22,8 @@ import packageJson from '../package.json';
 import {AppHeader} from './AppHeader';
 import {AppInstruction} from './AppInstruction';
 
+import codePush from 'react-native-code-push';
+
 let currentPlatform = Platform.OS;
 let appVersion = packageJson.version;
 if (isElectron()) {
@@ -33,51 +35,70 @@ if (isElectron()) {
   });
 }
 
-const App: () => React$Node = () => {
-  return (
-    <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
-        <ScrollView
-          contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
-          <AppHeader />
-          {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
+// const App: () => React$Node = () => {
+class App extends Component {
+
+  componentDidMount() {
+    codePush.sync({
+      updateDialog: true,
+      installMode: codePush.InstallMode.IMMEDIATE
+    });
+  }
+
+  render() {
+    return (
+      <>
+        <StatusBar barStyle="dark-content" />
+        <SafeAreaView>
+          <ScrollView
+            contentInsetAdjustmentBehavior="automatic"
+            style={styles.scrollView}>
+            <AppHeader />
+            {global.HermesInternal == null ? null : (
+              <View style={styles.engine}>
+                <Text style={styles.footer}>Engine: Hermes</Text>
+              </View>
+            )}
+            <View style={styles.body}>
+              <View style={styles.sectionContainer}>
+                <Text style={styles.sectionTitle}>
+                  Test Code Push
+                </Text>
+                <Text style={styles.sectionDescription}>
+                  It works!
+                </Text>
+              </View>
+              <View style={styles.sectionContainer}>
+                <Text style={styles.sectionTitle}>
+                  Unity Wallet {appVersion} on{' '}
+                  <Text style={styles.textCapitalize}>{currentPlatform}</Text>
+                </Text>
+                <Text style={styles.sectionDescription}>
+                  Hello <Text style={styles.highlight}>Words</Text>
+                </Text>
+              </View>
+              <View style={styles.sectionContainer}>
+                <Text style={styles.sectionTitle}>Version</Text>
+                <Text style={styles.sectionDescription}>{appVersion}</Text>
+              </View>
+              <View style={styles.sectionContainer}>
+                <Text style={styles.sectionTitle}>Platform</Text>
+                <Text style={styles.sectionDescription}>{currentPlatform}</Text>
+              </View>
+              <View style={styles.sectionContainer}>
+                <Text style={styles.sectionTitle}>Step One</Text>
+                <Text style={styles.sectionDescription}>
+                  Edit <Text style={styles.highlight}>App.js</Text> to change this
+                  screen and then come back to see your edits.
+                </Text>
+              </View>
+              <AppInstruction />
             </View>
-          )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>
-                Unity Wallet {appVersion} on{' '}
-                <Text style={styles.textCapitalize}>{currentPlatform}</Text>
-              </Text>
-              <Text style={styles.sectionDescription}>
-                Hello <Text style={styles.highlight}>Words</Text>
-              </Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Version</Text>
-              <Text style={styles.sectionDescription}>{appVersion}</Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Platform</Text>
-              <Text style={styles.sectionDescription}>{currentPlatform}</Text>
-            </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.js</Text> to change this
-                screen and then come back to see your edits.
-              </Text>
-            </View>
-            <AppInstruction />
-          </View>
-        </ScrollView>
-      </SafeAreaView>
-    </>
-  );
+          </ScrollView>
+        </SafeAreaView>
+      </>
+    );
+  }
 };
 
 const styles = StyleSheet.create({
@@ -122,4 +143,9 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+let codePushOptions = {
+  checkFrequency: codePush.CheckFrequency.ON_APP_START,
+  installMode: codePush.InstallMode.IMMEDIATE
+}
+
+export default App = codePush(codePushOptions)(App)
