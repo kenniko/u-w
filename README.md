@@ -25,9 +25,7 @@ Run `yarn web` to preview on web
 
 Run `yarn desktop` to preview on desktop
 
-***
-
-_Please follow **[this React Native instructions](https://facebook.github.io/react-native/docs/running-on-device)** before run RN on **mobile** or **physical device** script below_
+#### Follow [this React Native instructions](https://facebook.github.io/react-native/docs/running-on-device) before run RN on _mobile_ or _physical device_ script below
 
 ### Android
 
