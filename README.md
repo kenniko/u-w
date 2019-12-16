@@ -7,8 +7,12 @@
 4. Run `code-push register` to login to [App Center](https://appcenter.ms/)
 5. Run `code-push app add YourAppNameAndroid android react-native` to add app on App Center for Android app
 6. Run `code-push app add YourAppNameIos android react-native` to add app on App Center for iOS app
+
  _*don't forget to **save** your **Deployment key**_
-7. Run `npx react-native link react-native-code-push` then paste your Android and iOS **staging** deployment key (_you can change to production deployment key later_).
+
+7. Run `npx react-native link react-native-code-push` then paste your Android and iOS **staging** deployment key 
+
+_*you can change to production deployment key later_.
 
 
 ## Development & Preview
@@ -21,16 +25,17 @@ Run `yarn web` to preview on web
 
 Run `yarn desktop` to preview on desktop
 
-### Android
+***
 
 _Please follow **[this React Native instructions](https://facebook.github.io/react-native/docs/running-on-device)** before run RN on **mobile** or **physical device** script below_
+
+### Android
 
 Run `yarn android` to preview on android
 
 ### iOS
 
-_Make sure you run the script bellow before run on iOS_
-`cd ios && pod install`
+_Make sure you run this script before run on iOS_ `cd ios && pod install`
 
 Run `yarn ios` to preview on iOS
 
@@ -57,26 +62,26 @@ repo: yourRepositoryName
 provider: github
 
 ```
-4. Create personal access token on GitHub. You can follow (the instructions here)[https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line].
+4. Create personal access token on GitHub. You can follow [the instructions here](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line).
 5. Run `export GH_TOKEN=yourGithubPersonalAccessToken` via bash on your root folder
 6. Run `export CSC_IDENTITY_AUTO_DISCOVERY=false` to disable code signing during the build process on Mac
 7. Run `yarn desktop-deploy` to build and publish your app on GitHub release (see **All Script** to choose specific platform)
-8. Go to your GitHub repository page, click "releases" tab. Click on "Edit", and then "Publish" to finalize the release
-9. Increment the "version" number in `package.json` and make any visual change so you can notice the update easily
+8. Go to your GitHub repository page, click **"releases"** tab. Click on **"Edit"**, and then **"Publish"** to finalize the release
+9. Increment the **"version"** number in `package.json` and make any visual change so you can notice the update easily
 ```
 ...
 "version": "0.0.2",
 ...
 ```
 10. Run `yarn desktop-deploy` again and finalize your release
-11. Download, install and run the previous version of your app from GitHub release page. Or you can decreate "version" number in `package.json` and undo any change on your repo. Then `run desktop`.
-12. After the new version of your app is downloaded, click "Restart" and wait until it open again with the latest version.
+11. Download, install and run the previous version of your app from GitHub release page. Or you can decreate **"version"** number in `package.json` and undo any change on your repo. Then `run desktop`.
+12. After the new version of your app is downloaded, click **"Restart"** and wait until it open again with the latest version.
 
 ### Test Mobile App (AppCenter.ms Code-Push)
 
 1. Run `yarn android` or `yarn ios`
 2. Make any visual change so you can notice the update easily
-3. Run `code-push release-react YourAppNameAndroid android` (for iOS use "YourAppNameIos ios")
+3. Run `code-push release-react YourAppNameAndroid android` (for iOS use **"YourAppNameIos ios"**)
 4. You will see update popup on your mobile screen.
 
 ## Production
