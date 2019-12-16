@@ -60,8 +60,7 @@
     "mac": {
       "category": "public.app-category.business",
       "icon": "public/icon.png",
-      "target": "dmg",
-      "identity": "private/unity.pfx"
+      "target": "dmg"
     },
     "linux": {
       "category": "Productivity",
