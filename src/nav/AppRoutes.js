@@ -2,6 +2,8 @@ import Launch from '../page/Launch';
 import Register from '../page/Register';
 import Login from '../page/Login';
 import Home from '../page/Home';
+import Welcome from '../page/Welcome';
+import Import from '../page/Welcome';
 
 const AppRoutes = {
   launch: Launch,
@@ -15,6 +17,8 @@ const AppRoutes = {
     },
   },
   home: Home,
+  welcome: Welcome,
+  import: Import,
 };
 
 export default AppRoutes;

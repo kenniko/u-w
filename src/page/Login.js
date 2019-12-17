@@ -3,6 +3,8 @@ import {View, Text, TextInput, Image, Button} from 'react-native';
 import {connect} from 'react-redux';
 import {initLogin, walletLogin} from '../actions';
 import {Spinner} from '../components/Spinner';
+import storage from '../storage';
+import {NavigationActions, StackActions} from 'react-navigation';
 
 class Login extends Component {
   static navigationOptions = {
@@ -20,7 +22,32 @@ class Login extends Component {
   }
 
   componentDidMount() {
-    this.props.initLogin();
+    storage
+      .load({
+        key: 'wallet_list',
+        autoSync: true,
+        syncInBackground: true,
+      })
+      .then(wallet => {
+        this.props.initLogin();
+      })
+      .catch(_err => {
+        this.redirectTo('welcome');
+      });
+  }
+
+  redirectTo(page, params) {
+    this.props.navigation.dispatch(
+      StackActions.reset({
+        index: 0,
+        actions: [
+          NavigationActions.navigate({
+            routeName: page,
+            params: params,
+          }),
+        ],
+      }),
+    );
   }
 
   _onaddressChanged = address => {
