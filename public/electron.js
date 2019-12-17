@@ -1,9 +1,8 @@
-const electron = require('electron');
-const app = electron.app;
-const BrowserWindow = electron.BrowserWindow;
+const {app, BrowserWindow, ipcMain} = require('electron');
 
 const path = require('path');
 const isDev = require('electron-is-dev');
+const {autoUpdater} = require('electron-updater');
 
 let mainWindow;
 
@@ -15,17 +14,22 @@ function createWindow() {
     minHeight: 500,
     center: true,
     show: true,
+    webPreferences: {
+      nodeIntegration: false,
+      preload: __dirname + '/preload.js',
+    },
   });
-  mainWindow.loadURL(
-    isDev
-      ? 'http://localhost:3000'
-      : `file://${path.join(__dirname, '../build/index.html')}`,
-  );
-  // if (isDev) {
-  // Open the DevTools.
-  //BrowserWindow.addDevToolsExtension('<location to your react chrome extension>');
-  // mainWindow.webContents.openDevTools();
-  // }
+
+  if (isDev) {
+    mainWindow.loadURL('http://localhost:3000');
+    autoUpdater.checkForUpdates();
+  } else {
+    mainWindow.loadURL(`file://${path.join(__dirname, '../build/index.html')}`);
+    autoUpdater.checkForUpdates();
+    setInterval(() => {
+      autoUpdater.checkForUpdates();
+    }, 300000); // check every 5 minutes
+  }
   mainWindow.on('closed', () => (mainWindow = null));
 }
 
@@ -41,4 +45,24 @@ app.on('activate', () => {
   if (mainWindow === null) {
     createWindow();
   }
+});
+
+ipcMain.on('app_version', event => {
+  event.sender.send('app_version', {version: app.getVersion()});
+});
+
+autoUpdater.on('update-available', info => {
+  mainWindow.webContents.send('update_available', info);
+});
+autoUpdater.on('download-progress', data => {
+  mainWindow.webContents.send('download_progress', data);
+});
+autoUpdater.on('update-downloaded', () => {
+  mainWindow.webContents.send('update_downloaded');
+});
+autoUpdater.on('error', err => {
+  mainWindow.webContents.send('error', err);
+});
+ipcMain.on('restart_app', () => {
+  autoUpdater.quitAndInstall(true, true);
 });

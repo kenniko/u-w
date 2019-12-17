@@ -1,15 +1,74 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>Unity Wallet</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+  </head>
 
-<head>
-  <meta charset="utf-8" />
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <title>Unity Wallet</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-</head>
+  <body>
+    <div id="root"></div>
+    <div id="notification" class="hidden" style="display: none;">
+      <p id="message"></p>
+      <button id="close-button" onClick="closeNotification()">
+        Close
+      </button>
+      <button id="restart-button" onClick="restartApp()" class="hidden">
+        Restart
+      </button>
+    </div>
+    <script>
+      const notification = document.getElementById('notification');
+      const message = document.getElementById('message');
+      const closeButton = document.getElementById('close-button');
+      const restartButton = document.getElementById('restart-button');
 
-<body>
-  <div id="root"></div>
-</body>
+      ipcRenderer.on('update_available', (event, info) => {
+        // ipcRenderer.removeAllListeners('update_available');
+        message.innerText = 'New update is available v'+info.version;
+        closeButton.innerText = 'Close';
+        notification.classList.remove('hidden');
+        notification.classList.add('show');
+      });
 
+      ipcRenderer.on('download_progress', (event, data) => {
+        // ipcRenderer.removeAllListeners('download_progress');
+        const percent = Math.floor(data.percent);
+        const speed = (data.bytesPerSecond > 1024 * 1024) ? Math.round(data.bytesPerSecond / 1024 / 1024, 2) + '  Mb/s' : Math.round(data.bytesPerSecond / 1024, 2) + '  kb/s';
+        message.innerText = 'Download progress... '+percent+'% ('+speed+')';
+        closeButton.innerText = 'Close';
+        notification.classList.remove('hidden');
+        notification.classList.add('show');
+      });
+
+      ipcRenderer.on('update_downloaded', () => {
+        // ipcRenderer.removeAllListeners('update_downloaded');
+        message.innerText = 'Update Downloaded. Restart now?';
+        closeButton.innerText = 'Later';
+        restartButton.classList.remove('hidden');
+        notification.classList.remove('hidden');
+        notification.classList.add('show');
+      });
+
+      ipcRenderer.on('error', (event, err) => {
+        // ipcRenderer.removeAllListeners('error');
+        // message.innerText = 'Error on update.';
+        console.log('Error:');
+        console.log(err);
+        // closeButton.innerText = 'Close';
+        // notification.classList.remove('hidden');
+        // notification.classList.add('show');
+      });
+
+      function closeNotification() {
+        notification.classList.add('hidden');
+        notification.classList.remove('show');
+      }
+
+      function restartApp() {
+        ipcRenderer.send('restart_app');
+      }
+    </script>
+  </body>
 </html>
