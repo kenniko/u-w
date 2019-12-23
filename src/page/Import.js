@@ -2,9 +2,8 @@ import React, {Component} from 'react';
 import {View, Text, TextInput, Image, Button} from 'react-native';
 import {Spinner} from '../components/Spinner';
 import {NavigationActions, StackActions} from 'react-navigation';
-import * as storage from '../storage/storage';
 
-class Welcome extends Component {
+class Import extends Component {
   static navigationOptions = {
     headershown: false,
     headerMode: 'none',
@@ -15,17 +14,6 @@ class Welcome extends Component {
     this.state = {
       isLoading: false,
     };
-  }
-
-  componentDidMount() {
-    let me = this;
-    storage.checkWalletList(function(wallet) {
-      if (wallet) {
-        me.setState({isLoading: false}, () => {
-          me.redirectTo('login');
-        });
-      }
-    });
   }
 
   redirectTo(page, params) {
@@ -43,7 +31,7 @@ class Welcome extends Component {
   }
 
   _onButtonCreatePress = () => {
-    this.redirectTo('register');
+    this.redirectTo('welcome');
   };
 
   _onButtonImportPress = () => {
@@ -87,7 +75,7 @@ class Welcome extends Component {
   }
 }
 
-export default Welcome;
+export default Import;
 
 const styles = {
   containerStyle: {

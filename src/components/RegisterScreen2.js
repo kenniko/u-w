@@ -1,10 +1,12 @@
 import React, {Component} from 'react';
 import {View, Text, TextInput, Image, Button} from 'react-native';
-import {Spinner} from '../components/Spinner';
+import {connect} from 'react-redux';
+import {Field, reduxForm} from 'redux-form';
+import {Spinner} from './Spinner';
 import {NavigationActions, StackActions} from 'react-navigation';
 import * as storage from '../storage/storage';
 
-class Welcome extends Component {
+class RegisterScreen2 extends Component {
   static navigationOptions = {
     headershown: false,
     headerMode: 'none',
@@ -15,17 +17,6 @@ class Welcome extends Component {
     this.state = {
       isLoading: false,
     };
-  }
-
-  componentDidMount() {
-    let me = this;
-    storage.checkWalletList(function(wallet) {
-      if (wallet) {
-        me.setState({isLoading: false}, () => {
-          me.redirectTo('login');
-        });
-      }
-    });
   }
 
   redirectTo(page, params) {
@@ -42,37 +33,44 @@ class Welcome extends Component {
     );
   }
 
-  _onButtonCreatePress = () => {
-    this.redirectTo('register');
+  _onButtonPress = e => {
+    this.setState({isLoading: true}, () => {
+      this.props.saveRegister(this.props.signup_data);
+    });
   };
 
-  _onButtonImportPress = () => {
-    this.redirectTo('import');
-  };
+  componentDidUpdate(prevProps) {
+    if (prevProps.wallet !== this.props.wallet) {
+      this.setState({isLoading: false}, () => {
+        let wallet = this.props.wallet;
+        wallet.password = this.props.signup_data.password;
+        wallet.is_phrase_saved = this.props.is_phrase_saved;
+        storage.saveWalletList(wallet);
+        storage.saveLoginWallet(wallet);
+        this.props.setAddress('');
+        this.props.setPhrase('');
+        this.props.setSignupAccount({});
+        this.props.setLoginData(wallet);
+        this.redirectTo('home');
+      });
+    }
+  }
 
   render() {
+    const {handleSubmit} = this.props;
+
     return (
       <View style={styles.containerStyle}>
         <Spinner visible={this.state.isLoading} />
         <View style={styles.logoViewStyle}>
-          <Text style={styles.logoTextTitle}>Welcome to Unity Wallet</Text>
+          <Text style={styles.logoTextTitle}>Unity Wallet</Text>
           <Text style={styles.logoTextSubTitle}>React Native</Text>
         </View>
 
         <View style={styles.buttonStyle}>
           <Button
-            title="Create New Wallet"
-            onPress={this._onButtonCreatePress}
-            disabled={this.state.isLoading}
-          />
-        </View>
-
-        <Text style={styles.orTextStyle}>OR</Text>
-
-        <View style={styles.buttonStyle}>
-          <Button
-            title="Import Wallet"
-            onPress={this._onButtonImportPress}
+            title="Continue without backup"
+            onPress={handleSubmit(this._onButtonPress)}
             disabled={this.state.isLoading}
           />
         </View>
@@ -80,14 +78,19 @@ class Welcome extends Component {
         <Text style={styles.errorTextStyle}>{this.props.error}</Text>
 
         <View style={[styles.footerViewStyle]}>
-          <Text style={styles.footerTextStyle}>Unity Wallet v1.0.0</Text>
+          <Text style={styles.footerTextStyle}>
+            Sample UI v3.0.0 / SDK v.3.0.99
+          </Text>
         </View>
       </View>
     );
   }
 }
 
-export default Welcome;
+export default reduxForm({
+  form: 'register',
+  destroyOnUnmount: false,
+})(RegisterScreen2);
 
 const styles = {
   containerStyle: {
@@ -126,17 +129,11 @@ const styles = {
   buttonStyle: {
     paddingLeft: 12,
     paddingRight: 12,
-    marginTop: 30,
-    marginBottom: 30,
+    marginTop: 50,
   },
   errorTextStyle: {
     alignSelf: 'center',
     fontSize: 12,
-    color: '#e03131',
-  },
-  orTextStyle: {
-    alignSelf: 'center',
-    fontSize: 14,
     color: '#e03131',
   },
   footerViewStyle: {

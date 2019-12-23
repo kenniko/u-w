@@ -3,7 +3,7 @@ import Register from '../page/Register';
 import Login from '../page/Login';
 import Home from '../page/Home';
 import Welcome from '../page/Welcome';
-import Import from '../page/Welcome';
+import Import from '../page/Import';
 
 const AppRoutes = {
   launch: Launch,

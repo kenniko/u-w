@@ -1,18 +1,26 @@
-import {INIT_LOGIN, LOGIN_SUCCESS, LOGIN_FAIL} from '../actions/types';
+import {
+  INIT_LOGIN,
+  LOGIN_SUCCESS,
+  LOGIN_FAIL,
+  LOGIN_DATA,
+} from '../actions/types';
 
 const INITIAL_STATE = {
   error: '',
-  wallet: null,
+  wallet: {},
+  loginData: {},
 };
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case INIT_LOGIN:
-      return {...state, ...INITIAL_STATE};
+      return {...state};
     case LOGIN_SUCCESS:
-      return {...state, ...INITIAL_STATE, wallet: action.payload};
+      return {...state, wallet: action.wallet};
     case LOGIN_FAIL:
-      return {...state, ...INITIAL_STATE, error: action.payload};
+      return {...state, error: action.error};
+    case LOGIN_DATA:
+      return {...state, loginData: action.loginData};
     default:
       return state;
   }

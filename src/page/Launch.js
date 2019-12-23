@@ -1,41 +1,31 @@
 import React, {Component} from 'react';
 import {View} from 'react-native';
 import {connect} from 'react-redux';
-import storage from '../storage';
 import {Spinner} from '../components/Spinner';
 import {NavigationActions, StackActions} from 'react-navigation';
+import * as storage from '../storage/storage';
 
 class Launch extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isLoading: false,
-      isLogged: false,
     };
   }
 
   componentDidMount() {
-    storage
-      .load({
-        key: 'wallet',
-        autoSync: true,
-        syncInBackground: true,
-      })
-      .then(wallet => {
-        this.setState({isLoading: false}, () => {
-          this.redirectTo('home');
+    let me = this;
+    storage.getLoginData(function(wallet) {
+      if (wallet == null) {
+        me.setState({isLoading: false}, () => {
+          me.redirectTo('login');
         });
-      })
-      .catch(_err => {
-        this.setState(
-          {
-            isLoading: false,
-          },
-          () => {
-            this.redirectTo('login');
-          },
-        );
-      });
+      } else {
+        me.setState({isLoading: false}, () => {
+          me.redirectTo('home');
+        });
+      }
+    });
   }
 
   redirectTo(page, params) {

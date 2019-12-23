@@ -1,9 +1,10 @@
 import React, {Component} from 'react';
 import {View, Text, TextInput, Image, Button} from 'react-native';
 import {connect} from 'react-redux';
-import {initLogin, walletLogin} from '../actions';
+import {bindActionCreators} from 'redux';
+import * as ReduxActions from '../actions';
 import {Spinner} from '../components/Spinner';
-import storage from '../storage';
+import * as storage from '../storage/storage';
 import {NavigationActions, StackActions} from 'react-navigation';
 
 class Login extends Component {
@@ -22,18 +23,26 @@ class Login extends Component {
   }
 
   componentDidMount() {
-    storage
-      .load({
-        key: 'wallet_list',
-        autoSync: true,
-        syncInBackground: true,
-      })
-      .then(wallet => {
-        this.props.initLogin();
-      })
-      .catch(_err => {
-        this.redirectTo('welcome');
-      });
+    let me = this;
+    storage.getLoginData(function(wallet) {
+      if (wallet == null) {
+        storage.checkWalletList(function(exist) {
+          if (exist) {
+            me.setState({isLoading: false}, () => {
+              me.props.initLogin();
+            });
+          } else {
+            me.setState({isLoading: false}, () => {
+              me.redirectTo('welcome');
+            });
+          }
+        });
+      } else {
+        me.setState({isLoading: false}, () => {
+          me.redirectTo('home');
+        });
+      }
+    });
   }
 
   redirectTo(page, params) {
@@ -48,6 +57,21 @@ class Login extends Component {
         ],
       }),
     );
+  }
+
+  componentDidUpdate(prevProps) {
+    if (
+      prevProps.wallet !== this.props.wallet &&
+      this.props.wallet.length > 0
+    ) {
+      this.setState({isLoading: false}, () => {
+        let wallet = this.props.wallet;
+        wallet.password = this.props.signup_data.password;
+        wallet.is_phrase_saved = this.props.is_phrase_saved;
+        this.props.setLoginData(wallet);
+        this.redirectTo('home');
+      });
+    }
   }
 
   _onaddressChanged = address => {
@@ -76,35 +100,35 @@ class Login extends Component {
 
         <View style={styles.inputViewStyle}>
           <TextInput
-            label="User ID"
-            placeholder="User ID"
+            label="Address"
+            placeholder="Address"
             style={styles.inputStyle}
-            value={this.state.userId}
+            value={this.state.address}
             duration={100}
             autoCorrect={false}
-            maxLength={16}
+            maxLength={100}
             underlineColorAndroid="transparent"
-            onChangeText={this._onUserIdChanged}
+            onChangeText={this._onaddressChanged}
           />
         </View>
 
         <View style={styles.inputViewStyle}>
           <TextInput
-            label="Nickname"
-            placeholder="Nickname"
+            label="Password"
+            placeholder="Password"
             style={styles.inputStyle}
-            value={this.state.nickname}
+            value={this.state.password}
             duration={100}
             autoCorrect={false}
-            maxLength={16}
+            maxLength={100}
             underlineColorAndroid="transparent"
-            onChangeText={this._onNicknameChanged}
+            onChangeText={this._onpasswordChanged}
           />
         </View>
 
         <View style={styles.buttonStyle}>
           <Button
-            title="CONNECT"
+            title="Sign In"
             onPress={this._onButtonPress}
             disabled={this.state.isLoading}
           />
@@ -122,14 +146,26 @@ class Login extends Component {
   }
 }
 
-function mapStateToProps({loginReducer}) {
-  const {error, wallet} = loginReducer;
-  return {error, wallet};
+// The function takes data from the app current state,
+// and insert/links it into the props of our component.
+// This function makes Redux know that this component needs to be passed a piece of the state
+function mapStateToProps(state, props) {
+  return {
+    error: state.loginReducer.error,
+    wallet: state.loginReducer.wallet,
+  };
+}
+
+// Doing this merges our actions into the component’s props,
+// while wrapping them in dispatch() so that they immediately dispatch an Action.
+// Just by doing this, we will have access to the actions defined in out actions file (action/home.js)
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(ReduxActions, dispatch);
 }
 
 export default connect(
   mapStateToProps,
-  {initLogin, walletLogin},
+  mapDispatchToProps,
 )(Login);
 
 const styles = {

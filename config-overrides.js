@@ -22,6 +22,7 @@ module.exports = function override(config, env) {
   addModuleToMainRule(config, 'react-native-screens');
   addModuleToMainRule(config, '@react-native-community/async-storage');
   addModuleToMainRule(config, 'react-native-loading-spinner-overlay');
+  addModuleToMainRule(config, '@material-ui/core');
 
   for (const plugin of config.plugins) {
     if (plugin.constructor.name === 'DefinePlugin') {
