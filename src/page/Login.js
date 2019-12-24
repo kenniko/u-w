@@ -1,11 +1,11 @@
 import React, {Component} from 'react';
-import {View, Text, TextInput, Image, Button} from 'react-native';
+import {View, Text, TextInput, Picker, Button} from 'react-native';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as ReduxActions from '../actions';
 import {Spinner} from '../components/Spinner';
-import * as storage from '../storage/storage';
 import {NavigationActions, StackActions} from 'react-navigation';
+import {encryptPass} from '../utils/utils';
 
 class Login extends Component {
   static navigationOptions = {
@@ -19,30 +19,16 @@ class Login extends Component {
       isLoading: false,
       address: '',
       password: '',
+      error: null,
     };
   }
 
   componentDidMount() {
-    let me = this;
-    storage.getLoginData(function(wallet) {
-      if (wallet == null) {
-        storage.checkWalletList(function(exist) {
-          if (exist) {
-            me.setState({isLoading: false}, () => {
-              me.props.initLogin();
-            });
-          } else {
-            me.setState({isLoading: false}, () => {
-              me.redirectTo('welcome');
-            });
-          }
-        });
-      } else {
-        me.setState({isLoading: false}, () => {
-          me.redirectTo('home');
-        });
-      }
-    });
+    if (this.props.loginData != null) {
+      this.redirectTo('home');
+    } else if (this.props.listWallet == null) {
+      this.redirectTo('welcome');
+    }
   }
 
   redirectTo(page, params) {
@@ -59,34 +45,76 @@ class Login extends Component {
     );
   }
 
-  componentDidUpdate(prevProps) {
-    if (
-      prevProps.wallet !== this.props.wallet &&
-      this.props.wallet.length > 0
-    ) {
-      this.setState({isLoading: false}, () => {
-        let wallet = this.props.wallet;
-        wallet.password = this.props.signup_data.password;
-        wallet.is_phrase_saved = this.props.is_phrase_saved;
-        this.props.setLoginData(wallet);
-        this.redirectTo('home');
-      });
-    }
-  }
-
-  _onaddressChanged = address => {
-    this.setState({address});
+  _onaddressChanged = (address, i) => {
+    this.setState({address: address});
   };
 
   _onpasswordChanged = password => {
-    this.setState({password});
+    this.setState({password: password});
   };
+
+  _isPasswordAllowed(address, password) {
+    let isAllowed = this.props.listWallet.filter(function(wallet) {
+      return (
+        wallet.address === address &&
+        encryptPass(wallet.password) === encryptPass(encryptPass(password))
+      );
+    });
+    if (Array.isArray(isAllowed)) {
+      return isAllowed.length > 0;
+    }
+    return false;
+  }
+
+  _getWalletStoredLocal(address) {
+    let local = this.props.listWallet.filter(function(wallet) {
+      return wallet.address === address;
+    });
+    return local;
+  }
 
   _onButtonPress = () => {
     const {address, password} = this.state;
+    let ini;
+    // eslint-disable-next-line consistent-this
+    ini = this;
     this.setState({isLoading: true}, () => {
-      this.props.walletLogin({address, password});
+      this.props.walletLogin(address, function(success, data) {
+        if (!success) {
+          ini.setState({
+            isLoading: false,
+            error: data,
+          });
+        } else {
+          if (ini._isPasswordAllowed(address, password)) {
+            ini.setState(
+              {
+                isLoading: false,
+                error: null,
+              },
+              () => {
+                let localWallet = ini._getWalletStoredLocal(address);
+                data.password = localWallet.password;
+                data.is_phrase_saved = localWallet.is_phrase_saved;
+                ini.props.setLoginData(data);
+                ini.props.setWalletList(ini.props.listWallet, data);
+                ini.redirectTo('home');
+              },
+            );
+          } else {
+            ini.setState({
+              isLoading: false,
+              error: 'Incorrect password',
+            });
+          }
+        }
+      });
     });
+  };
+
+  _onButtonCreatePress = () => {
+    this.props.onBack(1);
+    this.redirectTo('register');
   };
 
   render() {
@@ -99,17 +127,24 @@ class Login extends Component {
         </View>
 
         <View style={styles.inputViewStyle}>
-          <TextInput
-            label="Address"
-            placeholder="Address"
-            style={styles.inputStyle}
-            value={this.state.address}
-            duration={100}
-            autoCorrect={false}
-            maxLength={100}
-            underlineColorAndroid="transparent"
-            onChangeText={this._onaddressChanged}
-          />
+          <Picker
+            selectedValue={this.state.address}
+            onValueChange={this._onaddressChanged}>
+            <Picker.Item
+              label={'Select a wallet address'}
+              value={''}
+              key={-1}
+            />
+            {this.props.listWallet.map((wallet, index) => {
+              return (
+                <Picker.Item
+                  label={wallet.name + ' : ' + wallet.address}
+                  value={wallet.address}
+                  key={index}
+                />
+              );
+            })}
+          </Picker>
         </View>
 
         <View style={styles.inputViewStyle}>
@@ -126,6 +161,8 @@ class Login extends Component {
           />
         </View>
 
+        <Text style={styles.errorTextStyle}>{this.state.error}</Text>
+
         <View style={styles.buttonStyle}>
           <Button
             title="Sign In"
@@ -134,7 +171,13 @@ class Login extends Component {
           />
         </View>
 
-        <Text style={styles.errorTextStyle}>{this.props.error}</Text>
+        <View style={styles.buttonStyle}>
+          <Button
+            title="Create a new wallet"
+            onPress={this._onButtonCreatePress}
+            disabled={this.state.isLoading}
+          />
+        </View>
 
         <View style={[styles.footerViewStyle]}>
           <Text style={styles.footerTextStyle}>
@@ -153,6 +196,8 @@ function mapStateToProps(state, props) {
   return {
     error: state.loginReducer.error,
     wallet: state.loginReducer.wallet,
+    listWallet: state.loginReducer.listWallet,
+    loginData: state.loginReducer.loginData,
   };
 }
 

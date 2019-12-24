@@ -18,14 +18,11 @@ class Welcome extends Component {
   }
 
   componentDidMount() {
-    let me = this;
-    storage.checkWalletList(function(wallet) {
-      if (wallet) {
-        me.setState({isLoading: false}, () => {
-          me.redirectTo('login');
-        });
-      }
-    });
+    if (this.props.loginData != null) {
+      this.redirectTo('home');
+    } else if (this.props.listWallet != null) {
+      this.redirectTo('login');
+    }
   }
 
   redirectTo(page, params) {

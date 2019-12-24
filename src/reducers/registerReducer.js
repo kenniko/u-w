@@ -1,30 +1,30 @@
 import {
   INIT_SIGNUP,
-  SIGNUP_SUCCESS,
-  SIGNUP_FAIL,
+  SIGNUP_LOGIN_SUCCESS,
+  SIGNUP_LOGIN_FAIL,
   SIGNUP_NEXT,
   SIGNUP_BACK,
   SET_ADDRESS,
   SET_PHRASE,
-  SIGNUP_ACCOUNT,
+  SIGNUP_DATA,
 } from '../actions/types';
 const INITIAL_STATE = {
-  error: '',
-  wallet: {},
-  signup_data: {},
-  phrase: '',
+  error: null,
+  wallet: null,
+  signup_data: null,
+  phrase: null,
   is_phrase_saved: false,
   screen: 1,
-  address: '',
+  address: null,
 };
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case INIT_SIGNUP:
       return {...state};
-    case SIGNUP_SUCCESS:
+    case SIGNUP_LOGIN_SUCCESS:
       return {...state, wallet: action.wallet};
-    case SIGNUP_FAIL:
+    case SIGNUP_LOGIN_FAIL:
       return {...state, error: action.error};
     case SIGNUP_NEXT:
       return {...state, screen: action.screen};
@@ -34,7 +34,7 @@ export default (state = INITIAL_STATE, action) => {
       return {...state, address: action.address};
     case SET_PHRASE:
       return {...state, phrase: action.phrase};
-    case SIGNUP_ACCOUNT:
+    case SIGNUP_DATA:
       return {...state, signup_data: action.signup_data};
     default:
       return state;

@@ -1,12 +1,12 @@
 import {
   INIT_SIGNUP,
-  SIGNUP_SUCCESS,
-  SIGNUP_FAIL,
+  SIGNUP_LOGIN_SUCCESS,
+  SIGNUP_LOGIN_FAIL,
   SIGNUP_NEXT,
   SIGNUP_BACK,
   SET_PHRASE,
   SET_ADDRESS,
-  SIGNUP_ACCOUNT,
+  SIGNUP_DATA,
 } from './types';
 import {API} from '../utils/axios';
 
@@ -14,34 +14,39 @@ export const initRegister = () => {
   return {type: INIT_SIGNUP};
 };
 
-export const saveRegister = signup_data => {
-  let signup = signup_data;
-  delete signup.password;
-  return dispatch => {
+export const saveRegister = (signup_data, callback) => {
+  let signup = {
+    address: signup_data.address,
+    email: signup_data.email,
+    telegram_id: signup_data.telegram_id,
+    name: signup_data.name,
+    referrer_id: signup_data.referrer_id,
+  };
+  return () => {
     API.post('/signup', signup)
       .then(function(response) {
         if (response.data.status) {
-          registerSuccess(dispatch, response.data.message.data);
+          callback(true, response.data.message.data);
         } else {
-          registerFail(dispatch, response.data.message);
+          callback(false, response.data.message);
         }
       })
       .catch(function(error) {
-        registerFail(dispatch, error.message);
+        callback(false, error.message);
       });
   };
 };
 
 const registerFail = (dispatch, error) => {
   dispatch({
-    type: SIGNUP_FAIL,
+    type: SIGNUP_LOGIN_FAIL,
     error: error,
   });
 };
 
 const registerSuccess = (dispatch, wallet) => {
   dispatch({
-    type: SIGNUP_SUCCESS,
+    type: SIGNUP_LOGIN_SUCCESS,
     wallet: wallet,
   });
 };
@@ -82,10 +87,10 @@ export const onBack = screen => {
   };
 };
 
-export const setSignupAccount = signup_data => {
+export const setSignupData = signup_data => {
   return dispatch => {
     dispatch({
-      type: SIGNUP_ACCOUNT,
+      type: SIGNUP_DATA,
       signup_data: signup_data,
     });
   };

@@ -1,38 +1,62 @@
-import {INIT_LOGIN, LOGIN_SUCCESS, LOGIN_FAIL, LOGIN_DATA} from './types';
+import {
+  INIT_LOGIN,
+  SIGNUP_LOGIN_SUCCESS,
+  SIGNUP_LOGIN_FAIL,
+  LOGIN_DATA,
+  WALLET_LIST,
+} from './types';
 import {API} from '../utils/axios';
 
 export const initLogin = () => {
   return {type: INIT_LOGIN};
 };
 
-export const walletLogin = ({address, password}) => {
-  return dispatch => {
+export const walletLogin = (address, callback) => {
+  return () => {
     API.get('/user/address/' + address)
       .then(function(response) {
         if (response.data.status) {
-          loginSuccess(dispatch, response.data.message.data);
+          callback(true, response.data.message.data);
         } else {
-          loginFail(dispatch, response.data.message);
+          callback(false, response.data.message);
         }
       })
       .catch(function(error) {
-        loginFail(dispatch, error.message);
+        callback(false, error.message);
       });
   };
 };
 
 const loginFail = (dispatch, error) => {
   dispatch({
-    type: LOGIN_FAIL,
+    type: SIGNUP_LOGIN_FAIL,
     error: error,
   });
 };
 
 const loginSuccess = (dispatch, wallet) => {
   dispatch({
-    type: LOGIN_SUCCESS,
+    type: SIGNUP_LOGIN_SUCCESS,
     wallet: wallet,
   });
+};
+
+export const setNullSignupLoginFail = () => {
+  return dispatch => {
+    dispatch({
+      type: SIGNUP_LOGIN_FAIL,
+      error: null,
+    });
+  };
+};
+
+export const setNullSignupLoginSuccess = () => {
+  return dispatch => {
+    dispatch({
+      type: SIGNUP_LOGIN_SUCCESS,
+      wallet: null,
+    });
+  };
 };
 
 export const setLoginData = loginData => {
@@ -40,6 +64,22 @@ export const setLoginData = loginData => {
     dispatch({
       type: LOGIN_DATA,
       loginData: loginData,
+    });
+  };
+};
+
+export const setWalletList = (list, wallet) => {
+  let filteredWallet = [];
+  if (list !== null && typeof list !== 'undefined') {
+    filteredWallet = list.filter(w => {
+      return w.address !== wallet.address;
+    });
+  }
+  filteredWallet.push(wallet);
+  return dispatch => {
+    dispatch({
+      type: WALLET_LIST,
+      listWallet: filteredWallet,
     });
   };
 };

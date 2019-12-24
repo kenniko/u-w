@@ -4,7 +4,6 @@ import {connect} from 'react-redux';
 import {Field, reduxForm} from 'redux-form';
 import {Spinner} from './Spinner';
 import {NavigationActions, StackActions} from 'react-navigation';
-import * as storage from '../storage/storage';
 
 class RegisterScreen2 extends Component {
   static navigationOptions = {
@@ -34,27 +33,30 @@ class RegisterScreen2 extends Component {
   }
 
   _onButtonPress = e => {
+    let ini;
+    // eslint-disable-next-line consistent-this
+    ini = this;
     this.setState({isLoading: true}, () => {
-      this.props.saveRegister(this.props.signup_data);
+      this.props.saveRegister(this.props.signup_data, function(success, data) {
+        if (!success) {
+          ini.setState({
+            isLoading: false,
+            error: data,
+          });
+        } else {
+          data.password = ini.props.signup_data.password;
+          data.is_phrase_saved = ini.props.is_phrase_saved;
+          ini.props.setAddress(null);
+          ini.props.setPhrase(null);
+          ini.props.setSignupData(null);
+          ini.props.onBack(1);
+          ini.props.setLoginData(data);
+          ini.props.setWalletList(ini.props.listWallet, data);
+          ini.redirectTo('home');
+        }
+      });
     });
   };
-
-  componentDidUpdate(prevProps) {
-    if (prevProps.wallet !== this.props.wallet) {
-      this.setState({isLoading: false}, () => {
-        let wallet = this.props.wallet;
-        wallet.password = this.props.signup_data.password;
-        wallet.is_phrase_saved = this.props.is_phrase_saved;
-        storage.saveWalletList(wallet);
-        storage.saveLoginWallet(wallet);
-        this.props.setAddress('');
-        this.props.setPhrase('');
-        this.props.setSignupAccount({});
-        this.props.setLoginData(wallet);
-        this.redirectTo('home');
-      });
-    }
-  }
 
   render() {
     const {handleSubmit} = this.props;

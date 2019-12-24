@@ -10,18 +10,21 @@ export const saveWalletList = wallet => {
   storage
     .load({
       key: WALLET_LIST,
+      id: '500',
       autoSync: false,
     })
     .then(list => {
       list.push(wallet);
       storage.save({
         key: WALLET_LIST,
+        id: '500',
         data: list,
       });
     })
     .catch(_err => {
       storage.save({
         key: WALLET_LIST,
+        id: '500',
         data: [wallet],
       });
     });
@@ -30,6 +33,8 @@ export const saveWalletList = wallet => {
 export const saveLoginWallet = wallet => {
   storage.save({
     key: LOGIN_DATA,
+    id: '500',
+    autoSync: false,
     data: wallet,
   });
 };
@@ -38,6 +43,7 @@ export const getLoginData = callback => {
   storage
     .load({
       key: LOGIN_DATA,
+      id: '500',
       autoSync: false,
     })
     .then(wallet => {
@@ -52,6 +58,7 @@ export const getWalletList = callback => {
   storage
     .load({
       key: WALLET_LIST,
+      id: '500',
       autoSync: false,
     })
     .then(wallets => {
@@ -66,6 +73,7 @@ export const checkWalletList = callback => {
   storage
     .load({
       key: WALLET_LIST,
+      id: '500',
       autoSync: false,
     })
     .then(wallet => {

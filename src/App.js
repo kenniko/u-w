@@ -3,8 +3,8 @@ import {Platform} from 'react-native';
 import {Provider} from 'react-redux';
 import {createAppContainer} from 'react-navigation';
 import AppStack from './nav/AppStack';
-import store from './store';
-
+import {PersistGate} from 'redux-persist/integration/react';
+import {store, persistor} from './store';
 import isElectron from 'is-electron';
 import packageJson from '../package.json';
 
@@ -35,7 +35,9 @@ class App extends React.Component {
   render() {
     return (
       <Provider store={store}>
-        <AppNav />
+        <PersistGate loading={null} persistor={persistor}>
+          <AppNav />
+        </PersistGate>
       </Provider>
     );
   }

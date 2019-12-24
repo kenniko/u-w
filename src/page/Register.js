@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as ReduxActions from '../actions';
-import * as storage from '../storage/storage';
 import {NavigationActions, StackActions} from 'react-navigation';
 import {WavesAPI, NET_CONFIG} from '../utils/WavesAPI';
 import RegisterScreen1 from '../components/RegisterScreen1';
@@ -41,19 +40,12 @@ class Register extends Component {
   }
 
   componentDidMount() {
-    let me = this;
-    storage.getLoginData(function(wallet) {
-      if (wallet == null) {
-        me.setState({isLoading: false}, () => {
-          me.props.setAddress(me.seed.address);
-          me.props.setPhrase(me.seed.phrase);
-        });
-      } else {
-        me.setState({isLoading: false}, () => {
-          this.redirectTo('home');
-        });
-      }
-    });
+    if (this.props.loginData != null) {
+      this.redirectTo('home');
+    } else {
+      this.props.setAddress(this.seed.address);
+      this.props.setPhrase(this.seed.phrase);
+    }
   }
 
   redirectTo(page, params) {
@@ -100,13 +92,15 @@ class Register extends Component {
 // This function makes Redux know that this component needs to be passed a piece of the state
 function mapStateToProps(state, props) {
   return {
-    error: state.registerReducer.error,
-    wallet: state.registerReducer.wallet,
     signup_data: state.registerReducer.signup_data,
     address: state.registerReducer.address,
     phrase: state.registerReducer.phrase,
     is_phrase_saved: state.registerReducer.is_phrase_saved,
     screen: state.registerReducer.screen,
+    error: state.registerReducer.error,
+    wallet: state.registerReducer.wallet,
+    listWallet: state.loginReducer.listWallet,
+    loginData: state.loginReducer.loginData,
   };
 }
 

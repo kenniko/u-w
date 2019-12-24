@@ -51,7 +51,7 @@ class RegisterScreen1 extends React.Component {
   };
 
   _onButtonPress = e => {
-    this.props.setSignupAccount({
+    this.props.setSignupData({
       address: this.props.address,
       password: encryptPass(this.state.password),
       email: this.state.email,
