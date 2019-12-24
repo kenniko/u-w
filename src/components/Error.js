@@ -1,7 +1,13 @@
 /* eslint-disable react-native/no-inline-styles */
 import React from 'react';
-import {View, Text, StyleSheet, Animated, Dimensions} from 'react-native';
-import Button from 'react-native-button';
+import {
+  View,
+  Text,
+  StyleSheet,
+  Animated,
+  Dimensions,
+  Button,
+} from 'react-native';
 
 const {height: deviceHeight} = Dimensions.get('window');
 
@@ -50,8 +56,8 @@ export default class extends React.Component {
             alignItems: 'center',
             backgroundColor: 'white',
           }}>
-          <Text>{this.props.data}</Text>
-          <Button>Close</Button>
+          <Text>{this.props.error}</Text>
+          <Button title="Close" />
         </View>
       </Animated.View>
     );

@@ -2,7 +2,6 @@ import React, {Component} from 'react';
 import {View, Text, TextInput, Image, Button} from 'react-native';
 import {Spinner} from '../components/Spinner';
 import {NavigationActions, StackActions} from 'react-navigation';
-import * as storage from '../storage/storage';
 
 class Welcome extends Component {
   static navigationOptions = {
@@ -39,15 +38,9 @@ class Welcome extends Component {
     );
   }
 
-  _onButtonCreatePress = () => {
-    this.redirectTo('register');
-  };
-
-  _onButtonImportPress = () => {
-    this.redirectTo('import');
-  };
-
   render() {
+    const {navigate} = this.props.navigation;
+
     return (
       <View style={styles.containerStyle}>
         <Spinner visible={this.state.isLoading} />
@@ -59,7 +52,7 @@ class Welcome extends Component {
         <View style={styles.buttonStyle}>
           <Button
             title="Create New Wallet"
-            onPress={this._onButtonCreatePress}
+            onPress={() => navigate('register')}
             disabled={this.state.isLoading}
           />
         </View>
@@ -69,7 +62,7 @@ class Welcome extends Component {
         <View style={styles.buttonStyle}>
           <Button
             title="Import Wallet"
-            onPress={this._onButtonImportPress}
+            onPress={() => navigate('import')}
             disabled={this.state.isLoading}
           />
         </View>

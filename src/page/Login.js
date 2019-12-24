@@ -54,27 +54,37 @@ class Login extends Component {
   };
 
   _isPasswordAllowed(address, password) {
-    let isAllowed = this.props.listWallet.filter(function(wallet) {
-      return (
-        wallet.address === address &&
-        encryptPass(wallet.password) === encryptPass(encryptPass(password))
-      );
-    });
-    if (Array.isArray(isAllowed)) {
-      return isAllowed.length > 0;
+    if (this.props.listWallet == null) {
+      return false;
+    } else {
+      let isAllowed = this.props.listWallet.filter(function(wallet) {
+        return (
+          wallet.address === address &&
+          encryptPass(wallet.password) === encryptPass(encryptPass(password))
+        );
+      });
+      if (Array.isArray(isAllowed)) {
+        return isAllowed.length > 0;
+      }
+      return false;
     }
-    return false;
   }
 
   _getWalletStoredLocal(address) {
-    let local = this.props.listWallet.filter(function(wallet) {
-      return wallet.address === address;
-    });
-    return local;
+    if (this.props.listWallet == null) {
+      return [];
+    } else {
+      let local = this.props.listWallet.filter(function(wallet) {
+        return wallet.address === address;
+      });
+      return local;
+    }
   }
 
   _onButtonPress = () => {
     const {address, password} = this.state;
+    const {navigate} = this.props.navigation;
+
     let ini;
     // eslint-disable-next-line consistent-this
     ini = this;
@@ -118,6 +128,11 @@ class Login extends Component {
   };
 
   render() {
+    const {navigate} = this.props.navigation;
+    let dropdown = this.props.listWallet;
+    if (dropdown == null) {
+      dropdown = [];
+    }
     return (
       <View style={styles.containerStyle}>
         <Spinner visible={this.state.isLoading} />
@@ -130,12 +145,8 @@ class Login extends Component {
           <Picker
             selectedValue={this.state.address}
             onValueChange={this._onaddressChanged}>
-            <Picker.Item
-              label={'Select a wallet address'}
-              value={''}
-              key={-1}
-            />
-            {this.props.listWallet.map((wallet, index) => {
+            <Picker.Item label={'Select a wallet address'} />
+            {dropdown.map((wallet, index) => {
               return (
                 <Picker.Item
                   label={wallet.name + ' : ' + wallet.address}
@@ -153,9 +164,9 @@ class Login extends Component {
             placeholder="Password"
             style={styles.inputStyle}
             value={this.state.password}
-            duration={100}
             autoCorrect={false}
-            maxLength={100}
+            secureTextEntry={true}
+            textContentType={'password'}
             underlineColorAndroid="transparent"
             onChangeText={this._onpasswordChanged}
           />
@@ -173,16 +184,14 @@ class Login extends Component {
 
         <View style={styles.buttonStyle}>
           <Button
-            title="Create a new wallet"
-            onPress={this._onButtonCreatePress}
+            title="Create new wallet"
+            onPress={() => navigate('register')}
             disabled={this.state.isLoading}
           />
         </View>
 
         <View style={[styles.footerViewStyle]}>
-          <Text style={styles.footerTextStyle}>
-            Sample UI v3.0.0 / SDK v.3.0.99
-          </Text>
+          <Text style={styles.footerTextStyle}>Unity Wallet v1.0.0</Text>
         </View>
       </View>
     );

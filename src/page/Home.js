@@ -42,17 +42,16 @@ class Home extends React.Component {
   };
 
   render() {
-    console.log(this.props);
-
     return (
       <View style={styles.containerStyle}>
         <View style={styles.logoViewStyle}>
-          <Text style={styles.logoTextTitle}>Welcome to Unity Wallet</Text>
           <Text style={styles.logoTextTitle}>
+            Welcome{' '}
+            {this.props.loginData !== null ? this.props.loginData.name : ''}
+          </Text>
+          <Text style={styles.logoTextSubTitle}>
             {this.props.loginData !== null
-              ? this.props.loginData.name +
-                ' your address : ' +
-                this.props.loginData.address
+              ? 'Your address : ' + this.props.loginData.address
               : ''}
           </Text>
         </View>
@@ -102,13 +101,16 @@ const styles = {
   },
   logoTextTitle: {
     color: '#7d62d9',
-    fontSize: 30,
+    fontSize: 25,
     fontWeight: '600',
+    textAlign: 'center',
   },
   logoTextSubTitle: {
     color: '#7d62d9',
-    fontSize: 13,
+    fontSize: 16,
     fontWeight: '500',
+    textAlign: 'center',
+    marginTop: 10,
   },
   inputViewStyle: {
     borderWidth: 1,

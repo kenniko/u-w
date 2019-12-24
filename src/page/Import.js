@@ -1,7 +1,16 @@
 import React, {Component} from 'react';
-import {View, Text, TextInput, Image, Button} from 'react-native';
-import {Spinner} from '../components/Spinner';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
+import * as ReduxActions from '../actions';
+import {View} from 'react-native';
 import {NavigationActions, StackActions} from 'react-navigation';
+import {WavesAPI, NET_CONFIG} from '../utils/WavesAPI';
+import RegisterScreen1 from '../components/RegisterScreen1';
+import RegisterScreen2 from '../components/RegisterScreen2';
+import '../../shim.js';
+import crypto from 'crypto';
+
+const Waves = WavesAPI.create(NET_CONFIG);
 
 class Import extends Component {
   static navigationOptions = {
@@ -13,7 +22,33 @@ class Import extends Component {
     super(props);
     this.state = {
       isLoading: false,
+      name: '',
+      password: '',
+      confirm_password: '',
+      email: '',
+      telegram_id: '',
     };
+
+    this.seed = Waves.Seed.create();
+    this.onNextHandler = this.onNextHandler.bind(this);
+    this.onBackHandler = this.onBackHandler.bind(this);
+  }
+
+  onNextHandler() {
+    this.props.onNext(this.props.screen + 1);
+  }
+
+  onBackHandler() {
+    this.props.onBack(this.props.screen > 1 ? this.props.screen - 1 : 1);
+  }
+
+  componentDidMount() {
+    if (this.props.loginData != null) {
+      this.redirectTo('home');
+    } else {
+      this.props.setAddress(this.seed.address);
+      this.props.setPhrase(this.seed.phrase);
+    }
   }
 
   redirectTo(page, params) {
@@ -30,112 +65,56 @@ class Import extends Component {
     );
   }
 
-  _onButtonCreatePress = () => {
-    this.redirectTo('welcome');
-  };
-
-  _onButtonImportPress = () => {
-    this.redirectTo('import');
-  };
-
   render() {
+    const {screen} = this.props;
     return (
-      <View style={styles.containerStyle}>
-        <Spinner visible={this.state.isLoading} />
-        <View style={styles.logoViewStyle}>
-          <Text style={styles.logoTextTitle}>Welcome to Unity Wallet</Text>
-          <Text style={styles.logoTextSubTitle}>React Native</Text>
-        </View>
-
-        <View style={styles.buttonStyle}>
-          <Button
-            title="Create New Wallet"
-            onPress={this._onButtonCreatePress}
-            disabled={this.state.isLoading}
+      <View>
+        {screen === 1 && (
+          <RegisterScreen1
+            onNextHandler={this.onNextHandler}
+            onBackHandler={this.onBackHandler}
+            seed={this.seed}
+            {...this.props}
           />
-        </View>
-
-        <Text style={styles.orTextStyle}>OR</Text>
-
-        <View style={styles.buttonStyle}>
-          <Button
-            title="Import Wallet"
-            onPress={this._onButtonImportPress}
-            disabled={this.state.isLoading}
+        )}
+        {screen === 2 && (
+          <RegisterScreen2
+            onNextHandler={this.onNextHandler}
+            onBackHandler={this.onBackHandler}
+            seed={this.seed}
+            {...this.props}
           />
-        </View>
-
-        <Text style={styles.errorTextStyle}>{this.props.error}</Text>
-
-        <View style={[styles.footerViewStyle]}>
-          <Text style={styles.footerTextStyle}>Unity Wallet v1.0.0</Text>
-        </View>
+        )}
       </View>
     );
   }
 }
 
-export default Import;
+// The function takes data from the app current state,
+// and insert/links it into the props of our component.
+// This function makes Redux know that this component needs to be passed a piece of the state
+function mapStateToProps(state, props) {
+  return {
+    signup_data: state.registerReducer.signup_data,
+    address: state.registerReducer.address,
+    phrase: state.registerReducer.phrase,
+    is_phrase_saved: state.registerReducer.is_phrase_saved,
+    screen: state.registerReducer.screen,
+    error: state.registerReducer.error,
+    wallet: state.registerReducer.wallet,
+    listWallet: state.loginReducer.listWallet,
+    loginData: state.loginReducer.loginData,
+  };
+}
 
-const styles = {
-  containerStyle: {
-    backgroundColor: '#fff',
-    flex: 1,
-  },
-  logoViewStyle: {
-    marginTop: 35,
-    marginBottom: 5,
-    alignItems: 'center',
-  },
-  logoTextTitle: {
-    color: '#7d62d9',
-    fontSize: 30,
-    fontWeight: '600',
-  },
-  logoTextSubTitle: {
-    color: '#7d62d9',
-    fontSize: 13,
-    fontWeight: '500',
-  },
-  inputViewStyle: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 5,
-    paddingLeft: 8,
-    paddingRight: 8,
-    marginLeft: 28,
-    marginRight: 28,
-    marginTop: 8,
-  },
-  inputStyle: {
-    fontSize: 13,
-    backgroundColor: '#fff',
-  },
-  buttonStyle: {
-    paddingLeft: 12,
-    paddingRight: 12,
-    marginTop: 30,
-    marginBottom: 30,
-  },
-  errorTextStyle: {
-    alignSelf: 'center',
-    fontSize: 12,
-    color: '#e03131',
-  },
-  orTextStyle: {
-    alignSelf: 'center',
-    fontSize: 14,
-    color: '#e03131',
-  },
-  footerViewStyle: {
-    paddingLeft: 28,
-    paddingRight: 28,
-    marginTop: 15,
-    flexDirection: 'column',
-  },
-  footerTextStyle: {
-    alignSelf: 'center',
-    fontSize: 12,
-    color: '#8e8e8e',
-  },
-};
+// Doing this merges our actions into the component’s props,
+// while wrapping them in dispatch() so that they immediately dispatch an Action.
+// Just by doing this, we will have access to the actions defined in out actions file (action/home.js)
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(ReduxActions, dispatch);
+}
+
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps,
+)(Import);

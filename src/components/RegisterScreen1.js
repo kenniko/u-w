@@ -20,6 +20,7 @@ class RegisterScreen1 extends React.Component {
       confirm_password: '',
       email: '',
       telegram_id: '',
+      error: null,
     };
   }
 
@@ -64,6 +65,7 @@ class RegisterScreen1 extends React.Component {
 
   render() {
     const {handleSubmit} = this.props;
+    const {goBack} = this.props.navigation;
 
     return (
       <ScrollView keyboardShouldPersistTaps={'handled'}>
@@ -80,10 +82,10 @@ class RegisterScreen1 extends React.Component {
               placeholder="Password"
               style={styles.inputStyle}
               value={this.state.password}
-              duration={100}
               autoCorrect={false}
-              minLength={6}
               underlineColorAndroid="transparent"
+              secureTextEntry={true}
+              textContentType={'password'}
               onChangeText={this._onPasswordChanged}
             />
           </View>
@@ -94,9 +96,10 @@ class RegisterScreen1 extends React.Component {
               placeholder="Confirm Password"
               style={styles.inputStyle}
               value={this.state.confirm_password}
-              duration={100}
               autoCorrect={false}
               underlineColorAndroid="transparent"
+              secureTextEntry={true}
+              textContentType={'password'}
               onChangeText={this._onConfirmPasswordChanged}
             />
           </View>
@@ -107,9 +110,9 @@ class RegisterScreen1 extends React.Component {
               placeholder="Name"
               style={styles.inputStyle}
               value={this.state.name}
-              duration={100}
               autoCorrect={false}
               underlineColorAndroid="transparent"
+              textContentType={'name'}
               onChangeText={this._onNameChanged}
             />
           </View>
@@ -122,6 +125,7 @@ class RegisterScreen1 extends React.Component {
               value={this.state.email}
               duration={100}
               autoCorrect={false}
+              textContentType={'emailAddress'}
               underlineColorAndroid="transparent"
               onChangeText={this._onEmailChanged}
             />
@@ -140,6 +144,8 @@ class RegisterScreen1 extends React.Component {
             />
           </View>
 
+          <Text style={styles.errorTextStyle}>{this.props.error}</Text>
+
           <View style={styles.buttonStyle}>
             <Button
               title="Continue"
@@ -148,7 +154,13 @@ class RegisterScreen1 extends React.Component {
             />
           </View>
 
-          <Text style={styles.errorTextStyle}>{this.props.error}</Text>
+          <View style={styles.buttonStyle}>
+            <Button
+              title="Back"
+              onPress={() => goBack()}
+              disabled={this.state.isLoading}
+            />
+          </View>
 
           <View style={[styles.footerViewStyle]}>
             <Text style={styles.footerTextStyle}>Unity Wallet v1.0.0</Text>
@@ -167,7 +179,7 @@ RegisterScreen1.defaultProps = {};
 
 export default reduxForm({
   form: 'register',
-  destroyOnUnmount: false,
+  destroyOnUnmount: true,
 })(RegisterScreen1);
 
 const styles = {
@@ -184,11 +196,13 @@ const styles = {
     color: '#7d62d9',
     fontSize: 30,
     fontWeight: '600',
+    textAlign: 'center',
   },
   logoTextSubTitle: {
     color: '#7d62d9',
     fontSize: 13,
     fontWeight: '500',
+    textAlign: 'center',
   },
   inputViewStyle: {
     borderWidth: 1,

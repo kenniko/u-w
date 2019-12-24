@@ -2,10 +2,13 @@ import React, {Component} from 'react';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as ReduxActions from '../actions';
+import {View} from 'react-native';
 import {NavigationActions, StackActions} from 'react-navigation';
 import {WavesAPI, NET_CONFIG} from '../utils/WavesAPI';
 import RegisterScreen1 from '../components/RegisterScreen1';
 import RegisterScreen2 from '../components/RegisterScreen2';
+import '../../shim.js';
+import crypto from 'crypto';
 
 const Waves = WavesAPI.create(NET_CONFIG);
 
@@ -65,7 +68,7 @@ class Register extends Component {
   render() {
     const {screen} = this.props;
     return (
-      <div>
+      <View>
         {screen === 1 && (
           <RegisterScreen1
             onNextHandler={this.onNextHandler}
@@ -82,7 +85,7 @@ class Register extends Component {
             {...this.props}
           />
         )}
-      </div>
+      </View>
     );
   }
 }

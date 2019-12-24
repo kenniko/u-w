@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, TextInput, Image, Button} from 'react-native';
-import {connect} from 'react-redux';
+import {View, Text, Button, ScrollView} from 'react-native';
 import {Field, reduxForm} from 'redux-form';
 import {Spinner} from './Spinner';
 import {NavigationActions, StackActions} from 'react-navigation';
@@ -15,6 +14,7 @@ class RegisterScreen2 extends Component {
     super(props);
     this.state = {
       isLoading: false,
+      error: null,
     };
   }
 
@@ -60,38 +60,53 @@ class RegisterScreen2 extends Component {
 
   render() {
     const {handleSubmit} = this.props;
+    const {goBack} = this.props.navigation;
 
     return (
-      <View style={styles.containerStyle}>
-        <Spinner visible={this.state.isLoading} />
-        <View style={styles.logoViewStyle}>
-          <Text style={styles.logoTextTitle}>Unity Wallet</Text>
-          <Text style={styles.logoTextSubTitle}>React Native</Text>
-        </View>
+      <ScrollView keyboardShouldPersistTaps={'handled'}>
+        <View style={styles.containerStyle}>
+          <Spinner visible={this.state.isLoading} />
+          <View style={styles.logoViewStyle}>
+            <Text style={styles.logoTextTitle}>
+              Your secure wallet has been successfully created.
+            </Text>
+            <Text style={styles.logoTextSubTitle}>
+              Below is your Backup Seed Phrase and write or copy this somewhere
+              secure that only you can access.
+            </Text>
+            <Text style={styles.seedTextSubTitle}>{this.props.phrase}</Text>
+          </View>
 
-        <View style={styles.buttonStyle}>
-          <Button
-            title="Continue without backup"
-            onPress={handleSubmit(this._onButtonPress)}
-            disabled={this.state.isLoading}
-          />
-        </View>
+          <Text style={styles.errorTextStyle}>{this.state.error}</Text>
 
-        <Text style={styles.errorTextStyle}>{this.props.error}</Text>
+          <View style={styles.buttonStyle}>
+            <Button
+              title="Continue without backup"
+              onPress={handleSubmit(this._onButtonPress)}
+              disabled={this.state.isLoading}
+            />
+          </View>
 
-        <View style={[styles.footerViewStyle]}>
-          <Text style={styles.footerTextStyle}>
-            Sample UI v3.0.0 / SDK v.3.0.99
-          </Text>
+          <View style={styles.buttonStyle}>
+            <Button
+              title="Back"
+              onPress={() => goBack()}
+              disabled={this.state.isLoading}
+            />
+          </View>
+
+          <View style={[styles.footerViewStyle]}>
+            <Text style={styles.footerTextStyle}>Unity Wallet v1.0.0</Text>
+          </View>
         </View>
-      </View>
+      </ScrollView>
     );
   }
 }
 
 export default reduxForm({
   form: 'register',
-  destroyOnUnmount: false,
+  destroyOnUnmount: true,
 })(RegisterScreen2);
 
 const styles = {
@@ -102,17 +117,31 @@ const styles = {
   logoViewStyle: {
     marginTop: 35,
     marginBottom: 5,
+    marginLeft: 10,
+    marginRight: 10,
     alignItems: 'center',
   },
   logoTextTitle: {
     color: '#7d62d9',
-    fontSize: 30,
-    fontWeight: '600',
+    fontSize: 20,
+    fontWeight: '500',
+    alignItems: 'center',
+    textAlign: 'center',
   },
   logoTextSubTitle: {
     color: '#7d62d9',
-    fontSize: 13,
+    fontSize: 15,
     fontWeight: '500',
+    alignItems: 'center',
+    textAlign: 'center',
+  },
+  seedTextSubTitle: {
+    color: '#003333',
+    fontSize: 15,
+    fontWeight: '600',
+    alignItems: 'center',
+    marginTop: 20,
+    textAlign: 'center',
   },
   inputViewStyle: {
     borderWidth: 1,

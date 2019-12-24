@@ -1,9 +1,5 @@
-import encrypto_decrypto from 'encrypto-decrypto';
+import {encrypt, decrypt} from 'react-native-simple-encryption';
 
 export const encryptPass = str => {
-  const encryptoDecrypto = new encrypto_decrypto({
-    key: 'somekfitjfotifStringToUseAsAKey!',
-    iv: 'nonceKSIEfj4Key!',
-  });
-  return encryptoDecrypto.encrypt(str);
+  return encrypt('somekfitjfotifStringToUseAsAKey', str);
 };

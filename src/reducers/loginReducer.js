@@ -10,7 +10,7 @@ const INITIAL_STATE = {
   error: null,
   wallet: null,
   loginData: null,
-  listWallet: null,
+  listWallet: [],
 };
 
 export default (state = INITIAL_STATE, action) => {
