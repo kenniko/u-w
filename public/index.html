@@ -19,6 +19,8 @@
       </button>
     </div>
     <script>
+    if (typeof ipcRenderer !== 'undefined') {
+
       const notification = document.getElementById('notification');
       const message = document.getElementById('message');
       const closeButton = document.getElementById('close-button');
@@ -69,6 +71,8 @@
       function restartApp() {
         ipcRenderer.send('restart_app');
       }
+    }
+    
     </script>
   </body>
 </html>
