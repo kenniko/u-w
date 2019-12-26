@@ -4,8 +4,9 @@ import {Spinner} from './Spinner';
 import PropTypes from 'prop-types';
 import {Field, reduxForm} from 'redux-form';
 import {encryptPass} from '../utils/utils';
+import {randomSeed, address} from '@waves/ts-lib-crypto';
 
-class RegisterScreen1 extends React.Component {
+class ImportScreen1 extends React.Component {
   static navigationOptions = {
     headershown: false,
     headerMode: 'none',
@@ -15,33 +16,18 @@ class RegisterScreen1 extends React.Component {
     super(props);
     this.state = {
       isLoading: false,
-      name: '',
-      password: '',
-      confirm_password: '',
-      email: '',
-      telegram_id: '',
+      phrase: '',
+      address: '',
       error: null,
     };
   }
 
-  _onNameChanged = name => {
-    this.setState({name: name});
+  _onPhraseChanged = phrase => {
+    this.setState({phrase: phrase});
   };
 
-  _onPasswordChanged = password => {
-    this.setState({password: password});
-  };
-
-  _onConfirmPasswordChanged = confirm_password => {
-    this.setState({confirm_password: confirm_password});
-  };
-
-  _onEmailChanged = email => {
-    this.setState({email: email});
-  };
-
-  _onTelegramIDChanged = telegram_id => {
-    this.setState({telegram_id: telegram_id});
+  _onAddressChanged = address => {
+    this.setState({address: address});
   };
 
   _onSetName = () => {
@@ -78,67 +64,27 @@ class RegisterScreen1 extends React.Component {
 
           <View style={styles.inputViewStyle}>
             <TextInput
-              label="Password"
-              placeholder="Password"
+              label="Backup Seed Phrase"
+              placeholder="Backup Seed Phrase"
               style={styles.inputStyle}
-              value={this.state.password}
-              autoCorrect={false}
-              underlineColorAndroid="transparent"
-              secureTextEntry={true}
-              textContentType={'password'}
-              onChangeText={this._onPasswordChanged}
-            />
-          </View>
-
-          <View style={styles.inputViewStyle}>
-            <TextInput
-              label="Confirm Password"
-              placeholder="Confirm Password"
-              style={styles.inputStyle}
-              value={this.state.confirm_password}
-              autoCorrect={false}
-              underlineColorAndroid="transparent"
-              secureTextEntry={true}
-              textContentType={'password'}
-              onChangeText={this._onConfirmPasswordChanged}
-            />
-          </View>
-
-          <View style={styles.inputViewStyle}>
-            <TextInput
-              label="Name"
-              placeholder="Name"
-              style={styles.inputStyle}
-              value={this.state.name}
+              value={this.state.phrase}
               autoCorrect={false}
               underlineColorAndroid="transparent"
               textContentType={'name'}
-              onChangeText={this._onNameChanged}
+              onChangeText={this._onPhraseChanged}
             />
           </View>
 
           <View style={styles.inputViewStyle}>
             <TextInput
-              label="Email"
-              placeholder="Email"
+              label="Wallet Address"
+              placeholder="Wallet Address"
               style={styles.inputStyle}
-              value={this.state.email}
-              autoCorrect={false}
-              textContentType={'emailAddress'}
-              underlineColorAndroid="transparent"
-              onChangeText={this._onEmailChanged}
-            />
-          </View>
-
-          <View style={styles.inputViewStyle}>
-            <TextInput
-              label="Telegram ID"
-              placeholder="Telegram ID"
-              style={styles.inputStyle}
-              value={this.state.telegram_id}
+              value={this.state.address}
               autoCorrect={false}
               underlineColorAndroid="transparent"
-              onChangeText={this._onTelegramIDChanged}
+              textContentType={'username'}
+              onChangeText={this._onAddressChanged}
             />
           </View>
 
@@ -169,16 +115,16 @@ class RegisterScreen1 extends React.Component {
   }
 }
 
-RegisterScreen1.propTypes = {
+ImportScreen1.propTypes = {
   onNextHandler: PropTypes.func,
   onBackHandler: PropTypes.func,
 };
-RegisterScreen1.defaultProps = {};
+ImportScreen1.defaultProps = {};
 
 export default reduxForm({
   form: 'register',
   destroyOnUnmount: true,
-})(RegisterScreen1);
+})(ImportScreen1);
 
 const styles = {
   containerStyle: {

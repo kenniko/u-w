@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import {Field, reduxForm} from 'redux-form';
 import {encryptPass} from '../utils/utils';
 
-class RegisterScreen1 extends React.Component {
+class ImportScreen2 extends React.Component {
   static navigationOptions = {
     headershown: false,
     headerMode: 'none',
@@ -169,16 +169,16 @@ class RegisterScreen1 extends React.Component {
   }
 }
 
-RegisterScreen1.propTypes = {
+ImportScreen2.propTypes = {
   onNextHandler: PropTypes.func,
   onBackHandler: PropTypes.func,
 };
-RegisterScreen1.defaultProps = {};
+ImportScreen2.defaultProps = {};
 
 export default reduxForm({
   form: 'register',
   destroyOnUnmount: true,
-})(RegisterScreen1);
+})(ImportScreen2);
 
 const styles = {
   containerStyle: {

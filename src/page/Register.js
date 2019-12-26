@@ -4,13 +4,9 @@ import {bindActionCreators} from 'redux';
 import * as ReduxActions from '../actions';
 import {View} from 'react-native';
 import {NavigationActions, StackActions} from 'react-navigation';
-import {WavesAPI, NET_CONFIG} from '../utils/WavesAPI';
 import RegisterScreen1 from '../components/RegisterScreen1';
 import RegisterScreen2 from '../components/RegisterScreen2';
-import '../../shim.js';
-import crypto from 'crypto';
-
-const Waves = WavesAPI.create(NET_CONFIG);
+import {randomSeed, address} from '@waves/ts-lib-crypto';
 
 class Register extends Component {
   static navigationOptions = {
@@ -29,7 +25,7 @@ class Register extends Component {
       telegram_id: '',
     };
 
-    this.seed = Waves.Seed.create();
+    this.seedphrase = randomSeed();
     this.onNextHandler = this.onNextHandler.bind(this);
     this.onBackHandler = this.onBackHandler.bind(this);
   }
@@ -46,8 +42,8 @@ class Register extends Component {
     if (this.props.loginData != null) {
       this.redirectTo('home');
     } else {
-      this.props.setAddress(this.seed.address);
-      this.props.setPhrase(this.seed.phrase);
+      this.props.setAddress(address(this.seedphrase));
+      this.props.setPhrase(this.seedphrase);
     }
   }
 
@@ -73,7 +69,6 @@ class Register extends Component {
           <RegisterScreen1
             onNextHandler={this.onNextHandler}
             onBackHandler={this.onBackHandler}
-            seed={this.seed}
             {...this.props}
           />
         )}
@@ -81,7 +76,6 @@ class Register extends Component {
           <RegisterScreen2
             onNextHandler={this.onNextHandler}
             onBackHandler={this.onBackHandler}
-            seed={this.seed}
             {...this.props}
           />
         )}

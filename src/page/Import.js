@@ -4,13 +4,8 @@ import {bindActionCreators} from 'redux';
 import * as ReduxActions from '../actions';
 import {View} from 'react-native';
 import {NavigationActions, StackActions} from 'react-navigation';
-import {WavesAPI, NET_CONFIG} from '../utils/WavesAPI';
-import RegisterScreen1 from '../components/RegisterScreen1';
-import RegisterScreen2 from '../components/RegisterScreen2';
-import '../../shim.js';
-import crypto from 'crypto';
-
-const Waves = WavesAPI.create(NET_CONFIG);
+import ImportScreen1 from '../components/ImportScreen1';
+import ImportScreen2 from '../components/ImportScreen2';
 
 class Import extends Component {
   static navigationOptions = {
@@ -29,7 +24,6 @@ class Import extends Component {
       telegram_id: '',
     };
 
-    this.seed = Waves.Seed.create();
     this.onNextHandler = this.onNextHandler.bind(this);
     this.onBackHandler = this.onBackHandler.bind(this);
   }
@@ -45,9 +39,6 @@ class Import extends Component {
   componentDidMount() {
     if (this.props.loginData != null) {
       this.redirectTo('home');
-    } else {
-      this.props.setAddress(this.seed.address);
-      this.props.setPhrase(this.seed.phrase);
     }
   }
 
@@ -70,18 +61,16 @@ class Import extends Component {
     return (
       <View>
         {screen === 1 && (
-          <RegisterScreen1
+          <ImportScreen1
             onNextHandler={this.onNextHandler}
             onBackHandler={this.onBackHandler}
-            seed={this.seed}
             {...this.props}
           />
         )}
         {screen === 2 && (
-          <RegisterScreen2
+          <ImportScreen2
             onNextHandler={this.onNextHandler}
             onBackHandler={this.onBackHandler}
-            seed={this.seed}
             {...this.props}
           />
         )}

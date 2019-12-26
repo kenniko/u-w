@@ -5,7 +5,7 @@ import {bindActionCreators} from 'redux';
 import * as ReduxActions from '../actions';
 import {Spinner} from '../components/Spinner';
 import {NavigationActions, StackActions} from 'react-navigation';
-import {encryptPass} from '../utils/utils';
+import {encryptPass, decryptPass} from '../utils/utils';
 
 class Login extends Component {
   static navigationOptions = {
@@ -53,24 +53,25 @@ class Login extends Component {
     this.setState({password: password});
   };
 
-  _isPasswordAllowed(address, password) {
+  _isPasswordAllowed(data, password, callback) {
+    data.password = encryptPass(password);
+    data.is_phrase_saved = false;
     if (this.props.listWallet == null) {
-      return false;
+      callback(false, data);
     } else {
-      let isAllowed = this.props.listWallet.filter(function(wallet) {
-        return (
-          wallet.address === address &&
-          encryptPass(wallet.password) === encryptPass(encryptPass(password))
-        );
-      });
-      if (Array.isArray(isAllowed)) {
-        return isAllowed.length > 0;
+      let wallets = this._getWalletStoredLocalByAddress(data.address);
+      let allowed = false;
+      for (let index = 0; index < wallets.length; index++) {
+        if (decryptPass(wallets[index].password) === password) {
+          data.is_phrase_saved = wallets[index].is_phrase_saved;
+          allowed = true;
+        }
       }
-      return false;
+      callback(allowed, data);
     }
   }
 
-  _getWalletStoredLocal(address) {
+  _getWalletStoredLocalByAddress(address) {
     if (this.props.listWallet == null) {
       return [];
     } else {
@@ -83,7 +84,6 @@ class Login extends Component {
 
   _onButtonPress = () => {
     const {address, password} = this.state;
-    const {navigate} = this.props.navigation;
 
     let ini;
     // eslint-disable-next-line consistent-this
@@ -96,27 +96,26 @@ class Login extends Component {
             error: data,
           });
         } else {
-          if (ini._isPasswordAllowed(address, password)) {
-            ini.setState(
-              {
+          ini._isPasswordAllowed(data, password, function(s, d) {
+            if (!s) {
+              ini.setState({
                 isLoading: false,
-                error: null,
-              },
-              () => {
-                let localWallet = ini._getWalletStoredLocal(address);
-                data.password = localWallet.password;
-                data.is_phrase_saved = localWallet.is_phrase_saved;
-                ini.props.setLoginData(data);
-                ini.props.setWalletList(ini.props.listWallet, data);
-                ini.redirectTo('home');
-              },
-            );
-          } else {
-            ini.setState({
-              isLoading: false,
-              error: 'Incorrect password',
-            });
-          }
+                error: 'Incorrect password',
+              });
+            } else {
+              ini.setState(
+                {
+                  isLoading: false,
+                  error: null,
+                },
+                () => {
+                  ini.props.setLoginData(d);
+                  ini.props.setWalletList(ini.props.listWallet, d);
+                  ini.redirectTo('home');
+                },
+              );
+            }
+          });
         }
       });
     });
