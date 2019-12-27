@@ -31,6 +31,8 @@ class Login extends Component {
       this.redirectTo('home');
     } else if (this.props.listWallet == null) {
       this.redirectTo('welcome');
+    } else if (this.props.listWallet.length < 1) {
+      this.redirectTo('welcome');
     } else {
       this.props.initLogin();
     }
