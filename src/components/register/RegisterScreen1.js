@@ -1,12 +1,11 @@
 import React from 'react';
 import {View, Text, TextInput, ScrollView, Button} from 'react-native';
-import {Spinner} from './Spinner';
+import {Spinner} from '../Spinner';
 import PropTypes from 'prop-types';
 import {Field, reduxForm} from 'redux-form';
-import {encryptPass} from '../utils/utils';
-import {randomSeed, address} from '@waves/ts-lib-crypto';
+import {encryptPass} from '../../utils/utils';
 
-class ImportScreen1 extends React.Component {
+class RegisterScreen1 extends React.Component {
   static navigationOptions = {
     headershown: false,
     headerMode: 'none',
@@ -16,18 +15,33 @@ class ImportScreen1 extends React.Component {
     super(props);
     this.state = {
       isLoading: false,
-      phrase: '',
-      address: '',
+      name: '',
+      password: '',
+      confirm_password: '',
+      email: '',
+      telegram_id: '',
       error: null,
     };
   }
 
-  _onPhraseChanged = phrase => {
-    this.setState({phrase: phrase});
+  _onNameChanged = name => {
+    this.setState({name: name});
   };
 
-  _onAddressChanged = address => {
-    this.setState({address: address});
+  _onPasswordChanged = password => {
+    this.setState({password: password});
+  };
+
+  _onConfirmPasswordChanged = confirm_password => {
+    this.setState({confirm_password: confirm_password});
+  };
+
+  _onEmailChanged = email => {
+    this.setState({email: email});
+  };
+
+  _onTelegramIDChanged = telegram_id => {
+    this.setState({telegram_id: telegram_id});
   };
 
   _onSetName = () => {
@@ -58,33 +72,78 @@ class ImportScreen1 extends React.Component {
         <View style={styles.containerStyle}>
           <Spinner visible={this.state.isLoading} />
           <View style={styles.logoViewStyle}>
-            <Text style={styles.logoTextTitle}>Unity Wallet</Text>
-            <Text style={styles.logoTextSubTitle}>React Native</Text>
+            <Text style={styles.logoTextTitle}>Create New Wallet</Text>
+          </View>
+
+          <View style={styles.logoViewStyle}>
+            <Text style={styles.logoTextSubTitle}>
+              Fill out the details below to create your secure wallet.
+            </Text>
           </View>
 
           <View style={styles.inputViewStyle}>
             <TextInput
-              label="Backup Seed Phrase"
-              placeholder="Backup Seed Phrase"
+              label="Password"
+              placeholder="Password"
               style={styles.inputStyle}
-              value={this.state.phrase}
+              value={this.state.password}
               autoCorrect={false}
               underlineColorAndroid="transparent"
-              textContentType={'name'}
-              onChangeText={this._onPhraseChanged}
+              secureTextEntry={true}
+              textContentType={'password'}
+              onChangeText={this._onPasswordChanged}
             />
           </View>
 
           <View style={styles.inputViewStyle}>
             <TextInput
-              label="Wallet Address"
-              placeholder="Wallet Address"
+              label="Confirm Password"
+              placeholder="Confirm Password"
               style={styles.inputStyle}
-              value={this.state.address}
+              value={this.state.confirm_password}
               autoCorrect={false}
               underlineColorAndroid="transparent"
-              textContentType={'username'}
-              onChangeText={this._onAddressChanged}
+              secureTextEntry={true}
+              textContentType={'password'}
+              onChangeText={this._onConfirmPasswordChanged}
+            />
+          </View>
+
+          <View style={styles.inputViewStyle}>
+            <TextInput
+              label="Name"
+              placeholder="Name"
+              style={styles.inputStyle}
+              value={this.state.name}
+              autoCorrect={false}
+              underlineColorAndroid="transparent"
+              textContentType={'name'}
+              onChangeText={this._onNameChanged}
+            />
+          </View>
+
+          <View style={styles.inputViewStyle}>
+            <TextInput
+              label="Email"
+              placeholder="Email"
+              style={styles.inputStyle}
+              value={this.state.email}
+              autoCorrect={false}
+              textContentType={'emailAddress'}
+              underlineColorAndroid="transparent"
+              onChangeText={this._onEmailChanged}
+            />
+          </View>
+
+          <View style={styles.inputViewStyle}>
+            <TextInput
+              label="Telegram ID"
+              placeholder="Telegram ID"
+              style={styles.inputStyle}
+              value={this.state.telegram_id}
+              autoCorrect={false}
+              underlineColorAndroid="transparent"
+              onChangeText={this._onTelegramIDChanged}
             />
           </View>
 
@@ -115,16 +174,16 @@ class ImportScreen1 extends React.Component {
   }
 }
 
-ImportScreen1.propTypes = {
+RegisterScreen1.propTypes = {
   onNextHandler: PropTypes.func,
   onBackHandler: PropTypes.func,
 };
-ImportScreen1.defaultProps = {};
+RegisterScreen1.defaultProps = {};
 
 export default reduxForm({
   form: 'register',
   destroyOnUnmount: true,
-})(ImportScreen1);
+})(RegisterScreen1);
 
 const styles = {
   containerStyle: {
@@ -140,9 +199,13 @@ const styles = {
     color: '#7d62d9',
     fontSize: 30,
     fontWeight: '600',
-    textAlign: 'center',
   },
   logoTextSubTitle: {
+    color: '#8e8e8e',
+    fontSize: 13,
+    fontWeight: '500',
+  },
+  linkTextSubTitle: {
     color: '#7d62d9',
     fontSize: 13,
     fontWeight: '500',
@@ -159,13 +222,20 @@ const styles = {
     marginTop: 8,
   },
   inputStyle: {
+    alignItems: 'center',
     fontSize: 13,
     backgroundColor: '#fff',
   },
   buttonStyle: {
     paddingLeft: 12,
     paddingRight: 12,
-    marginTop: 50,
+    marginTop: 30,
+  },
+  linkStyle: {
+    alignItems: 'center',
+    paddingLeft: 12,
+    paddingRight: 12,
+    marginTop: 30,
   },
   errorTextStyle: {
     alignSelf: 'center',
@@ -175,7 +245,7 @@ const styles = {
   footerViewStyle: {
     paddingLeft: 28,
     paddingRight: 28,
-    marginTop: 15,
+    marginTop: 45,
     flexDirection: 'column',
   },
   footerTextStyle: {

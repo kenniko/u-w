@@ -4,8 +4,9 @@ export const SIGNUP_NEXT = 'signup_next';
 export const SIGNUP_BACK = 'signup_back';
 export const SIGNUP_DATA = 'signup_data';
 
-export const SIGNUP_LOGIN_SUCCESS = 'signup_login_success';
-export const SIGNUP_LOGIN_FAIL = 'signup_login_fail';
+export const INIT_IMPORT = 'init_import';
+export const IMPORT_GOTO = 'signup_goto';
+export const IMPORT_DATA = 'signup_data';
 
 export const SET_PHRASE = 'set_phrase';
 export const SET_ADDRESS = 'set_address';

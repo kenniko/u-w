@@ -51,7 +51,6 @@ class Launch extends Component {
 function mapStateToProps(state, props) {
   return {
     error: state.loginReducer.error,
-    wallet: state.loginReducer.wallet,
     listWallet: state.loginReducer.listWallet,
     loginData: state.loginReducer.loginData,
   };

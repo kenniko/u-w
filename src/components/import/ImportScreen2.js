@@ -1,9 +1,9 @@
 import React from 'react';
 import {View, Text, TextInput, ScrollView, Button} from 'react-native';
-import {Spinner} from './Spinner';
+import {Spinner} from '../Spinner';
 import PropTypes from 'prop-types';
 import {Field, reduxForm} from 'redux-form';
-import {encryptPass} from '../utils/utils';
+import {encryptPass} from '../../utils/utils';
 
 class ImportScreen2 extends React.Component {
   static navigationOptions = {
@@ -52,7 +52,7 @@ class ImportScreen2 extends React.Component {
   };
 
   _onButtonPress = e => {
-    this.props.setSignupData({
+    this.props.setImportData({
       address: this.props.address,
       password: encryptPass(this.state.password),
       email: this.state.email,
@@ -60,7 +60,7 @@ class ImportScreen2 extends React.Component {
       telegram_id: this.state.telegram_id,
       referrer_id: null,
     });
-    this.props.onNextHandler();
+    this.props.onGoToHandler(4);
   };
 
   render() {
@@ -72,8 +72,12 @@ class ImportScreen2 extends React.Component {
         <View style={styles.containerStyle}>
           <Spinner visible={this.state.isLoading} />
           <View style={styles.logoViewStyle}>
-            <Text style={styles.logoTextTitle}>Unity Wallet</Text>
-            <Text style={styles.logoTextSubTitle}>React Native</Text>
+            <Text style={styles.logoTextTitle}>Import Wallet</Text>
+          </View>
+          <View style={styles.logoViewStyle}>
+            <Text style={styles.logoTextSubTitle}>
+              Fill out the details below.
+            </Text>
           </View>
 
           <View style={styles.inputViewStyle}>
@@ -170,13 +174,12 @@ class ImportScreen2 extends React.Component {
 }
 
 ImportScreen2.propTypes = {
-  onNextHandler: PropTypes.func,
-  onBackHandler: PropTypes.func,
+  onGoToHandler: PropTypes.func,
 };
 ImportScreen2.defaultProps = {};
 
 export default reduxForm({
-  form: 'register',
+  form: 'import',
   destroyOnUnmount: true,
 })(ImportScreen2);
 
@@ -194,9 +197,13 @@ const styles = {
     color: '#7d62d9',
     fontSize: 30,
     fontWeight: '600',
-    textAlign: 'center',
   },
   logoTextSubTitle: {
+    color: '#8e8e8e',
+    fontSize: 13,
+    fontWeight: '500',
+  },
+  linkTextSubTitle: {
     color: '#7d62d9',
     fontSize: 13,
     fontWeight: '500',
@@ -213,13 +220,20 @@ const styles = {
     marginTop: 8,
   },
   inputStyle: {
+    alignItems: 'center',
     fontSize: 13,
     backgroundColor: '#fff',
   },
   buttonStyle: {
     paddingLeft: 12,
     paddingRight: 12,
-    marginTop: 50,
+    marginTop: 30,
+  },
+  linkStyle: {
+    alignItems: 'center',
+    paddingLeft: 12,
+    paddingRight: 12,
+    marginTop: 30,
   },
   errorTextStyle: {
     alignSelf: 'center',
@@ -229,7 +243,7 @@ const styles = {
   footerViewStyle: {
     paddingLeft: 28,
     paddingRight: 28,
-    marginTop: 15,
+    marginTop: 45,
     flexDirection: 'column',
   },
   footerTextStyle: {

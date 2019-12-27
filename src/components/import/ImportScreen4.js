@@ -1,10 +1,10 @@
 import React, {Component} from 'react';
 import {View, Text, Button, ScrollView} from 'react-native';
 import {Field, reduxForm} from 'redux-form';
-import {Spinner} from './Spinner';
+import {Spinner} from '../Spinner';
 import {NavigationActions, StackActions} from 'react-navigation';
 
-class RegisterScreen2 extends Component {
+class ImportScreen4 extends Component {
   static navigationOptions = {
     headershown: false,
     headerMode: 'none',
@@ -105,9 +105,9 @@ class RegisterScreen2 extends Component {
 }
 
 export default reduxForm({
-  form: 'register',
+  form: 'import',
   destroyOnUnmount: true,
-})(RegisterScreen2);
+})(ImportScreen4);
 
 const styles = {
   containerStyle: {

@@ -4,8 +4,10 @@ import {bindActionCreators} from 'redux';
 import * as ReduxActions from '../actions';
 import {View} from 'react-native';
 import {NavigationActions, StackActions} from 'react-navigation';
-import ImportScreen1 from '../components/ImportScreen1';
-import ImportScreen2 from '../components/ImportScreen2';
+import ImportScreen1 from '../components/import/ImportScreen1';
+import ImportScreen2 from '../components/import/ImportScreen2';
+import ImportScreen3 from '../components/import/ImportScreen3';
+import ImportScreen4 from '../components/import/ImportScreen4';
 
 class Import extends Component {
   static navigationOptions = {
@@ -24,21 +26,18 @@ class Import extends Component {
       telegram_id: '',
     };
 
-    this.onNextHandler = this.onNextHandler.bind(this);
-    this.onBackHandler = this.onBackHandler.bind(this);
+    this.onGoToHandler = this.onGoToHandler.bind(this);
   }
 
-  onNextHandler() {
-    this.props.onNext(this.props.screen + 1);
-  }
-
-  onBackHandler() {
-    this.props.onBack(this.props.screen > 1 ? this.props.screen - 1 : 1);
+  onGoToHandler(go) {
+    this.props.onGoto(go);
   }
 
   componentDidMount() {
     if (this.props.loginData != null) {
       this.redirectTo('home');
+    } else {
+      this.props.initImport();
     }
   }
 
@@ -57,22 +56,21 @@ class Import extends Component {
   }
 
   render() {
-    const {screen} = this.props;
+    const {import_screen} = this.props;
+    console.log(import_screen);
     return (
       <View>
-        {screen === 1 && (
-          <ImportScreen1
-            onNextHandler={this.onNextHandler}
-            onBackHandler={this.onBackHandler}
-            {...this.props}
-          />
+        {import_screen === 1 && (
+          <ImportScreen1 onGoToHandler={this.onGoToHandler} {...this.props} />
         )}
-        {screen === 2 && (
-          <ImportScreen2
-            onNextHandler={this.onNextHandler}
-            onBackHandler={this.onBackHandler}
-            {...this.props}
-          />
+        {import_screen === 2 && (
+          <ImportScreen2 onGoToHandler={this.onGoToHandler} {...this.props} />
+        )}
+        {import_screen === 3 && (
+          <ImportScreen3 onGoToHandler={this.onGoToHandler} {...this.props} />
+        )}
+        {import_screen === 4 && (
+          <ImportScreen4 onGoToHandler={this.onGoToHandler} {...this.props} />
         )}
       </View>
     );
@@ -84,13 +82,12 @@ class Import extends Component {
 // This function makes Redux know that this component needs to be passed a piece of the state
 function mapStateToProps(state, props) {
   return {
-    signup_data: state.registerReducer.signup_data,
+    import_data: state.importReducer.import_data,
     address: state.registerReducer.address,
     phrase: state.registerReducer.phrase,
     is_phrase_saved: state.registerReducer.is_phrase_saved,
-    screen: state.registerReducer.screen,
+    import_screen: state.importReducer.import_screen,
     error: state.registerReducer.error,
-    wallet: state.registerReducer.wallet,
     listWallet: state.loginReducer.listWallet,
     loginData: state.loginReducer.loginData,
   };

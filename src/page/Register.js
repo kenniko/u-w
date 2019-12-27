@@ -4,8 +4,8 @@ import {bindActionCreators} from 'redux';
 import * as ReduxActions from '../actions';
 import {View} from 'react-native';
 import {NavigationActions, StackActions} from 'react-navigation';
-import RegisterScreen1 from '../components/RegisterScreen1';
-import RegisterScreen2 from '../components/RegisterScreen2';
+import RegisterScreen1 from '../components/register/RegisterScreen1';
+import RegisterScreen2 from '../components/register/RegisterScreen2';
 import {randomSeed, address} from '@waves/ts-lib-crypto';
 
 class Register extends Component {
@@ -42,6 +42,7 @@ class Register extends Component {
     if (this.props.loginData != null) {
       this.redirectTo('home');
     } else {
+      this.props.initRegister();
       this.props.setAddress(address(this.seedphrase));
       this.props.setPhrase(this.seedphrase);
     }
@@ -95,7 +96,6 @@ function mapStateToProps(state, props) {
     is_phrase_saved: state.registerReducer.is_phrase_saved,
     screen: state.registerReducer.screen,
     error: state.registerReducer.error,
-    wallet: state.registerReducer.wallet,
     listWallet: state.loginReducer.listWallet,
     loginData: state.loginReducer.loginData,
   };

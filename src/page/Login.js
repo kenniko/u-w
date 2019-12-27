@@ -28,6 +28,8 @@ class Login extends Component {
       this.redirectTo('home');
     } else if (this.props.listWallet == null) {
       this.redirectTo('welcome');
+    } else {
+      this.props.initLogin();
     }
   }
 
@@ -45,11 +47,11 @@ class Login extends Component {
     );
   }
 
-  _onaddressChanged = (address, i) => {
+  _onAddressChanged = (address, i) => {
     this.setState({address: address});
   };
 
-  _onpasswordChanged = password => {
+  _onPasswordChanged = password => {
     this.setState({password: password});
   };
 
@@ -89,7 +91,7 @@ class Login extends Component {
     // eslint-disable-next-line consistent-this
     ini = this;
     this.setState({isLoading: true}, () => {
-      this.props.walletLogin(address, function(success, data) {
+      this.props.getWalletFromServ(address, function(success, data) {
         if (!success) {
           ini.setState({
             isLoading: false,
@@ -137,13 +139,24 @@ class Login extends Component {
         <Spinner visible={this.state.isLoading} />
         <View style={styles.logoViewStyle}>
           <Text style={styles.logoTextTitle}>Unity Wallet</Text>
-          <Text style={styles.logoTextSubTitle}>React Native</Text>
+        </View>
+
+        <View style={styles.logoViewStyle}>
+          <Text style={styles.logoTextSubTitle}>
+            Sign in to your account or{' '}
+          </Text>
+          <Text
+            style={styles.linkTextSubTitle}
+            disabled={this.state.isLoading}
+            onPress={() => navigate('import')}>
+            Import Account
+          </Text>
         </View>
 
         <View style={styles.inputViewStyle}>
           <Picker
             selectedValue={this.state.address}
-            onValueChange={this._onaddressChanged}>
+            onValueChange={this._onAddressChanged}>
             <Picker.Item label={'Select a wallet address'} />
             {dropdown.map((wallet, index) => {
               return (
@@ -167,7 +180,7 @@ class Login extends Component {
             secureTextEntry={true}
             textContentType={'password'}
             underlineColorAndroid="transparent"
-            onChangeText={this._onpasswordChanged}
+            onChangeText={this._onPasswordChanged}
           />
         </View>
 
@@ -175,18 +188,23 @@ class Login extends Component {
 
         <View style={styles.buttonStyle}>
           <Button
-            title="Sign In"
+            title="Continue"
             onPress={this._onButtonPress}
             disabled={this.state.isLoading}
           />
         </View>
 
-        <View style={styles.buttonStyle}>
-          <Button
-            title="Create new wallet"
-            onPress={() => navigate('register')}
+        <View style={styles.logoViewStyle}>
+          <Text style={styles.logoTextSubTitle}>Or</Text>
+        </View>
+
+        <View style={styles.linkStyle}>
+          <Text
+            style={styles.linkTextSubTitle}
             disabled={this.state.isLoading}
-          />
+            onPress={() => navigate('register')}>
+            Create new wallet
+          </Text>
         </View>
 
         <View style={[styles.footerViewStyle]}>
@@ -203,7 +221,6 @@ class Login extends Component {
 function mapStateToProps(state, props) {
   return {
     error: state.loginReducer.error,
-    wallet: state.loginReducer.wallet,
     listWallet: state.loginReducer.listWallet,
     loginData: state.loginReducer.loginData,
   };
@@ -237,9 +254,15 @@ const styles = {
     fontWeight: '600',
   },
   logoTextSubTitle: {
+    color: '#8e8e8e',
+    fontSize: 13,
+    fontWeight: '500',
+  },
+  linkTextSubTitle: {
     color: '#7d62d9',
     fontSize: 13,
     fontWeight: '500',
+    textAlign: 'center',
   },
   inputViewStyle: {
     borderWidth: 1,
@@ -252,13 +275,20 @@ const styles = {
     marginTop: 8,
   },
   inputStyle: {
+    alignItems: 'center',
     fontSize: 13,
     backgroundColor: '#fff',
   },
   buttonStyle: {
     paddingLeft: 12,
     paddingRight: 12,
-    marginTop: 50,
+    marginTop: 30,
+  },
+  linkStyle: {
+    alignItems: 'center',
+    paddingLeft: 12,
+    paddingRight: 12,
+    marginTop: 30,
   },
   errorTextStyle: {
     alignSelf: 'center',
@@ -268,7 +298,7 @@ const styles = {
   footerViewStyle: {
     paddingLeft: 28,
     paddingRight: 28,
-    marginTop: 15,
+    marginTop: 45,
     flexDirection: 'column',
   },
   footerTextStyle: {

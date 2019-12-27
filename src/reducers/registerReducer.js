@@ -1,7 +1,5 @@
 import {
   INIT_SIGNUP,
-  SIGNUP_LOGIN_SUCCESS,
-  SIGNUP_LOGIN_FAIL,
   SIGNUP_NEXT,
   SIGNUP_BACK,
   SET_ADDRESS,
@@ -9,23 +7,16 @@ import {
   SIGNUP_DATA,
 } from '../actions/types';
 const INITIAL_STATE = {
-  error: null,
-  wallet: null,
   signup_data: null,
-  phrase: null,
-  is_phrase_saved: false,
   screen: 1,
   address: null,
+  phrase: null,
 };
 
 export default (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case INIT_SIGNUP:
-      return {...state};
-    case SIGNUP_LOGIN_SUCCESS:
-      return {...state, wallet: action.wallet};
-    case SIGNUP_LOGIN_FAIL:
-      return {...state, error: action.error};
+      return {...state, signup_data: null, screen: 1};
     case SIGNUP_NEXT:
       return {...state, screen: action.screen};
     case SIGNUP_BACK:

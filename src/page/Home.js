@@ -36,7 +36,6 @@ class Home extends React.Component {
   }
 
   _onButtonLogoutPress = () => {
-    this.props.setNullSignupLoginFail();
     this.props.setLoginData(null);
     this.redirectTo('login');
   };
@@ -71,7 +70,6 @@ class Home extends React.Component {
 function mapStateToProps(state, props) {
   return {
     error: state.loginReducer.error,
-    wallet: state.loginReducer.wallet,
     listWallet: state.loginReducer.listWallet,
     loginData: state.loginReducer.loginData,
   };

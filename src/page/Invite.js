@@ -101,7 +101,6 @@ function mapStateToProps(state, props) {
     is_phrase_saved: state.registerReducer.is_phrase_saved,
     screen: state.registerReducer.screen,
     error: state.registerReducer.error,
-    wallet: state.registerReducer.wallet,
     listWallet: state.loginReducer.listWallet,
     loginData: state.loginReducer.loginData,
   };

@@ -1,7 +1,5 @@
 import {
   INIT_SIGNUP,
-  SIGNUP_LOGIN_SUCCESS,
-  SIGNUP_LOGIN_FAIL,
   SIGNUP_NEXT,
   SIGNUP_BACK,
   SET_PHRASE,
@@ -35,20 +33,6 @@ export const saveRegister = (signup_data, callback) => {
         callback(false, error.message);
       });
   };
-};
-
-const registerFail = (dispatch, error) => {
-  dispatch({
-    type: SIGNUP_LOGIN_FAIL,
-    error: error,
-  });
-};
-
-const registerSuccess = (dispatch, wallet) => {
-  dispatch({
-    type: SIGNUP_LOGIN_SUCCESS,
-    wallet: wallet,
-  });
 };
 
 export const setAddress = address => {
