@@ -7,7 +7,6 @@ import {NavigationActions, StackActions} from 'react-navigation';
 import ImportScreen1 from '../components/import/ImportScreen1';
 import ImportScreen2 from '../components/import/ImportScreen2';
 import ImportScreen3 from '../components/import/ImportScreen3';
-import ImportScreen4 from '../components/import/ImportScreen4';
 
 class Import extends Component {
   static navigationOptions = {
@@ -57,7 +56,6 @@ class Import extends Component {
 
   render() {
     const {import_screen} = this.props;
-    console.log(import_screen);
     return (
       <View>
         {import_screen === 1 && (
@@ -68,9 +66,6 @@ class Import extends Component {
         )}
         {import_screen === 3 && (
           <ImportScreen3 onGoToHandler={this.onGoToHandler} {...this.props} />
-        )}
-        {import_screen === 4 && (
-          <ImportScreen4 onGoToHandler={this.onGoToHandler} {...this.props} />
         )}
       </View>
     );

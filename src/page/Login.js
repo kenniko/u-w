@@ -17,9 +17,12 @@ class Login extends Component {
     super(props);
     this.state = {
       isLoading: false,
+      showDeleteAccount: false,
       address: '',
       password: '',
-      error: null,
+      error: '',
+      errorPass: '',
+      errorAddress: '',
     };
   }
 
@@ -47,12 +50,47 @@ class Login extends Component {
     );
   }
 
+  _onDeleteAccount = () => {
+    if (this.state.address !== '') {
+      this.props.deleteWalletByAddress(
+        this.props.listWallet,
+        this.state.address,
+      );
+    }
+  };
+
+  _onValidateAddress = () => {
+    return this.state.address.trim().length > 0;
+  };
+
   _onAddressChanged = (address, i) => {
-    this.setState({address: address});
+    this.setState(
+      {
+        address: address,
+        showDeleteAccount: address !== '' ? true : false,
+      },
+      () => {
+        if (!this._onValidateAddress()) {
+          this.setState({errorAddress: 'Required'});
+        } else {
+          this.setState({errorAddress: ''});
+        }
+      },
+    );
+  };
+
+  _onValidatePass = () => {
+    return this.state.password.trim().length > 1;
   };
 
   _onPasswordChanged = password => {
-    this.setState({password: password});
+    this.setState({password: password.trim()}, () => {
+      if (!this._onValidatePass()) {
+        this.setState({errorPass: 'Required'});
+      } else {
+        this.setState({errorPass: ''});
+      }
+    });
   };
 
   _isPasswordAllowed(data, password, callback) {
@@ -86,7 +124,9 @@ class Login extends Component {
 
   _onButtonPress = () => {
     const {address, password} = this.state;
-
+    if (!this._onValidatePass() || !this._onValidateAddress()) {
+      return;
+    }
     let ini;
     // eslint-disable-next-line consistent-this
     ini = this;
@@ -154,6 +194,14 @@ class Login extends Component {
         </View>
 
         <View style={styles.inputViewStyle}>
+          {this.state.showDeleteAccount ? (
+            <Text
+              style={styles.deleteText}
+              disabled={this.state.isLoading}
+              onPress={() => this._onDeleteAccount()}>
+              Delete this account
+            </Text>
+          ) : null}
           <Picker
             selectedValue={this.state.address}
             onValueChange={this._onAddressChanged}>
@@ -263,6 +311,12 @@ const styles = {
     fontSize: 13,
     fontWeight: '500',
     textAlign: 'center',
+  },
+  deleteText: {
+    color: '#a94442',
+    fontSize: 13,
+    fontWeight: '500',
+    textAlign: 'right',
   },
   inputViewStyle: {
     borderWidth: 1,

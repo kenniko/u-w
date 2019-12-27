@@ -18,16 +18,40 @@ class ImportScreen3 extends React.Component {
       isLoading: false,
       password: '',
       confirm_password: '',
-      error: null,
+      error: '',
+      errorPass: '',
+      errorConfPass: '',
     };
   }
 
+  _onValidatePass = () => {
+    return this.state.password.trim().length > 7;
+  };
+
   _onPasswordChanged = password => {
-    this.setState({password: password});
+    this.setState({password: password.trim()}, () => {
+      if (!this._onValidatePass()) {
+        this.setState({errorPass: 'Password must be at least 8 characters.'});
+      } else {
+        this.setState({errorPass: ''});
+      }
+    });
   };
 
   _onConfirmPasswordChanged = confirm_password => {
-    this.setState({confirm_password: confirm_password});
+    this.setState({confirm_password: confirm_password.trim()}, () => {
+      if (!this._onValidateConfPass()) {
+        this.setState({
+          errorConfPass: 'Confirm password does not match the password.',
+        });
+      } else {
+        this.setState({errorConfPass: ''});
+      }
+    });
+  };
+
+  _onValidateConfPass = () => {
+    return this.state.password.trim() === this.state.confirm_password.trim();
   };
 
   redirectTo(page, params) {
@@ -86,6 +110,7 @@ class ImportScreen3 extends React.Component {
               textContentType={'password'}
               onChangeText={this._onPasswordChanged}
             />
+            <Text style={styles.errorText}>{this.state.errorPass}</Text>
           </View>
 
           <View style={styles.inputViewStyle}>
@@ -100,6 +125,7 @@ class ImportScreen3 extends React.Component {
               textContentType={'password'}
               onChangeText={this._onConfirmPasswordChanged}
             />
+            <Text style={styles.errorText}>{this.state.errorConfPass}</Text>
           </View>
 
           <Text style={styles.errorTextStyle}>{this.props.error}</Text>
@@ -195,6 +221,12 @@ const styles = {
     alignSelf: 'center',
     fontSize: 12,
     color: '#e03131',
+  },
+  errorText: {
+    color: '#a94442',
+    fontSize: 13,
+    fontWeight: '500',
+    textAlign: 'right',
   },
   footerViewStyle: {
     paddingLeft: 28,

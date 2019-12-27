@@ -50,3 +50,18 @@ export const setWalletList = (list, wallet) => {
     });
   };
 };
+
+export const deleteWalletByAddress = (list, address) => {
+  let filteredWallet = [];
+  if (list !== null && typeof list !== 'undefined') {
+    filteredWallet = list.filter(w => {
+      return w.address !== address;
+    });
+  }
+  return dispatch => {
+    dispatch({
+      type: WALLET_LIST,
+      listWallet: filteredWallet,
+    });
+  };
+};

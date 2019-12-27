@@ -20,28 +20,71 @@ class RegisterScreen1 extends React.Component {
       confirm_password: '',
       email: '',
       telegram_id: '',
-      error: null,
+      error: '',
+      errorPass: '',
+      errorConfPass: '',
+      errorEmail: '',
     };
   }
 
   _onNameChanged = name => {
-    this.setState({name: name});
+    this.setState({name: name.trim()});
+  };
+
+  _onValidatePass = () => {
+    return this.state.password.trim().length > 7;
   };
 
   _onPasswordChanged = password => {
-    this.setState({password: password});
+    this.setState({password: password.trim()}, () => {
+      if (!this._onValidatePass()) {
+        this.setState({errorPass: 'Password must be at least 8 characters.'});
+      } else {
+        this.setState({errorPass: ''});
+      }
+    });
   };
 
   _onConfirmPasswordChanged = confirm_password => {
-    this.setState({confirm_password: confirm_password});
+    this.setState({confirm_password: confirm_password.trim()}, () => {
+      if (!this._onValidateConfPass()) {
+        this.setState({
+          errorConfPass: 'Confirm password does not match the password.',
+        });
+      } else {
+        this.setState({errorConfPass: ''});
+      }
+    });
+  };
+
+  _onValidateConfPass = () => {
+    return this.state.password.trim() === this.state.confirm_password.trim();
   };
 
   _onEmailChanged = email => {
-    this.setState({email: email});
+    this.setState({email: email.trim()}, () => {
+      if (!this._onValidateEmail()) {
+        this.setState({
+          errorEmail: 'Email address format is invalid.',
+        });
+      } else {
+        this.setState({errorEmail: ''});
+      }
+    });
+  };
+
+  _onValidateEmail = () => {
+    let regxp = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (this.state.email.trim().length > 0) {
+      if (!regxp.test(this.state.email.trim())) {
+        return false;
+      }
+    }
+    return true;
   };
 
   _onTelegramIDChanged = telegram_id => {
-    this.setState({telegram_id: telegram_id});
+    this.setState({telegram_id: telegram_id.trim()});
   };
 
   _onSetName = () => {
@@ -52,6 +95,13 @@ class RegisterScreen1 extends React.Component {
   };
 
   _onButtonPress = e => {
+    if (
+      !this._onValidatePass() ||
+      !this._onValidateConfPass() ||
+      !this._onValidateEmail()
+    ) {
+      return;
+    }
     this.props.setSignupData({
       address: this.props.address,
       password: encryptPass(this.state.password),
@@ -93,6 +143,7 @@ class RegisterScreen1 extends React.Component {
               textContentType={'password'}
               onChangeText={this._onPasswordChanged}
             />
+            <Text style={styles.errorText}>{this.state.errorPass}</Text>
           </View>
 
           <View style={styles.inputViewStyle}>
@@ -107,6 +158,7 @@ class RegisterScreen1 extends React.Component {
               textContentType={'password'}
               onChangeText={this._onConfirmPasswordChanged}
             />
+            <Text style={styles.errorText}>{this.state.errorConfPass}</Text>
           </View>
 
           <View style={styles.inputViewStyle}>
@@ -133,6 +185,7 @@ class RegisterScreen1 extends React.Component {
               underlineColorAndroid="transparent"
               onChangeText={this._onEmailChanged}
             />
+            <Text style={styles.errorText}>{this.state.errorEmail}</Text>
           </View>
 
           <View style={styles.inputViewStyle}>
@@ -160,7 +213,7 @@ class RegisterScreen1 extends React.Component {
           <View style={styles.buttonStyle}>
             <Button
               title="Back"
-              onPress={() => goBack()}
+              onPress={() => goBack(null)}
               disabled={this.state.isLoading}
             />
           </View>
@@ -210,6 +263,12 @@ const styles = {
     fontSize: 13,
     fontWeight: '500',
     textAlign: 'center',
+  },
+  errorText: {
+    color: '#a94442',
+    fontSize: 13,
+    fontWeight: '500',
+    textAlign: 'right',
   },
   inputViewStyle: {
     borderWidth: 1,

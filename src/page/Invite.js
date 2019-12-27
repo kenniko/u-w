@@ -4,13 +4,9 @@ import {bindActionCreators} from 'redux';
 import * as ReduxActions from '../actions';
 import {View} from 'react-native';
 import {NavigationActions, StackActions} from 'react-navigation';
-import {WavesAPI, NET_CONFIG} from '../utils/WavesAPI';
-import RegisterScreen1 from '../components/RegisterScreen1';
-import RegisterScreen2 from '../components/RegisterScreen2';
-import '../../shim.js';
-import crypto from 'crypto';
-
-const Waves = WavesAPI.create(NET_CONFIG);
+import RegisterScreen1 from '../components/register/RegisterScreen1';
+import RegisterScreen2 from '../components/register/RegisterScreen2';
+import {randomSeed, address} from '@waves/ts-lib-crypto';
 
 class Invite extends Component {
   static navigationOptions = {
@@ -29,7 +25,7 @@ class Invite extends Component {
       telegram_id: '',
     };
 
-    this.seed = Waves.Seed.create();
+    this.seedphrase = randomSeed();
     this.onNextHandler = this.onNextHandler.bind(this);
     this.onBackHandler = this.onBackHandler.bind(this);
   }
@@ -46,8 +42,9 @@ class Invite extends Component {
     if (this.props.loginData != null) {
       this.redirectTo('home');
     } else {
-      this.props.setAddress(this.seed.address);
-      this.props.setPhrase(this.seed.phrase);
+      this.props.initRegister();
+      this.props.setAddress(address(this.seedphrase));
+      this.props.setPhrase(this.seedphrase);
     }
   }
 
@@ -73,7 +70,6 @@ class Invite extends Component {
           <RegisterScreen1
             onNextHandler={this.onNextHandler}
             onBackHandler={this.onBackHandler}
-            seed={this.seed}
             {...this.props}
           />
         )}
@@ -81,7 +77,6 @@ class Invite extends Component {
           <RegisterScreen2
             onNextHandler={this.onNextHandler}
             onBackHandler={this.onBackHandler}
-            seed={this.seed}
             {...this.props}
           />
         )}
