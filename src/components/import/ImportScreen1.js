@@ -18,7 +18,9 @@ class ImportScreen1 extends React.Component {
       isLoading: false,
       phrase: '',
       address: '',
-      error: null,
+      error: '',
+      errorPhrase: '',
+      errorAddress: '',
     };
   }
 
@@ -36,15 +38,42 @@ class ImportScreen1 extends React.Component {
     );
   }
 
+  _onValidatePhrase = () => {
+    return this.state.phrase.trim().length > 0;
+  };
+
   _onPhraseChanged = phrase => {
-    this.setState({
-      phrase: phrase,
-      address: address(phrase),
-    });
+    this.setState(
+      {
+        phrase: phrase.trim(),
+        address: address(phrase.trim()),
+      },
+      () => {
+        if (!this._onValidatePhrase()) {
+          this.setState({
+            errorPhrase: 'Required',
+          });
+        } else {
+          this.setState({errorPhrase: ''});
+        }
+      },
+    );
+  };
+
+  _onValidateAddress = () => {
+    return this.state.address.trim().length > 0;
   };
 
   _onAddressChanged = addr => {
-    this.setState({address: addr});
+    this.setState({address: addr}, () => {
+      if (!this._onValidateAddress()) {
+        this.setState({
+          errorAddress: 'Required',
+        });
+      } else {
+        this.setState({errorAddress: ''});
+      }
+    });
   };
 
   _onSetName = () => {
@@ -55,6 +84,9 @@ class ImportScreen1 extends React.Component {
   };
 
   _onButtonPress = e => {
+    if (!this._onValidatePhrase() || !this._onValidateAddress()) {
+      return;
+    }
     let ini;
     // eslint-disable-next-line consistent-this
     ini = this;
@@ -119,6 +151,7 @@ class ImportScreen1 extends React.Component {
               textContentType={'name'}
               onChangeText={this._onPhraseChanged}
             />
+            <Text style={styles.errorText}>{this.state.errorPhrase}</Text>
           </View>
 
           <View style={styles.inputViewStyle}>
@@ -133,6 +166,7 @@ class ImportScreen1 extends React.Component {
               textContentType={'username'}
               onChangeText={this._onAddressChanged}
             />
+            <Text style={styles.errorText}>{this.state.errorAddress}</Text>
           </View>
 
           <Text style={styles.errorTextStyle}>{this.props.error}</Text>
@@ -196,6 +230,12 @@ const styles = {
     color: '#8e8e8e',
     fontSize: 13,
     fontWeight: '500',
+  },
+  errorText: {
+    color: '#a94442',
+    fontSize: 13,
+    fontWeight: '500',
+    textAlign: 'right',
   },
   linkTextSubTitle: {
     color: '#7d62d9',

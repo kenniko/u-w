@@ -69,6 +69,9 @@ class ImportScreen3 extends React.Component {
   }
 
   _onButtonPress = e => {
+    if (!this._onValidatePass() || !this._onValidateConfPass()) {
+      return;
+    }
     this.setState({isLoading: true}, () => {
       let data = this.props.import_data;
       data.password = encryptPass(this.state.password);

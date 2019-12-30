@@ -6,7 +6,9 @@ import {
   ScrollView,
   TouchableOpacity,
   Clipboard,
+  TouchableHighlight,
 } from 'react-native';
+import SeedBackupModal from '../SeedBackupModal';
 import {Field, reduxForm} from 'redux-form';
 import {Spinner} from '../Spinner';
 import {NavigationActions, StackActions} from 'react-navigation';
@@ -21,7 +23,8 @@ class RegisterScreen2 extends Component {
     super(props);
     this.state = {
       isLoading: false,
-      error: null,
+      error: '',
+      isModalVisible: false,
     };
   }
 
@@ -38,6 +41,10 @@ class RegisterScreen2 extends Component {
       }),
     );
   }
+
+  toggleModal = () => {
+    this.setState({isModalVisible: !this.state.isModalVisible});
+  };
 
   _onButtonPress = e => {
     let ini;
@@ -65,6 +72,8 @@ class RegisterScreen2 extends Component {
     });
   };
 
+  _onButtonSavedModal = e => {};
+
   render() {
     const {handleSubmit} = this.props;
     const {goBack} = this.props.navigation;
@@ -73,6 +82,11 @@ class RegisterScreen2 extends Component {
       <ScrollView keyboardShouldPersistTaps={'handled'}>
         <View style={styles.containerStyle}>
           <Spinner visible={this.state.isLoading} />
+          <SeedBackupModal
+            isVisible={this.state.isModalVisible}
+            toggleModal={this.toggleModal}
+            {...this.props}
+          />
           <View style={styles.logoViewStyle}>
             <Text style={styles.logoTextTitle}>
               Your secure wallet has been successfully created.
@@ -83,12 +97,12 @@ class RegisterScreen2 extends Component {
             </Text>
           </View>
           <View style={styles.seedViewStyle}>
-            <TouchableOpacity
-              onPress={() => Clipboard.setString(this.props.phrase)}>
-              <Text style={styles.seedTextSubTitle}>{this.props.phrase}</Text>
+            <TouchableOpacity onPress={() => this.toggleModal()}>
+              <Text style={styles.seedTextSubTitle}>
+                See Backup Seed Phrase
+              </Text>
             </TouchableOpacity>
           </View>
-
           <Text style={styles.errorTextStyle}>{this.state.error}</Text>
 
           <View style={styles.buttonStyle}>

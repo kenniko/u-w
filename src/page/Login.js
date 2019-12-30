@@ -207,7 +207,7 @@ class Login extends Component {
           <Picker
             selectedValue={this.state.address}
             onValueChange={this._onAddressChanged}>
-            <Picker.Item label={'Select a wallet address'} />
+            <Picker.Item value={''} label={'Select a wallet address'} />
             {dropdown.map((wallet, index) => {
               return (
                 <Picker.Item
@@ -218,6 +218,7 @@ class Login extends Component {
               );
             })}
           </Picker>
+          <Text style={styles.errorText}>{this.state.errorAddress}</Text>
         </View>
 
         <View style={styles.inputViewStyle}>
@@ -232,6 +233,7 @@ class Login extends Component {
             underlineColorAndroid="transparent"
             onChangeText={this._onPasswordChanged}
           />
+          <Text style={styles.errorText}>{this.state.errorPass}</Text>
         </View>
 
         <Text style={styles.errorTextStyle}>{this.state.error}</Text>
@@ -313,6 +315,12 @@ const styles = {
     fontSize: 13,
     fontWeight: '500',
     textAlign: 'center',
+  },
+  errorText: {
+    color: '#a94442',
+    fontSize: 13,
+    fontWeight: '500',
+    textAlign: 'right',
   },
   deleteText: {
     color: '#a94442',
