@@ -22,9 +22,10 @@ class Welcome extends Component {
   componentDidMount() {
     if (this.props.loginData != null) {
       this.redirectTo('home');
-    } else if (this.props.listWallet != null) {
-      this.redirectTo('login');
-    } else if (this.props.listWallet.length > 0) {
+    } else if (
+      this.props.listWallet != null &&
+      this.props.listWallet.length > 0
+    ) {
       this.redirectTo('login');
     }
   }
