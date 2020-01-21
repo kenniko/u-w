@@ -25,6 +25,7 @@ class RegisterScreen2 extends Component {
       isLoading: false,
       error: '',
       isModalVisible: false,
+      correctPhraseOrder: false,
     };
   }
 
@@ -44,6 +45,10 @@ class RegisterScreen2 extends Component {
 
   toggleModal = () => {
     this.setState({isModalVisible: !this.state.isModalVisible});
+  };
+
+  phraseOrder = a => {
+    this.setState({correctPhraseOrder: a});
   };
 
   _onButtonPress = e => {
@@ -85,6 +90,7 @@ class RegisterScreen2 extends Component {
           <SeedBackupModal
             isVisible={this.state.isModalVisible}
             toggleModal={this.toggleModal}
+            phraseOrder={this.phraseOrder}
             {...this.props}
           />
           <View style={styles.logoViewStyle}>
