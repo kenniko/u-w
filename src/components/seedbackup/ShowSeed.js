@@ -79,7 +79,6 @@ const styles = {
     paddingTop: 15,
     backgroundColor: '#d8d8d8',
     alignItems: 'center',
-    textAlign: 'center',
   },
   textTitleModal: {
     color: '#7d62d9',

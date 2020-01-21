@@ -5,6 +5,7 @@ import {
   SET_PHRASE,
   SET_ADDRESS,
   SIGNUP_DATA,
+  SAVED_PHRASE_CONFIRM,
 } from './types';
 import {API} from '../utils/axios';
 
@@ -76,6 +77,15 @@ export const setSignupData = signup_data => {
     dispatch({
       type: SIGNUP_DATA,
       signup_data: signup_data,
+    });
+  };
+};
+
+export const setPhraseSaved = is_phrase_saved => {
+  return dispatch => {
+    dispatch({
+      type: SAVED_PHRASE_CONFIRM,
+      is_phrase_saved: is_phrase_saved,
     });
   };
 };

@@ -48,10 +48,10 @@ class RegisterScreen2 extends Component {
   };
 
   phraseOrder = a => {
-    this.setState({correctPhraseOrder: a});
+    this.props.setPhraseSaved(a ? true : false);
   };
 
-  _onButtonPress = e => {
+  _onButtonPress = () => {
     let ini;
     // eslint-disable-next-line consistent-this
     ini = this;
@@ -91,6 +91,7 @@ class RegisterScreen2 extends Component {
             isVisible={this.state.isModalVisible}
             toggleModal={this.toggleModal}
             phraseOrder={this.phraseOrder}
+            _onButtonPress={this._onButtonPress}
             {...this.props}
           />
           <View style={styles.logoViewStyle}>

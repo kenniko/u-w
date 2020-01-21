@@ -15,6 +15,7 @@ class ConfirmBackup extends Component {
     this.state = {
       selectionBtnPhrase: this.shuffleArray(this.props.phrase.split(' ')),
       selectedBtnPhrase: [],
+      correctPhraseOrder: false,
     };
 
     this.onRandomPrhaseBtnClick = this.onRandomPrhaseBtnClick.bind(this);
@@ -40,22 +41,29 @@ class ConfirmBackup extends Component {
     return arr;
   }
 
-  onConfirmPhraseBtnClick() {
-    if (this.state.selectedBtnPhrase.join(' ') === this.props.phrase) {
-      this.props.phraseOrder(true);
-    } else {
-      this.props.phraseOrder(false);
-    }
+  checkPhrase() {
+    this.setState(
+      {
+        correctPhraseOrder:
+          this.state.selectedBtnPhrase.join(' ') === this.props.phrase,
+      },
+      () => this.props.phraseOrder(this.state.correctPhraseOrder),
+    );
+    console.log(this.state.selectedBtnPhrase.join(' '));
+    console.log(this.props.phrase);
   }
 
   onSelectedPrhaseBtnClick(e) {
     console.log(e);
-    this.setState({
-      selectedBtnPhrase: this.removeThisArrayItem(
-        this.state.selectedBtnPhrase,
-        e,
-      ),
-    });
+    this.setState(
+      {
+        selectedBtnPhrase: this.removeThisArrayItem(
+          this.state.selectedBtnPhrase,
+          e,
+        ),
+      },
+      () => this.checkPhrase(),
+    );
     this.setState({
       selectionBtnPhrase: [...this.state.selectionBtnPhrase, e],
     });
@@ -69,16 +77,19 @@ class ConfirmBackup extends Component {
         e,
       ),
     });
-    this.setState({
-      selectedBtnPhrase: [...this.state.selectedBtnPhrase, e],
-    });
+    this.setState(
+      {
+        selectedBtnPhrase: [...this.state.selectedBtnPhrase, e],
+      },
+      () => this.checkPhrase(),
+    );
   }
 
   createSelectedPhraseBtn(selectedBtnPhrase) {
     let btns = [];
     for (let i = 0; i < selectedBtnPhrase.length; i++) {
       btns.push(
-        <View style={styles.seedButtonStyle}>
+        <View style={styles.seedButtonStyle} key={i}>
           <TouchableOpacity
             onPress={() => this.onSelectedPrhaseBtnClick(selectedBtnPhrase[i])}>
             <Text style={styles.seedText}>{selectedBtnPhrase[i]}</Text>
@@ -93,7 +104,7 @@ class ConfirmBackup extends Component {
     let btns = [];
     for (let i = 0; i < randomPhraseArr.length; i++) {
       btns.push(
-        <View style={styles.seedButtonStyle}>
+        <View style={styles.seedButtonStyle} key={i}>
           <TouchableOpacity
             onPress={() => this.onRandomPrhaseBtnClick(randomPhraseArr[i])}>
             <Text style={styles.seedText}>{randomPhraseArr[i]}</Text>
@@ -123,15 +134,15 @@ class ConfirmBackup extends Component {
           <Text style={styles.textContentModal}>
             Please, tap each word in the correct order
           </Text>
-          <View style={styles.textContentModal}>
+          <View style={styles.TitleModalStyle}>
             {this.createRandomPhraseBtn(this.state.selectionBtnPhrase)}
           </View>
         </View>
         <View style={styles.buttonStyle}>
           <Button
             title="Confirm"
-            disabled={!this.props.correctPhraseOrder}
-            onPress={() => this.onConfirmPhraseBtnClick()}
+            disabled={!this.state.correctPhraseOrder}
+            onPress={() => this.props._onButtonPress()}
           />
         </View>
       </View>
@@ -162,7 +173,6 @@ const styles = {
     paddingTop: 15,
     backgroundColor: '#d8d8d8',
     alignItems: 'center',
-    textAlign: 'center',
   },
   textTitleModal: {
     color: '#7d62d9',
