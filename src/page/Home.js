@@ -14,10 +14,10 @@ class Home extends React.Component {
   }
 
   componentDidMount() {
-    console.log(this.props);
-    this.props.setWalletList(this.props.listWallet, this.props.loginData);
     if (this.props.loginData == null) {
       this.redirectTo('login');
+    } else {
+      this.props.setWalletList(this.props.listWallet, this.props.loginData);
     }
   }
 
