@@ -25,27 +25,27 @@ const AppNav = createAppContainer(AppStack);
 
 //const App: () => React$Node = () => {
 class App extends React.Component {
-  componentDidMount() {
-    codePush.sync({
-      updateDialog: true,
-      installMode: codePush.InstallMode.IMMEDIATE,
-    });
-  }
+  // componentDidMount() {
+  //   codePush.sync({
+  //     updateDialog: true,
+  //     installMode: codePush.InstallMode.IMMEDIATE,
+  //     checkFrequency: codePush.CheckFrequency.ON_APP_START,
+  //     installMode: codePush.InstallMode.IMMEDIATE
+  //   });
+  // }
 
   render() {
     return (
-      <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <AppNav />
+      <Provider style={{fontFamily: 'sans-serif'}} store={store}>
+        <PersistGate
+          style={{fontFamily: 'San Francisco'}}
+          loading={null}
+          persistor={persistor}>
+          <AppNav style={{fontFamily: 'Roboto'}} />
         </PersistGate>
       </Provider>
     );
   }
 }
 
-let codePushOptions = {
-  checkFrequency: codePush.CheckFrequency.ON_APP_START,
-  installMode: codePush.InstallMode.IMMEDIATE,
-};
-
-export default (App = codePush(codePushOptions)(App));
+export default App;

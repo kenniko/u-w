@@ -1,9 +1,20 @@
 import React, {Component} from 'react';
-import {View, Text, TextInput, Image, Button} from 'react-native';
+import {
+  View,
+  Text,
+  TextInput,
+  Image,
+  Button,
+  Linking,
+  ScrollView,
+} from 'react-native';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as ReduxActions from '../actions';
 import {Spinner} from '../components/Spinner';
+import ButtonPrimary from '../components/ButtonPrimary';
+import ButtonSecondary from '../components/ButtonSecondary';
+import ButtonBack from '../components/ButtonBack';
 import {NavigationActions, StackActions} from 'react-navigation';
 
 class Welcome extends Component {
@@ -48,15 +59,23 @@ class Welcome extends Component {
     const {navigate} = this.props.navigation;
 
     return (
-      <View style={styles.containerStyle}>
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        style={styles.containerStyle}>
         <Spinner visible={this.state.isLoading} />
+
+        <ButtonBack
+          title="Back"
+          onPress={() => Linking.openURL('https://www.unity.sg/')}
+        />
+
         <View style={styles.logoViewStyle}>
           <Text style={styles.logoTextTitle}>Welcome to Unity Wallet</Text>
           <Text style={styles.logoTextSubTitle}>React Native</Text>
         </View>
 
         <View style={styles.buttonStyle}>
-          <Button
+          <ButtonPrimary
             title="Create New Wallet"
             onPress={() => navigate('register')}
             disabled={this.state.isLoading}
@@ -66,7 +85,7 @@ class Welcome extends Component {
         <Text style={styles.orTextStyle}>OR</Text>
 
         <View style={styles.buttonStyle}>
-          <Button
+          <ButtonSecondary
             title="Import Wallet"
             onPress={() => navigate('import')}
             disabled={this.state.isLoading}
@@ -78,7 +97,7 @@ class Welcome extends Component {
         <View style={[styles.footerViewStyle]}>
           <Text style={styles.footerTextStyle}>Unity Wallet v1.0.0</Text>
         </View>
-      </View>
+      </ScrollView>
     );
   }
 }

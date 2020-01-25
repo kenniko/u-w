@@ -22,13 +22,13 @@ function createWindow() {
 
   if (isDev) {
     mainWindow.loadURL('http://localhost:3000');
-    autoUpdater.checkForUpdates();
+    // autoUpdater.checkForUpdates();
   } else {
     mainWindow.loadURL(`file://${path.join(__dirname, '../build/index.html')}`);
-    autoUpdater.checkForUpdates();
-    setInterval(() => {
-      autoUpdater.checkForUpdates();
-    }, 300000); // check every 5 minutes
+    // autoUpdater.checkForUpdates();
+    // setInterval(() => {
+    //   autoUpdater.checkForUpdates();
+    // }, 300000); // check every 5 minutes
   }
   mainWindow.on('closed', () => (mainWindow = null));
 }
