@@ -34,6 +34,20 @@ export default StyleSheet.create({
     color: vars.COLOR_TEXT_BODY,
     marginVertical: vars.GAP_TEXT,
   },
+  textHelp: {
+    fontFamily: 'Rubik-Regular',
+    fontSize: 15,
+    lineHeight: 22,
+    color: vars.COLOR_TEXT_LABEL,
+    marginVertical: vars.GAP_TEXT,
+  },
+  textLink: {
+    fontFamily: 'Rubik-Regular',
+    fontSize: 15,
+    lineHeight: 22,
+    color: vars.COLOR_PRIMARY,
+    marginVertical: vars.GAP_TEXT,
+  },
   textSeparator: {
     fontFamily: 'Rubik-Medium',
     fontWeight: '500',
@@ -48,14 +62,14 @@ export default StyleSheet.create({
     alignSelf: 'center',
     marginVertical: vars.GAP_TEXT,
     fontSize: 12,
-    color: vars.COLOR_TEXT_ERROR,
+    color: vars.COLOR_ERROR,
   },
   textErrorInput: {
     fontFamily: 'Rubik-Regular',
     alignSelf: 'flex-end',
     marginTop: vars.GAP_TEXT,
     fontSize: 12,
-    color: vars.COLOR_TEXT_ERROR,
+    color: vars.COLOR_ERROR,
   },
   inputField: {
     marginVertical: vars.GAP_INPUT,
@@ -69,6 +83,7 @@ export default StyleSheet.create({
     marginBottom: 4,
   },
   inputPrimary: {
+    textAlignVertical: 'center',
     height: vars.HEIGHT_INPUT,
     fontSize: 15,
     paddingHorizontal: vars.PADDING_INPUT,
@@ -77,6 +92,9 @@ export default StyleSheet.create({
     borderWidth: 1,
     borderColor: vars.COLOR_INPUT_BORDER,
     fontFamily: 'Rubik-Regular',
+  },
+  inputError: {
+    borderColor: vars.COLOR_ERROR,
   },
   //   footerViewStyle: {
   //     paddingLeft: 28,

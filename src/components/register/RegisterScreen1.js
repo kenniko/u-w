@@ -120,7 +120,7 @@ class RegisterScreen1 extends React.Component {
 
   render() {
     const {handleSubmit} = this.props;
-    const {goBack} = this.props.navigation;
+    const {navigate} = this.props.navigation;
 
     return (
       <ScrollView
@@ -142,8 +142,11 @@ class RegisterScreen1 extends React.Component {
               <TextInput
                 label="Password"
                 placeholder="Enter 8 characters or more"
-                style={s.inputPrimary}
                 placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
+                style={[
+                  s.inputPrimary,
+                  this.state.errorPass ? s.inputError : '',
+                ]}
                 value={this.state.password}
                 autoCorrect={false}
                 underlineColorAndroid="transparent"
@@ -165,7 +168,11 @@ class RegisterScreen1 extends React.Component {
               <TextInput
                 label="Confirm Password"
                 placeholder="Confirm Password"
-                style={s.inputPrimary}
+                placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
+                style={[
+                  s.inputPrimary,
+                  this.state.errorConfPass ? s.inputError : '',
+                ]}
                 value={this.state.confirm_password}
                 autoCorrect={false}
                 underlineColorAndroid="transparent"
@@ -187,7 +194,8 @@ class RegisterScreen1 extends React.Component {
               <TextInput
                 label="Name"
                 placeholder="Name"
-                style={s.inputPrimary}
+                placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
+                style={[s.inputPrimary]}
                 value={this.state.name}
                 autoCorrect={false}
                 underlineColorAndroid="transparent"
@@ -201,7 +209,11 @@ class RegisterScreen1 extends React.Component {
               <TextInput
                 label="Email"
                 placeholder="Email"
-                style={s.inputPrimary}
+                placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
+                style={[
+                  s.inputPrimary,
+                  this.state.errorEmail ? s.inputError : '',
+                ]}
                 value={this.state.email}
                 autoCorrect={false}
                 textContentType={'emailAddress'}
@@ -222,7 +234,11 @@ class RegisterScreen1 extends React.Component {
               <TextInput
                 label="Telegram ID"
                 placeholder="Telegram ID"
-                style={s.inputPrimary}
+                placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
+                style={[
+                  s.inputPrimary,
+                  this.state.errorPass ? s.inputError : '',
+                ]}
                 value={this.state.telegram_id}
                 autoCorrect={false}
                 underlineColorAndroid="transparent"
@@ -237,9 +253,16 @@ class RegisterScreen1 extends React.Component {
               onPress={handleSubmit(this._onButtonPress)}
               disabled={this.state.isLoading}
             />
-            <View>
-              <Text>Already have an account?</Text>
-              <Text>Import Wallet</Text>
+            <View
+              style={{
+                marginTop: 6,
+                flexDirection: 'row',
+                justifyContent: 'center',
+              }}>
+              <Text style={s.textHelp}>Already have an account? </Text>
+              <Text style={s.textLink} onPress={() => navigate('import')}>
+                Import Wallet
+              </Text>
             </View>
           </KeyboardAvoidingView>
         </View>
