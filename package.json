@@ -73,7 +73,6 @@
     }
   },
   "dependencies": {
-    "@material-ui/core": "^4.8.0",
     "@react-native-community/async-storage": "^1.7.0",
     "@react-navigation/core": "^3.5.1",
     "@react-navigation/web": "^1.0.0-alpha.9",
@@ -85,7 +84,6 @@
     "events": "^1.1.1",
     "is-electron": "^2.2.0",
     "modal-enhanced-react-native-web": "^0.2.0",
-    "native-base": "^2.13.8",
     "react": "16.9.0",
     "react-art": "^16.9.0",
     "react-dom": "^16.9.0",
@@ -113,6 +111,7 @@
     "@babel/runtime": "^7.7.6",
     "@react-native-community/eslint-config": "^0.0.5",
     "babel-jest": "^24.9.0",
+    "babel-plugin-react-native-web": "^0.12.0-rc.1",
     "concurrently": "^5.0.1",
     "cross-env": "^6.0.3",
     "electron": "^6.1.6",
@@ -124,12 +123,13 @@
     "react-app-rewired": "^2.1.4",
     "react-scripts": "^3.3.0",
     "react-test-renderer": "16.9.0",
+    "url-loader": "^3.0.0",
     "wait-on": "^3.3.0"
   },
   "scripts": {
     "web": "EXTEND_ESLINT=true react-app-rewired start",
     "web-build": "EXTEND_ESLINT=true react-app-rewired build",
-    "desktop": "concurrently \"BROWSER=none yarn web\" \"wait-on http://localhost:3000 && electron .\"",
+    "desktop": "concurrently \"BROWSER=none yarn web\" \"wait-on http://localhost:8181 && electron .\"",
     "desktop-build": "concurrently \"rm -rf build && yarn web-build\" \"wait-on build/index.html && npx electron-builder -mwl --publish never\"",
     "desktop-build-m": "concurrently \"rm -rf build && yarn web-build\" \"wait-on build/index.html && npx electron-builder -m --publish never\"",
     "desktop-build-w": "concurrently \"rm -rf build && yarn web-build\" \"wait-on build/index.html && npx electron-builder -w --publish never\"",
