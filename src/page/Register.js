@@ -9,11 +9,6 @@ import RegisterScreen2 from '../components/register/RegisterScreen2';
 import {randomSeed, address} from '@waves/ts-lib-crypto';
 
 class Register extends Component {
-  static navigationOptions = {
-    headershown: false,
-    headerMode: 'none',
-  };
-
   constructor(props) {
     super(props);
     this.state = {

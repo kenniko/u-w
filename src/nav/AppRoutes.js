@@ -8,14 +8,14 @@ import Import from '../page/Import';
 const AppRoutes = {
   launch: Launch,
   register: Register,
-  login: {
-    screen: Login,
-    headerMode: 'none',
-    navigationOptions: {
-      headerMode: 'none',
-      headershown: false,
-    },
-  },
+  login: Login,
+  //   screen: Login,
+  //   headerMode: 'none',
+  //   navigationOptions: {
+  //     headerMode: 'none',
+  //     headershown: false,
+  //   },
+  // },
   home: Home,
   welcome: Welcome,
   import: Import,

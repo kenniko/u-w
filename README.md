@@ -29,7 +29,7 @@ Run `yarn desktop` to preview on desktop
 
 ### Android
 
-Run `yarn android` to preview on android
+Run `yarn android` to preview on Android
 
 ### iOS
 
@@ -37,6 +37,11 @@ _Make sure you run this script before run on iOS_ `cd ios && pod install`
 
 Run `yarn ios` to preview on iOS
 
+## Link Assets
+
+1. Add new assets path to `react-native.config.js` on the root folder
+2. Run `yarn assets` to link new assets (e.g. custom font family)
+2. Run `yarn`
 
 ## Hot Code Push
 
@@ -107,18 +112,23 @@ Coming soon
 - Run `yarn` to install dependencies
 
 - Run `yarn web` to preview on web
-- Run `yarn web-build` to build web version
+- Run `yarn web:build` to build web version
 
 - Run `yarn desktop` to preview on desktop
-- Run `yarn desktop-build` to build desktop app for all platform (Mac, Windows & Linux) ***this script only support on Mac**
-- Run `yarn desktop-build-m` to build desktop app for Mac only ***this script only support on Mac**
-- Run `yarn desktop-build-w` to build desktop app for Windows only
-- Run `yarn desktop-build-l` to build desktop app for Linux only
+- Run `yarn desktop:build` to build desktop app for all platform (Mac, Windows & Linux) ***this script only support on Mac**
+- Run `yarn desktop:build:m` to build desktop app for Mac only ***this script only support on Mac**
+- Run `yarn desktop:build:w` to build desktop app for Windows only
+- Run `yarn desktop:build:l` to build desktop app for Linux only
 
-- Run `yarn desktop-deploy` to publish release to GitHub for all platform (Mac, Windows & Linux) ***this script only support on Mac**
-- Run `yarn desktop-deploy-m` to publish release to GitHub for Mac only ***this script only support on Mac**
-- Run `yarn desktop-deploy-w` to publish release to GitHub for Windows only
-- Run `yarn desktop-deploy-l` to publish release to GitHub for Linux only
+- Run `yarn desktop:deploy` to publish release to GitHub for all platform (Mac, Windows & Linux) ***this script only support on Mac**
+- Run `yarn desktop:deploy:m` to publish release to GitHub for Mac only ***this script only support on Mac**
+- Run `yarn desktop:deploy:w` to publish release to GitHub for Windows only
+- Run `yarn desktop:deploy:l` to publish release to GitHub for Linux only
 
-- Run `yarn android` to preview on android
+- Run `yarn make-cert-w` create self signed cert for Windows only
+
+- Run `yarn android` to preview on Android
 - Run `yarn ios` to preview on iOS
+
+- Run `yarn assets` link new assets to Android and iOS
+- Run `yarn clear` clear all cache and reinstall node_modules

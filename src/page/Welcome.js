@@ -1,17 +1,15 @@
 import React, {Component} from 'react';
-import {View, Text, TextInput, Image, Button} from 'react-native';
+import {View, Text, ScrollView} from 'react-native';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as ReduxActions from '../actions';
 import {Spinner} from '../components/Spinner';
+import s from '../assets/styles/Styles';
+import ButtonPrimary from '../components/ButtonPrimary';
+import ButtonSecondary from '../components/ButtonSecondary';
 import {NavigationActions, StackActions} from 'react-navigation';
 
 class Welcome extends Component {
-  static navigationOptions = {
-    headershown: false,
-    headerMode: 'none',
-  };
-
   constructor(props) {
     super(props);
     this.state = {
@@ -48,37 +46,40 @@ class Welcome extends Component {
     const {navigate} = this.props.navigation;
 
     return (
-      <View style={styles.containerStyle}>
-        <Spinner visible={this.state.isLoading} />
-        <View style={styles.logoViewStyle}>
-          <Text style={styles.logoTextTitle}>Welcome to Unity Wallet</Text>
-          <Text style={styles.logoTextSubTitle}>React Native</Text>
-        </View>
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        contentContainerStyle={{flexGrow: 1}}>
+        <View style={[s.container, s.conCenter]}>
+          <Spinner visible={this.state.isLoading} />
+          <Text style={s.textTitle}>Welcome to Unity Wallet</Text>
+          <Text style={[s.textBody, {marginBottom: 60}]}>
+            If you've already created an account before you can import it below
+            or create a new wallet in a few seconds for free. Please remember to
+            save your Backup Seed Phrase for backup and never share with anyone
+            as that would provide them access to your money.
+          </Text>
 
-        <View style={styles.buttonStyle}>
-          <Button
+          <ButtonPrimary
             title="Create New Wallet"
             onPress={() => navigate('register')}
             disabled={this.state.isLoading}
           />
-        </View>
 
-        <Text style={styles.orTextStyle}>OR</Text>
+          <Text style={s.textSeparator}>or</Text>
 
-        <View style={styles.buttonStyle}>
-          <Button
+          <ButtonSecondary
             title="Import Wallet"
             onPress={() => navigate('import')}
             disabled={this.state.isLoading}
           />
-        </View>
 
-        <Text style={styles.errorTextStyle}>{this.props.error}</Text>
+          <Text style={s.textError}>{this.props.error}</Text>
 
-        <View style={[styles.footerViewStyle]}>
-          <Text style={styles.footerTextStyle}>Unity Wallet v1.0.0</Text>
+          {/* <View style={[styles.footerViewStyle]}>
+            <Text style={styles.footerTextStyle}>Unity Wallet v1.0.0</Text>
+          </View> */}
         </View>
-      </View>
+      </ScrollView>
     );
   }
 }
@@ -86,7 +87,7 @@ class Welcome extends Component {
 // The function takes data from the app current state,
 // and insert/links it into the props of our component.
 // This function makes Redux know that this component needs to be passed a piece of the state
-function mapStateToProps(state, props) {
+function mapStateToProps(state) {
   return {
     error: state.loginReducer.error,
     listWallet: state.loginReducer.listWallet,
@@ -105,66 +106,3 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps,
 )(Welcome);
-
-const styles = {
-  containerStyle: {
-    backgroundColor: '#fff',
-    flex: 1,
-  },
-  logoViewStyle: {
-    marginTop: 35,
-    marginBottom: 5,
-    alignItems: 'center',
-  },
-  logoTextTitle: {
-    color: '#7d62d9',
-    fontSize: 30,
-    fontWeight: '600',
-  },
-  logoTextSubTitle: {
-    color: '#7d62d9',
-    fontSize: 13,
-    fontWeight: '500',
-  },
-  inputViewStyle: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 5,
-    paddingLeft: 8,
-    paddingRight: 8,
-    marginLeft: 28,
-    marginRight: 28,
-    marginTop: 8,
-  },
-  inputStyle: {
-    fontSize: 13,
-    backgroundColor: '#fff',
-  },
-  buttonStyle: {
-    paddingLeft: 12,
-    paddingRight: 12,
-    marginTop: 30,
-    marginBottom: 30,
-  },
-  errorTextStyle: {
-    alignSelf: 'center',
-    fontSize: 12,
-    color: '#e03131',
-  },
-  orTextStyle: {
-    alignSelf: 'center',
-    fontSize: 14,
-    color: '#e03131',
-  },
-  footerViewStyle: {
-    paddingLeft: 28,
-    paddingRight: 28,
-    marginTop: 15,
-    flexDirection: 'column',
-  },
-  footerTextStyle: {
-    alignSelf: 'center',
-    fontSize: 12,
-    color: '#8e8e8e',
-  },
-};

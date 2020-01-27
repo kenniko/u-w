@@ -1,8 +1,9 @@
 import React from 'react';
-import {Platform} from 'react-native';
+import {Platform, SafeAreaView, View} from 'react-native';
 import {Provider} from 'react-redux';
 import {createAppContainer} from 'react-navigation';
 import AppStack from './nav/AppStack';
+import AppOptions from './nav/AppOptions';
 import {PersistGate} from 'redux-persist/integration/react';
 import {store, persistor} from './store';
 import isElectron from 'is-electron';
@@ -21,31 +22,32 @@ if (isElectron()) {
   });
 }
 
-const AppNav = createAppContainer(AppStack);
+const AppNav = createAppContainer(AppStack, AppOptions);
 
 //const App: () => React$Node = () => {
 class App extends React.Component {
-  componentDidMount() {
-    codePush.sync({
-      updateDialog: true,
-      installMode: codePush.InstallMode.IMMEDIATE,
-    });
-  }
+  // componentDidMount() {
+  //   codePush.sync({
+  //     updateDialog: true,
+  //     installMode: codePush.InstallMode.IMMEDIATE,
+  //     checkFrequency: codePush.CheckFrequency.ON_APP_START,
+  //     installMode: codePush.InstallMode.IMMEDIATE
+  //   });
+  // }
 
   render() {
     return (
-      <Provider store={store}>
-        <PersistGate loading={null} persistor={persistor}>
-          <AppNav />
-        </PersistGate>
-      </Provider>
+      <SafeAreaView style={{flex: 1, fontFamily: 'San Francisco'}}>
+        <View style={{flex: 1, fontFamily: 'Roboto'}}>
+          <Provider store={store}>
+            <PersistGate loading={null} persistor={persistor}>
+              <AppNav />
+            </PersistGate>
+          </Provider>
+        </View>
+      </SafeAreaView>
     );
   }
 }
 
-let codePushOptions = {
-  checkFrequency: codePush.CheckFrequency.ON_APP_START,
-  installMode: codePush.InstallMode.IMMEDIATE,
-};
-
-export default (App = codePush(codePushOptions)(App));
+export default App;

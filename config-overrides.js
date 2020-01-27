@@ -21,11 +21,9 @@ module.exports = function override(config, env) {
   addModuleToMainRule(config, 'react-native-gesture-handler');
   addModuleToMainRule(config, 'react-native-screens');
   addModuleToMainRule(config, '@react-native-community/async-storage');
-  addModuleToMainRule(config, 'react-native-loading-spinner-overlay');
   addModuleToMainRule(config, 'react-native-vector-icons');
   addModuleToMainRule(config, 'react-native-modal');
   addModuleToMainRule(config, 'react-native-animatable');
-  addModuleToMainRule(config, '@material-ui/core');
 
   for (const plugin of config.plugins) {
     if (plugin.constructor.name === 'DefinePlugin') {
