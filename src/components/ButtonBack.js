@@ -6,7 +6,7 @@ export default class ButtonBack extends React.Component {
   render() {
     return (
       <TouchableOpacity onPress={this.props.onPress} style={styles.buttonBack}>
-        <IconChevronLeft width={50} height={50} fill={'green'} />
+        <IconChevronLeft style={styles.buttonBackIcon} fill={'#2e384d'} />
         <Text style={styles.buttonBackText}>{this.props.title}</Text>
       </TouchableOpacity>
     );
@@ -15,16 +15,22 @@ export default class ButtonBack extends React.Component {
 
 const styles = StyleSheet.create({
   buttonBack: {
-    // backgroundColor: '#3b90f4',
-    // height: 50,
-    // borderRadius: 3,
-    // alignItems: 'center',
-    // justifyContent: 'center',
+    padding: 10,
+    flexDirection: 'row',
+    alignSelf: 'flex-start',
+    // position: 'absolute',
+    // top: 20,
+    // left: 6,
+  },
+  buttonBackIcon: {
+    width: 18,
+    height: 18,
+    marginRight: 6,
   },
   buttonBackText: {
     fontSize: 15,
-    lineHeight: 21,
-    fontFamily: 'Rubik-Medium',
-    // color: 'white',
+    lineHeight: 18,
+    fontFamily: 'Rubik-Regular',
+    color: '#2e384d',
   },
 });

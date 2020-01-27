@@ -1,32 +1,28 @@
 import React from 'react';
 import {name as appName} from './app.json';
-import {AppRegistry, View, SafeAreaView, ScrollView} from 'react-native';
+import {AppRegistry, ScrollView} from 'react-native';
 import {createBrowserApp} from '@react-navigation/web';
 import * as serviceWorker from './serviceWorker';
 import AppStack from './nav/AppStack';
-import AppOptions from './nav/AppOptions';
 import {Provider} from 'react-redux';
 import {PersistGate} from 'redux-persist/integration/react';
 import {store, persistor} from './store';
 
-const AppWeb = createBrowserApp(AppStack, AppOptions);
+const AppWeb = createBrowserApp(AppStack);
 
 class App extends React.Component {
   render() {
     return (
       <ScrollView
         style={{
-          maxWidth: 768,
+          maxWidth: 769,
           minWidth: 1,
           marginHorizontal: 'auto',
           width: '100%',
         }}>
-        <Provider style={{fontFamily: 'sans-serif'}} store={store}>
-          <PersistGate
-            style={{fontFamily: 'San Francisco'}}
-            loading={null}
-            persistor={persistor}>
-            <AppWeb style={{fontFamily: 'Roboto'}} />
+        <Provider store={store}>
+          <PersistGate loading={null} persistor={persistor}>
+            <AppWeb />
           </PersistGate>
         </Provider>
       </ScrollView>

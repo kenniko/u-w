@@ -1,16 +1,21 @@
 import React from 'react';
-import {View, Text, TextInput, ScrollView, Button} from 'react-native';
+import {
+  Platform,
+  View,
+  Text,
+  TextInput,
+  ScrollView,
+  KeyboardAvoidingView,
+} from 'react-native';
 import {Spinner} from '../Spinner';
 import PropTypes from 'prop-types';
 import {Field, reduxForm} from 'redux-form';
 import {encryptPass} from '../../utils/utils';
+import s from '../../assets/styles/Styles';
+import {vars} from '../../assets/styles/Vars';
+import ButtonPrimary from '../../components/ButtonPrimary';
 
 class RegisterScreen1 extends React.Component {
-  static navigationOptions = {
-    headershown: false,
-    headerMode: 'none',
-  };
-
   constructor(props) {
     super(props);
     this.state = {
@@ -118,109 +123,125 @@ class RegisterScreen1 extends React.Component {
     const {goBack} = this.props.navigation;
 
     return (
-      <ScrollView keyboardShouldPersistTaps={'handled'}>
-        <View style={styles.containerStyle}>
-          <Spinner visible={this.state.isLoading} />
-          <View style={styles.logoViewStyle}>
-            <Text style={styles.logoTextTitle}>Create New Wallet</Text>
-          </View>
-
-          <View style={styles.logoViewStyle}>
-            <Text style={styles.logoTextSubTitle}>
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        contentContainerStyle={{flexGrow: 1}}
+        keyboardShouldPersistTaps="handled">
+        <View style={[s.container, s.conCenter]}>
+          <KeyboardAvoidingView
+            behavior="padding"
+            enabled={Platform.OS == 'ios'}>
+            <Spinner visible={this.state.isLoading} />
+            <Text style={s.textTitle}>Create New Wallet</Text>
+            <Text style={[s.textBody, {marginBottom: 30}]}>
               Fill out the details below to create your secure wallet.
             </Text>
-          </View>
 
-          <View style={styles.inputViewStyle}>
-            <TextInput
-              label="Password"
-              placeholder="Password"
-              style={styles.inputStyle}
-              value={this.state.password}
-              autoCorrect={false}
-              underlineColorAndroid="transparent"
-              secureTextEntry={true}
-              textContentType={'password'}
-              onChangeText={this._onPasswordChanged}
-            />
-            <Text style={styles.errorText}>{this.state.errorPass}</Text>
-          </View>
+            <View style={s.inputField}>
+              <Text style={s.inputLabel}>PASSWORD</Text>
+              <TextInput
+                label="Password"
+                placeholder="Enter 8 characters or more"
+                style={s.inputPrimary}
+                placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
+                value={this.state.password}
+                autoCorrect={false}
+                underlineColorAndroid="transparent"
+                secureTextEntry={true}
+                textContentType={'password'}
+                onChangeText={this._onPasswordChanged}
+              />
+              <Text
+                style={[
+                  s.textErrorInput,
+                  this.state.errorPass ? s.isShow : s.isHide,
+                ]}>
+                {this.state.errorPass}
+              </Text>
+            </View>
 
-          <View style={styles.inputViewStyle}>
-            <TextInput
-              label="Confirm Password"
-              placeholder="Confirm Password"
-              style={styles.inputStyle}
-              value={this.state.confirm_password}
-              autoCorrect={false}
-              underlineColorAndroid="transparent"
-              secureTextEntry={true}
-              textContentType={'password'}
-              onChangeText={this._onConfirmPasswordChanged}
-            />
-            <Text style={styles.errorText}>{this.state.errorConfPass}</Text>
-          </View>
+            <View style={s.inputField}>
+              <Text style={s.inputLabel}>CONFIRM PASSWORD</Text>
+              <TextInput
+                label="Confirm Password"
+                placeholder="Confirm Password"
+                style={s.inputPrimary}
+                value={this.state.confirm_password}
+                autoCorrect={false}
+                underlineColorAndroid="transparent"
+                secureTextEntry={true}
+                textContentType={'password'}
+                onChangeText={this._onConfirmPasswordChanged}
+              />
+              <Text
+                style={[
+                  s.textErrorInput,
+                  this.state.errorConfPass ? s.isShow : s.isHide,
+                ]}>
+                {this.state.errorConfPass}
+              </Text>
+            </View>
 
-          <View style={styles.inputViewStyle}>
-            <TextInput
-              label="Name"
-              placeholder="Name"
-              style={styles.inputStyle}
-              value={this.state.name}
-              autoCorrect={false}
-              underlineColorAndroid="transparent"
-              textContentType={'name'}
-              onChangeText={this._onNameChanged}
-            />
-          </View>
+            <View style={[s.inputField, {marginTop: 40}]}>
+              <Text style={s.inputLabel}>FULL NAME (Optional)</Text>
+              <TextInput
+                label="Name"
+                placeholder="Name"
+                style={s.inputPrimary}
+                value={this.state.name}
+                autoCorrect={false}
+                underlineColorAndroid="transparent"
+                textContentType={'name'}
+                onChangeText={this._onNameChanged}
+              />
+            </View>
 
-          <View style={styles.inputViewStyle}>
-            <TextInput
-              label="Email"
-              placeholder="Email"
-              style={styles.inputStyle}
-              value={this.state.email}
-              autoCorrect={false}
-              textContentType={'emailAddress'}
-              underlineColorAndroid="transparent"
-              onChangeText={this._onEmailChanged}
-            />
-            <Text style={styles.errorText}>{this.state.errorEmail}</Text>
-          </View>
+            <View style={s.inputField}>
+              <Text style={s.inputLabel}>EMAIL ADDRESS (Optional)</Text>
+              <TextInput
+                label="Email"
+                placeholder="Email"
+                style={s.inputPrimary}
+                value={this.state.email}
+                autoCorrect={false}
+                textContentType={'emailAddress'}
+                underlineColorAndroid="transparent"
+                onChangeText={this._onEmailChanged}
+              />
+              <Text
+                style={[
+                  s.textErrorInput,
+                  this.state.errorEmail ? s.isShow : s.isHide,
+                ]}>
+                {this.state.errorEmail}
+              </Text>
+            </View>
 
-          <View style={styles.inputViewStyle}>
-            <TextInput
-              label="Telegram ID"
-              placeholder="Telegram ID"
-              style={styles.inputStyle}
-              value={this.state.telegram_id}
-              autoCorrect={false}
-              underlineColorAndroid="transparent"
-              onChangeText={this._onTelegramIDChanged}
-            />
-          </View>
+            <View style={s.inputField}>
+              <Text style={s.inputLabel}>TELEGRAM ID (Optional)</Text>
+              <TextInput
+                label="Telegram ID"
+                placeholder="Telegram ID"
+                style={s.inputPrimary}
+                value={this.state.telegram_id}
+                autoCorrect={false}
+                underlineColorAndroid="transparent"
+                onChangeText={this._onTelegramIDChanged}
+              />
+            </View>
 
-          <Text style={styles.errorTextStyle}>{this.props.error}</Text>
+            <Text style={s.textError}>{this.props.error}</Text>
 
-          <View style={styles.buttonStyle}>
-            <Button
-              title="Continue"
+            <ButtonPrimary
+              title="Create My Wallet"
               onPress={handleSubmit(this._onButtonPress)}
               disabled={this.state.isLoading}
             />
-          </View>
-
-          <View style={styles.buttonStyle}>
-            <Button
-              title="Back"
-              onPress={() => goBack(null)}
-              disabled={this.state.isLoading}
-            />
-          </View>
-
-          <View style={[styles.footerViewStyle]}>
-            <Text style={styles.footerTextStyle}>Unity Wallet v1.0.0</Text>
-          </View>
+            <View>
+              <Text>Already have an account?</Text>
+              <Text>Import Wallet</Text>
+            </View>
+          </KeyboardAvoidingView>
         </View>
       </ScrollView>
     );
@@ -237,79 +258,3 @@ export default reduxForm({
   form: 'register',
   destroyOnUnmount: true,
 })(RegisterScreen1);
-
-const styles = {
-  containerStyle: {
-    backgroundColor: '#fff',
-    flex: 1,
-  },
-  logoViewStyle: {
-    marginTop: 35,
-    marginBottom: 5,
-    alignItems: 'center',
-  },
-  logoTextTitle: {
-    color: '#7d62d9',
-    fontSize: 30,
-    fontWeight: '600',
-  },
-  logoTextSubTitle: {
-    color: '#8e8e8e',
-    fontSize: 13,
-    fontWeight: '500',
-  },
-  linkTextSubTitle: {
-    color: '#7d62d9',
-    fontSize: 13,
-    fontWeight: '500',
-    textAlign: 'center',
-  },
-  errorText: {
-    color: '#a94442',
-    fontSize: 13,
-    fontWeight: '500',
-    textAlign: 'right',
-  },
-  inputViewStyle: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 5,
-    paddingLeft: 8,
-    paddingRight: 8,
-    marginLeft: 28,
-    marginRight: 28,
-    marginTop: 8,
-  },
-  inputStyle: {
-    alignItems: 'center',
-    fontSize: 13,
-    backgroundColor: '#fff',
-  },
-  buttonStyle: {
-    paddingLeft: 12,
-    paddingRight: 12,
-    marginTop: 30,
-  },
-  linkStyle: {
-    alignItems: 'center',
-    paddingLeft: 12,
-    paddingRight: 12,
-    marginTop: 30,
-  },
-  errorTextStyle: {
-    alignSelf: 'center',
-    fontSize: 12,
-    color: '#e03131',
-  },
-  footerViewStyle: {
-    paddingLeft: 28,
-    paddingRight: 28,
-    marginTop: 45,
-    flexDirection: 'column',
-  },
-  footerTextStyle: {
-    alignSelf: 'center',
-    fontSize: 12,
-    color: '#8e8e8e',
-  },
-};

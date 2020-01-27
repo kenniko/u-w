@@ -1,8 +1,9 @@
 import React from 'react';
-import {Platform} from 'react-native';
+import {Platform, SafeAreaView, View} from 'react-native';
 import {Provider} from 'react-redux';
 import {createAppContainer} from 'react-navigation';
 import AppStack from './nav/AppStack';
+import AppOptions from './nav/AppOptions';
 import {PersistGate} from 'redux-persist/integration/react';
 import {store, persistor} from './store';
 import isElectron from 'is-electron';
@@ -21,7 +22,7 @@ if (isElectron()) {
   });
 }
 
-const AppNav = createAppContainer(AppStack);
+const AppNav = createAppContainer(AppStack, AppOptions);
 
 //const App: () => React$Node = () => {
 class App extends React.Component {
@@ -36,14 +37,16 @@ class App extends React.Component {
 
   render() {
     return (
-      <Provider style={{fontFamily: 'sans-serif'}} store={store}>
-        <PersistGate
-          style={{fontFamily: 'San Francisco'}}
-          loading={null}
-          persistor={persistor}>
-          <AppNav style={{fontFamily: 'Roboto'}} />
-        </PersistGate>
-      </Provider>
+      <SafeAreaView
+        style={{flex: 1, fontFamily: 'San Francisco'}}>
+        <View style={{flex: 1, fontFamily: 'Roboto'}}>
+          <Provider store={store}>
+            <PersistGate loading={null} persistor={persistor}>
+              <AppNav />
+            </PersistGate>
+          </Provider>
+        </View>
+      </SafeAreaView>
     );
   }
 }

@@ -14,11 +14,6 @@ import {Spinner} from '../Spinner';
 import {NavigationActions, StackActions} from 'react-navigation';
 
 class RegisterScreen2 extends Component {
-  static navigationOptions = {
-    headershown: false,
-    headerMode: 'none',
-  };
-
   constructor(props) {
     super(props);
     this.state = {
