@@ -187,7 +187,7 @@ class ImportScreen1 extends React.Component {
             <Text
               style={styles.linkTextSubTitle}
               disabled={this.state.isLoading}
-              onPress={() => navigate('register')}>
+              onPress={() => navigate('create')}>
               Create new wallet
             </Text>
           </View>
