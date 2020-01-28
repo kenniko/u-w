@@ -43,11 +43,19 @@ class RegisterScreen1 extends React.Component {
   }
 
   gotoNext = () => {
-    if (this.state.errorPIN !== '' || this.state.errorConfPIN !== '') {
+    if (
+      this.state.pin === '' ||
+      this.state.errorPIN !== '' ||
+      this.state.errorConfPIN !== ''
+    ) {
       return false;
     }
     if (this.state.use_password) {
-      if (this.state.errorPass !== '' || this.state.errorConfPass !== '') {
+      if (
+        this.state.password === '' ||
+        this.state.errorPass !== '' ||
+        this.state.errorConfPass !== ''
+      ) {
         return false;
       }
     }
