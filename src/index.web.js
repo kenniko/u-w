@@ -1,7 +1,36 @@
+import React from 'react';
 import {name as appName} from './app.json';
-import {AppRegistry} from 'react-native';
+import {AppRegistry, ScrollView} from 'react-native';
+import {createBrowserApp} from '@react-navigation/web';
 import * as serviceWorker from './serviceWorker';
-import App from './App';
+import AppStack from './nav/AppStack';
+import {Provider} from 'react-redux';
+import {PersistGate} from 'redux-persist/integration/react';
+import {store, persistor} from './store';
+
+const AppWeb = createBrowserApp(AppStack);
+
+class App extends React.Component {
+  render() {
+    return (
+      <ScrollView
+        style={
+          {
+            // maxWidth: 769,
+            // minWidth: 1,
+            // marginHorizontal: 'auto',
+            // width: '100%',
+          }
+        }>
+        <Provider store={store}>
+          <PersistGate loading={null} persistor={persistor}>
+            <AppWeb />
+          </PersistGate>
+        </Provider>
+      </ScrollView>
+    );
+  }
+}
 
 AppRegistry.registerComponent(appName, () => App);
 AppRegistry.runApplication(appName, {

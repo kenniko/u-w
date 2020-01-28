@@ -123,7 +123,7 @@ class RegisterScreen1 extends React.Component {
               <Text style={s.inputLabel}>FULL NAME (Optional)</Text>
               <TextInput
                 label="Name"
-                placeholder="Name"
+                placeholder="What's your full name?"
                 placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
                 style={[s.inputPrimary]}
                 value={this.state.name}
@@ -138,7 +138,7 @@ class RegisterScreen1 extends React.Component {
               <Text style={s.inputLabel}>EMAIL ADDRESS (Optional)</Text>
               <TextInput
                 label="Email"
-                placeholder="Email"
+                placeholder="you@example.com"
                 placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
                 style={[
                   s.inputPrimary,
@@ -151,10 +151,7 @@ class RegisterScreen1 extends React.Component {
                 onChangeText={this._onEmailChanged}
               />
               <Text
-                style={[
-                  s.textErrorInput,
-                  this.state.errorEmail ? s.isShow : s.isHide,
-                ]}>
+                style={[s.textErrorInput, !this.state.errorEmail && s.isHide]}>
                 {this.state.errorEmail}
               </Text>
             </View>
@@ -163,7 +160,7 @@ class RegisterScreen1 extends React.Component {
               <Text style={s.inputLabel}>TELEGRAM ID (Optional)</Text>
               <TextInput
                 label="Telegram ID"
-                placeholder="Telegram ID"
+                placeholder="youtelegramid"
                 placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
                 style={[
                   s.inputPrimary,
@@ -174,6 +171,9 @@ class RegisterScreen1 extends React.Component {
                 underlineColorAndroid="transparent"
                 onChangeText={this._onTelegramIDChanged}
               />
+              <Text style={s.textHelp}>
+                This will allow automatic VIP membership for token holders
+              </Text>
             </View>
 
             <Text style={s.textError}>{this.props.error}</Text>

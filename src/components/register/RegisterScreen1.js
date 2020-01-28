@@ -165,8 +165,8 @@ class RegisterScreen1 extends React.Component {
                 }
                 placeholder={
                   Platform.OS === 'ios' || Platform.OS === 'android'
-                    ? 'Confirm PIN'
-                    : 'Confirm Password'
+                    ? 'Re-enter your PIN'
+                    : 'Re-enter your password'
                 }
                 placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
                 style={[
@@ -198,7 +198,7 @@ class RegisterScreen1 extends React.Component {
                 flexDirection: 'row',
                 justifyContent: 'center',
               }}>
-              <Text style={s.textHelp}>Already have an account? </Text>
+              <Text style={s.textDefault}>Already have an account? </Text>
               <Text style={s.textLink} onPress={() => navigate('import')}>
                 Import Wallet
               </Text>
