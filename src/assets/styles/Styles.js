@@ -13,7 +13,7 @@ export default StyleSheet.create({
   },
   container: {
     flex: 1,
-    paddingVertical: 50,
+    paddingVertical: vars.PADDING_CONTAINER,
     paddingHorizontal: vars.GAP_H_CONTAINER,
   },
   conCenter: {
@@ -35,6 +35,13 @@ export default StyleSheet.create({
     marginVertical: vars.GAP_TEXT,
   },
   textHelp: {
+    fontFamily: 'Rubik-Regular',
+    fontSize: 13,
+    lineHeight: 15,
+    color: vars.COLOR_TEXT_LABEL,
+    marginVertical: vars.GAP_TEXT,
+  },
+  textDefault: {
     fontFamily: 'Rubik-Regular',
     fontSize: 15,
     lineHeight: 22,
@@ -92,6 +99,7 @@ export default StyleSheet.create({
     borderWidth: 1,
     borderColor: vars.COLOR_INPUT_BORDER,
     fontFamily: 'Rubik-Regular',
+    borderRadius: 3,
   },
   inputError: {
     borderColor: vars.COLOR_ERROR,

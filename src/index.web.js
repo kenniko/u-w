@@ -14,12 +14,14 @@ class App extends React.Component {
   render() {
     return (
       <ScrollView
-        style={{
-          maxWidth: 769,
-          minWidth: 1,
-          marginHorizontal: 'auto',
-          width: '100%',
-        }}>
+        style={
+          {
+            // maxWidth: 769,
+            // minWidth: 1,
+            // marginHorizontal: 'auto',
+            // width: '100%',
+          }
+        }>
         <Provider store={store}>
           <PersistGate loading={null} persistor={persistor}>
             <AppWeb />

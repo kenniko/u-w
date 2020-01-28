@@ -1,20 +1,54 @@
 import React, {Component} from 'react';
-import {View, Text, ScrollView} from 'react-native';
+import {
+  Platform,
+  Dimensions,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+  Linking,
+  TouchableOpacity,
+} from 'react-native';
+import {NavigationActions, StackActions} from 'react-navigation';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as ReduxActions from '../actions';
-import {Spinner} from '../components/Spinner';
 import s from '../assets/styles/Styles';
+import {vars} from '../assets/styles/Vars';
 import ButtonPrimary from '../components/ButtonPrimary';
 import ButtonSecondary from '../components/ButtonSecondary';
-import {NavigationActions, StackActions} from 'react-navigation';
+import ButtonBack from '../components/ButtonBack';
+import HeroDesktop from '../components/HeroDesktop';
+import {Spinner} from '../components/Spinner';
+import {
+  isWeb,
+  isLandscape,
+  isPortrait,
+  isWidthMin,
+  isHeightMin,
+} from '../actions/mediaQuery';
 
 class Welcome extends Component {
   constructor(props) {
     super(props);
+
     this.state = {
       isLoading: false,
+      isWeb: isWeb(),
+      isLandscape: isLandscape(),
+      isPortrait: isPortrait(),
+      isDesktopScreen: isWidthMin(1199) && isHeightMin(699),
     };
+
+    // Event Listener for isDesktopScreen changes
+    Dimensions.addEventListener('change', () => {
+      this.setState({
+        isLandscape: isLandscape(),
+        isPortrait: isPortrait(),
+        isDesktopScreen: isWidthMin(1199) && isHeightMin(699),
+      });
+    });
   }
 
   componentDidMount() {
@@ -45,41 +79,94 @@ class Welcome extends Component {
   render() {
     const {navigate} = this.props.navigation;
 
-    return (
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={{flexGrow: 1}}>
-        <View style={[s.container, s.conCenter]}>
-          <Spinner visible={this.state.isLoading} />
-          <Text style={s.textTitle}>Welcome to Unity Wallet</Text>
-          <Text style={[s.textBody, {marginBottom: 60}]}>
-            If you've already created an account before you can import it below
-            or create a new wallet in a few seconds for free. Please remember to
-            save your Backup Seed Phrase for backup and never share with anyone
-            as that would provide them access to your money.
-          </Text>
-
-          <ButtonPrimary
-            title="Create New Wallet"
-            onPress={() => navigate('register')}
-            disabled={this.state.isLoading}
+    const logoUnity = this.state.isWeb &&
+      this.state.isDesktopScreen &&
+      this.state.isLandscape && (
+        <TouchableOpacity
+          style={styles.brandLogo}
+          activeOpacity={vars.OPACITY_TOUCH}
+          onPress={() => Linking.openURL('https://www.unity.sg/')}>
+          <Image
+            style={{width: 221, height: 64}}
+            source={require('../assets/img/unity-logo-title.png')}
           />
-
-          <Text style={s.textSeparator}>or</Text>
-
-          <ButtonSecondary
-            title="Import Wallet"
-            onPress={() => navigate('import')}
-            disabled={this.state.isLoading}
+        </TouchableOpacity>
+      );
+    const buttonBack = this.state.isWeb &&
+      (!this.state.isDesktopScreen || this.state.isPortrait) && (
+        <View style={styles.buttonBack}>
+          <ButtonBack
+            title="Back to Home"
+            color="#2e384d"
+            onPress={() => Linking.openURL('https://www.unity.sg/')}
           />
-
-          <Text style={s.textError}>{this.props.error}</Text>
-
-          {/* <View style={[styles.footerViewStyle]}>
-            <Text style={styles.footerTextStyle}>Unity Wallet v1.0.0</Text>
-          </View> */}
         </View>
-      </ScrollView>
+      );
+    const heroDesktop = this.state.isDesktopScreen &&
+      this.state.isLandscape &&
+      this.state.isWeb && <HeroDesktop />;
+
+    return (
+      <View>
+        {buttonBack}
+        <ScrollView
+          contentInsetAdjustmentBehavior="automatic"
+          contentContainerStyle={{flexGrow: 1}}>
+          <Spinner visible={this.state.isLoading} />
+          {logoUnity}
+          <View
+            style={[
+              s.container,
+              s.conCenter,
+              this.state.isWeb &&
+                this.state.isDesktopScreen &&
+                this.state.isLandscape &&
+                styles.desktopSidebar,
+              {
+                marginTop: this.state.isDesktopScreen ? 100 : 50,
+                paddingBottom: this.state.isDesktopScreen ? 100 : 10,
+              },
+            ]}>
+            <View style={styles.wrpContent}>
+              <Text style={s.textTitle}>Welcome to Unity Wallet</Text>
+              <Text
+                style={[
+                  s.textBody,
+                  {marginBottom: this.state.isDesktopScreen ? 80 : 40},
+                ]}>
+                If you've already created an account before you can import it
+                below or create a new wallet in a few seconds for free. Please
+                remember to save your Backup Seed Phrase for backup and never
+                share with anyone as that would provide them access to your
+                money.
+              </Text>
+
+              <View style={styles.wrpAction}>
+                <ButtonPrimary
+                  title="Create New Wallet"
+                  onPress={() => navigate('register')}
+                  disabled={this.state.isLoading}
+                />
+
+                <Text style={s.textSeparator}>or</Text>
+
+                <ButtonSecondary
+                  title="Import Wallet"
+                  onPress={() => navigate('import')}
+                  disabled={this.state.isLoading}
+                />
+              </View>
+
+              <Text style={s.textError}>{this.props.error}</Text>
+            </View>
+
+            {/* <View style={[styles.footerViewStyle]}>
+              <Text style={styles.footerTextStyle}>Unity Wallet v1.0.0</Text>
+            </View> */}
+          </View>
+          {heroDesktop}
+        </ScrollView>
+      </View>
     );
   }
 }
@@ -101,6 +188,39 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(ReduxActions, dispatch);
 }
+
+const styles = StyleSheet.create({
+  wrpContent: {
+    width: '100%',
+    maxWidth: 435,
+    alignSelf: 'center',
+  },
+  wrpAction: {
+    width: '100%',
+    maxWidth: 350,
+    // alignSelf: 'center',
+  },
+  buttonBack: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    paddingTop: 30,
+    paddingLeft: vars.GAP_H_CONTAINER,
+    zIndex: 9,
+    backgroundColor: 'rgba(255,255,255,0.8)',
+  },
+  desktopSidebar: {
+    width: 545,
+    overflowY: 'hidden',
+  },
+  brandLogo: {
+    position: 'absolute',
+    zIndex: 9,
+    top: 30,
+    left: '5%',
+  },
+});
 
 export default connect(
   mapStateToProps,
