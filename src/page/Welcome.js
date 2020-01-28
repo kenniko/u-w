@@ -38,7 +38,7 @@ class Welcome extends Component {
       isWeb: isWeb(),
       isLandscape: isLandscape(),
       isPortrait: isPortrait(),
-      isDesktopScreen: isWidthMin(1199) && isHeightMin(699),
+      isDesktopScreen: isWidthMin(899) && isHeightMin(449),
     };
 
     // Event Listener for isDesktopScreen changes
@@ -46,7 +46,7 @@ class Welcome extends Component {
       this.setState({
         isLandscape: isLandscape(),
         isPortrait: isPortrait(),
-        isDesktopScreen: isWidthMin(1199) && isHeightMin(699),
+        isDesktopScreen: isWidthMin(899) && isHeightMin(449),
       });
     });
   }
@@ -120,8 +120,10 @@ class Welcome extends Component {
               s.conCenter,
               this.state.isWeb &&
                 this.state.isDesktopScreen &&
-                this.state.isLandscape &&
-                styles.desktopSidebar,
+                this.state.isLandscape && {
+                  width: vars.WIDTH_HOME_SIDEBAR,
+                  overflowY: 'hidden',
+                },
               {
                 marginTop: this.state.isDesktopScreen ? 100 : 50,
                 paddingBottom: this.state.isDesktopScreen ? 100 : 10,
@@ -209,10 +211,6 @@ const styles = StyleSheet.create({
     paddingLeft: vars.GAP_H_CONTAINER,
     zIndex: 9,
     backgroundColor: 'rgba(255,255,255,0.8)',
-  },
-  desktopSidebar: {
-    width: 545,
-    overflowY: 'hidden',
   },
   brandLogo: {
     position: 'absolute',
