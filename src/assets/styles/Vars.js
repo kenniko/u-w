@@ -11,6 +11,6 @@ export const vars = {
   COLOR_TEXT_BODY: '#8798ad',
   COLOR_TEXT_LABEL: '#b0bac9',
   COLOR_TEXT_PLACEHOLDER: '#b0bac9',
-  COLOR_TEXT_ERROR: '#e03131',
+  COLOR_ERROR: '#e03131',
   COLOR_INPUT_BORDER: '#e0e7ff',
 };

@@ -24,9 +24,10 @@ class Login extends Component {
       errorPass: '',
       errorAddress: '',
     };
+    this.checkWallets = this.checkWallets.bind(this);
   }
 
-  componentDidMount() {
+  checkWallets() {
     if (this.props.loginData != null) {
       this.redirectTo('home');
     } else if (this.props.listWallet == null) {
@@ -36,6 +37,10 @@ class Login extends Component {
     } else {
       this.props.initLogin();
     }
+  }
+
+  componentDidMount() {
+    this.checkWallets();
   }
 
   redirectTo(page, params) {
@@ -52,12 +57,17 @@ class Login extends Component {
     );
   }
 
+  setTimer() {
+    this.timer = setTimeout(this.checkWallets, 1000);
+  }
+
   _onDeleteAccount = () => {
     if (this.state.address !== '') {
       this.props.deleteWalletByAddress(
         this.props.listWallet,
         this.state.address,
       );
+      this.setTimer();
     }
   };
 
@@ -96,17 +106,36 @@ class Login extends Component {
   };
 
   _isPasswordAllowed(data, password, callback) {
-    data.password = encryptPass(password);
     data.is_phrase_saved = false;
+    data.pin = null;
+    data.password = null;
+    data.use_password = false;
+    data.fingerprint = null;
+    data.use_fingerprint = false;
+    data.phrase_encrypt = null;
     if (this.props.listWallet == null) {
       callback(false, data);
     } else {
       let wallets = this._getWalletStoredLocalByAddress(data.address);
       let allowed = false;
       for (let index = 0; index < wallets.length; index++) {
-        if (decryptPass(wallets[index].password) === password) {
+        if (wallets[index].use_password) {
+          if (decryptPass(wallets[index].password) === password) {
+            data.password = encryptPass(wallets[index].password);
+            allowed = true;
+          }
+        } else {
+          if (decryptPass(wallets[index].pin) === password) {
+            allowed = true;
+          }
+        }
+        if (allowed) {
+          data.pin = encryptPass(wallets[index].pin);
           data.is_phrase_saved = wallets[index].is_phrase_saved;
-          allowed = true;
+          data.use_password = wallets[index].use_password;
+          data.use_fingerprint = wallets[index].use_fingerprint;
+          data.fingerprint = wallets[index].fingerprint;
+          data.phrase_encrypt = wallets[index].phrase_encrypt;
         }
       }
       callback(allowed, data);

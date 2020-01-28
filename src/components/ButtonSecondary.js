@@ -44,6 +44,7 @@ export default class ButtonSecondary extends React.Component {
       <TouchableOpacity
         onPress={this.props.onPress}
         style={styles.buttonSecondary}
+        activeOpacity={0.8}
         disabled={this.props.disabled}>
         <Text style={styles.buttonSecondaryText}>{this.props.title}</Text>
       </TouchableOpacity>

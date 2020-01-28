@@ -1,218 +1,216 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {
+  Platform,
   View,
   Text,
-  Button,
+  TextInput,
   ScrollView,
-  TouchableOpacity,
-  Clipboard,
-  TouchableHighlight,
+  KeyboardAvoidingView,
 } from 'react-native';
-import SeedBackupModal from '../SeedBackupModal';
-import {Field, reduxForm} from 'redux-form';
 import {Spinner} from '../Spinner';
-import {NavigationActions, StackActions} from 'react-navigation';
+import PropTypes from 'prop-types';
+import {Field, reduxForm} from 'redux-form';
+import {encryptPass} from '../../utils/utils';
+import s from '../../assets/styles/Styles';
+import {vars} from '../../assets/styles/Vars';
+import ButtonPrimary from '../ButtonPrimary';
 
-class RegisterScreen2 extends Component {
+class RegisterScreen1 extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       isLoading: false,
+      name: '',
+      email: '',
+      telegram_id: '',
       error: '',
-      isModalVisible: false,
-      correctPhraseOrder: false,
+      errorEmail: '',
     };
   }
 
-  redirectTo(page, params) {
-    this.props.navigation.dispatch(
-      StackActions.reset({
-        index: 0,
-        actions: [
-          NavigationActions.navigate({
-            routeName: page,
-            params: params,
-          }),
-        ],
-      }),
-    );
-  }
-
-  toggleModal = () => {
-    this.setState({isModalVisible: !this.state.isModalVisible});
+  _onNameChanged = name => {
+    this.setState({name: name.trim()});
   };
 
-  phraseOrder = a => {
-    this.props.setPhraseSaved(a ? true : false);
-  };
-
-  _onButtonPress = () => {
-    let ini;
-    // eslint-disable-next-line consistent-this
-    ini = this;
-    this.setState({isLoading: true}, () => {
-      this.props.saveRegister(this.props.signup_data, function(success, data) {
-        if (!success) {
-          ini.setState({
-            isLoading: false,
-            error: data,
-          });
-        } else {
-          data.password = ini.props.signup_data.password;
-          data.is_phrase_saved = ini.props.is_phrase_saved;
-          ini.props.setAddress(null);
-          ini.props.setPhrase(null);
-          ini.props.setSignupData(null);
-          ini.props.onBack(1);
-          ini.props.setLoginData(data);
-          ini.props.setWalletList(ini.props.listWallet, data);
-          ini.redirectTo('home');
-        }
-      });
+  _onEmailChanged = email => {
+    this.setState({email: email.trim()}, () => {
+      if (!this._onValidateEmail()) {
+        this.setState({
+          errorEmail: 'Email address format is invalid.',
+        });
+      } else {
+        this.setState({errorEmail: ''});
+      }
     });
   };
 
-  _onButtonSavedModal = e => {};
+  _onValidateEmail = () => {
+    let regxp = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+    if (this.state.email.trim().length > 0) {
+      if (!regxp.test(this.state.email.trim())) {
+        return false;
+      }
+    }
+    return true;
+  };
+
+  _onTelegramIDChanged = telegram_id => {
+    this.setState({telegram_id: telegram_id.trim()});
+  };
+
+  _onSetName = () => {
+    let random = Math.floor(100 + Math.random() * 900);
+    return this.state.name === ''
+      ? 'Wallet ' + random.toString()
+      : this.state.name;
+  };
+
+  setTimer() {
+    this.timer = setTimeout(this.props.onNextHandler, 1000);
+  }
+
+  _onButtonPress = e => {
+    if (!this._onValidateEmail()) {
+      return;
+    }
+    this.props.setSignupData({
+      address: this.props.address,
+      pin: this.props.signup_data.pin,
+      use_password: this.props.signup_data.use_password,
+      password: this.props.signup_data.password,
+      use_fingerprint: this.props.signup_data.use_fingerprint,
+      fingerprint: this.props.signup_data.fingerprint,
+      is_phrase_saved: false,
+      phrase_encrypt: this.props.signup_data.phrase_encrypt,
+      email: this.state.email,
+      name: this._onSetName(),
+      telegram_id: this.state.telegram_id,
+      referrer_id: null,
+    });
+    this.setState({isLoading: true}, () => this.setTimer());
+  };
 
   render() {
     const {handleSubmit} = this.props;
-    const {goBack} = this.props.navigation;
+    const {navigate} = this.props.navigation;
 
     return (
-      <ScrollView keyboardShouldPersistTaps={'handled'}>
-        <View style={styles.containerStyle}>
-          <Spinner visible={this.state.isLoading} />
-          <SeedBackupModal
-            isVisible={this.state.isModalVisible}
-            toggleModal={this.toggleModal}
-            phraseOrder={this.phraseOrder}
-            _onButtonPress={this._onButtonPress}
-            {...this.props}
-          />
-          <View style={styles.logoViewStyle}>
-            <Text style={styles.logoTextTitle}>
-              Your secure wallet has been successfully created.
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        contentContainerStyle={{flexGrow: 1}}
+        keyboardShouldPersistTaps="handled">
+        <View style={[s.container, s.conCenter]}>
+          <KeyboardAvoidingView
+            behavior="padding"
+            enabled={Platform.OS == 'ios'}>
+            <Spinner visible={this.state.isLoading} />
+            <Text style={s.textTitle}>Create New Wallet</Text>
+            <Text style={[s.textBody, {marginBottom: 30}]}>
+              Fill out the details below to create your secure wallet.
             </Text>
-            <Text style={styles.logoTextSubTitle}>
-              Below is your Backup Seed Phrase and write or copy this somewhere
-              secure that only you can access.
-            </Text>
-          </View>
-          <View style={styles.seedViewStyle}>
-            <TouchableOpacity onPress={() => this.toggleModal()}>
-              <Text style={styles.seedTextSubTitle}>
-                See Backup Seed Phrase
-              </Text>
-            </TouchableOpacity>
-          </View>
-          <Text style={styles.errorTextStyle}>{this.state.error}</Text>
 
-          <View style={styles.buttonStyle}>
-            <Button
-              title="Continue without backup"
+            <View
+              style={{
+                marginTop: 6,
+                flexDirection: 'row',
+                justifyContent: 'left',
+              }}>
+              <Text
+                style={s.textLink}
+                onPress={() => this.props.onBackHandler()}>
+                &#60; BACK
+              </Text>
+            </View>
+
+            <View style={[s.inputField, {marginTop: 20}]}>
+              <Text style={s.inputLabel}>FULL NAME (Optional)</Text>
+              <TextInput
+                label="Name"
+                placeholder="Name"
+                placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
+                style={[s.inputPrimary]}
+                value={this.state.name}
+                autoCorrect={false}
+                underlineColorAndroid="transparent"
+                textContentType={'name'}
+                onChangeText={this._onNameChanged}
+              />
+            </View>
+
+            <View style={s.inputField}>
+              <Text style={s.inputLabel}>EMAIL ADDRESS (Optional)</Text>
+              <TextInput
+                label="Email"
+                placeholder="Email"
+                placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
+                style={[
+                  s.inputPrimary,
+                  this.state.errorEmail ? s.inputError : '',
+                ]}
+                value={this.state.email}
+                autoCorrect={false}
+                textContentType={'emailAddress'}
+                underlineColorAndroid="transparent"
+                onChangeText={this._onEmailChanged}
+              />
+              <Text
+                style={[
+                  s.textErrorInput,
+                  this.state.errorEmail ? s.isShow : s.isHide,
+                ]}>
+                {this.state.errorEmail}
+              </Text>
+            </View>
+
+            <View style={s.inputField}>
+              <Text style={s.inputLabel}>TELEGRAM ID (Optional)</Text>
+              <TextInput
+                label="Telegram ID"
+                placeholder="Telegram ID"
+                placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
+                style={[
+                  s.inputPrimary,
+                  this.state.errorPass ? s.inputError : '',
+                ]}
+                value={this.state.telegram_id}
+                autoCorrect={false}
+                underlineColorAndroid="transparent"
+                onChangeText={this._onTelegramIDChanged}
+              />
+            </View>
+
+            <Text style={s.textError}>{this.props.error}</Text>
+
+            <ButtonPrimary
+              title="Create My Wallet"
               onPress={handleSubmit(this._onButtonPress)}
               disabled={this.state.isLoading}
             />
-          </View>
-
-          <View style={styles.buttonStyle}>
-            <Button
-              title="Back"
-              onPress={() => goBack()}
-              disabled={this.state.isLoading}
-            />
-          </View>
-
-          <View style={[styles.footerViewStyle]}>
-            <Text style={styles.footerTextStyle}>Unity Wallet v1.0.0</Text>
-          </View>
+            <View
+              style={{
+                marginTop: 6,
+                flexDirection: 'row',
+                justifyContent: 'center',
+              }}>
+              <Text style={s.textHelp}>Already have an account? </Text>
+              <Text style={s.textLink} onPress={() => navigate('import')}>
+                Import Wallet
+              </Text>
+            </View>
+          </KeyboardAvoidingView>
         </View>
       </ScrollView>
     );
   }
 }
 
+RegisterScreen1.propTypes = {
+  onNextHandler: PropTypes.func,
+  onBackHandler: PropTypes.func,
+};
+RegisterScreen1.defaultProps = {};
+
 export default reduxForm({
   form: 'register',
   destroyOnUnmount: true,
-})(RegisterScreen2);
-
-const styles = {
-  containerStyle: {
-    backgroundColor: '#fff',
-    flex: 1,
-  },
-  logoViewStyle: {
-    marginTop: 35,
-    marginBottom: 5,
-    marginLeft: 10,
-    marginRight: 10,
-    alignItems: 'center',
-  },
-  seedViewStyle: {
-    marginTop: 35,
-    marginBottom: 5,
-    marginLeft: 10,
-    marginRight: 10,
-    paddingBottom: 20,
-    backgroundColor: '#d8d8d8',
-    alignItems: 'center',
-  },
-  logoTextTitle: {
-    color: '#7d62d9',
-    fontSize: 20,
-    fontWeight: '500',
-    alignItems: 'center',
-    textAlign: 'center',
-  },
-  logoTextSubTitle: {
-    color: '#7d62d9',
-    fontSize: 15,
-    fontWeight: '500',
-    alignItems: 'center',
-    textAlign: 'center',
-  },
-  seedTextSubTitle: {
-    color: '#003333',
-    fontSize: 15,
-    fontWeight: '600',
-    alignItems: 'center',
-    marginTop: 20,
-    textAlign: 'center',
-  },
-  inputViewStyle: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 5,
-    paddingLeft: 8,
-    paddingRight: 8,
-    marginLeft: 28,
-    marginRight: 28,
-    marginTop: 8,
-  },
-  inputStyle: {
-    fontSize: 13,
-    backgroundColor: '#fff',
-  },
-  buttonStyle: {
-    paddingLeft: 12,
-    paddingRight: 12,
-    marginTop: 50,
-  },
-  errorTextStyle: {
-    alignSelf: 'center',
-    fontSize: 12,
-    color: '#e03131',
-  },
-  footerViewStyle: {
-    paddingLeft: 28,
-    paddingRight: 28,
-    marginTop: 15,
-    flexDirection: 'column',
-  },
-  footerTextStyle: {
-    alignSelf: 'center',
-    fontSize: 12,
-    color: '#8e8e8e',
-  },
-};
+})(RegisterScreen1);

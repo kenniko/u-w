@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import {Spinner} from '../Spinner';
 import PropTypes from 'prop-types';
-import {Field, reduxForm} from 'redux-form';
+import {reduxForm} from 'redux-form';
 import {encryptPass} from '../../utils/utils';
 import s from '../../assets/styles/Styles';
 import {vars} from '../../assets/styles/Vars';
@@ -20,20 +20,88 @@ class RegisterScreen1 extends React.Component {
     super(props);
     this.state = {
       isLoading: false,
-      name: '',
+      pin: '',
+      confirm_pin: '',
       password: '',
       confirm_password: '',
-      email: '',
-      telegram_id: '',
+      use_password: false,
+      use_fingerprint: false,
+      fingerprint: '',
       error: '',
+      errorPIN: '',
+      errorConfPIN: '',
       errorPass: '',
       errorConfPass: '',
-      errorEmail: '',
+      errorFP: '',
+      autofocus_pin: false,
+      autofocus_pass: false,
     };
   }
 
-  _onNameChanged = name => {
-    this.setState({name: name.trim()});
+  setTimer() {
+    this.timer = setTimeout(this.props.onNextHandler, 1000);
+  }
+
+  gotoNext = () => {
+    if (this.state.errorPIN !== '' || this.state.errorConfPIN !== '') {
+      return false;
+    }
+    if (this.state.use_password) {
+      if (this.state.errorPass !== '' || this.state.errorConfPass !== '') {
+        return false;
+      }
+    }
+    this.props.setSignupData({
+      address: this.props.address,
+      pin: encryptPass(this.state.pin),
+      use_password: this.state.use_password,
+      password: this.state.use_password
+        ? encryptPass(this.state.password)
+        : null,
+      use_fingerprint: this.state.use_fingerprint,
+      fingerprint: null,
+      is_phrase_saved: false,
+      phrase_encrypt: null,
+      email: null,
+      name: null,
+      telegram_id: null,
+      referrer_id: null,
+    });
+    this.setState({isLoading: true}, () => this.setTimer());
+  };
+
+  _onValidatePIN = () => {
+    return this.state.pin.trim().length > 5;
+  };
+
+  _onPINChanged = pin => {
+    this.setState({pin: pin.trim()}, () => {
+      if (!this._onValidatePIN()) {
+        this.setState({errorPIN: 'PIN must be at least 6 characters.'});
+      } else {
+        this.setState({errorPIN: ''});
+      }
+    });
+  };
+
+  _onConfirmPINChanged = confirm_pin => {
+    this.setState({confirm_pin: confirm_pin.trim()}, () => {
+      if (!this._onValidateConfPIN()) {
+        this.setState({
+          errorConfPIN: 'Confirm PIN does not match the PIN.',
+        });
+      } else {
+        this.setState({errorConfPIN: ''}, () => {
+          if (!this.state.use_password) {
+            this.gotoNext();
+          }
+        });
+      }
+    });
+  };
+
+  _onValidateConfPIN = () => {
+    return this.state.pin.trim() === this.state.confirm_pin.trim();
   };
 
   _onValidatePass = () => {
@@ -57,7 +125,11 @@ class RegisterScreen1 extends React.Component {
           errorConfPass: 'Confirm password does not match the password.',
         });
       } else {
-        this.setState({errorConfPass: ''});
+        this.setState({errorConfPass: ''}, () => {
+          if (this.state.use_password) {
+            this.gotoNext();
+          }
+        });
       }
     });
   };
@@ -66,61 +138,19 @@ class RegisterScreen1 extends React.Component {
     return this.state.password.trim() === this.state.confirm_password.trim();
   };
 
-  _onEmailChanged = email => {
-    this.setState({email: email.trim()}, () => {
-      if (!this._onValidateEmail()) {
-        this.setState({
-          errorEmail: 'Email address format is invalid.',
-        });
-      } else {
-        this.setState({errorEmail: ''});
-      }
-    });
-  };
-
-  _onValidateEmail = () => {
-    let regxp = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-    if (this.state.email.trim().length > 0) {
-      if (!regxp.test(this.state.email.trim())) {
-        return false;
-      }
-    }
-    return true;
-  };
-
-  _onTelegramIDChanged = telegram_id => {
-    this.setState({telegram_id: telegram_id.trim()});
-  };
-
-  _onSetName = () => {
-    let random = Math.floor(100 + Math.random() * 900);
-    return this.state.name === ''
-      ? 'Wallet ' + random.toString()
-      : this.state.name;
-  };
-
-  _onButtonPress = e => {
-    if (
-      !this._onValidatePass() ||
-      !this._onValidateConfPass() ||
-      !this._onValidateEmail()
-    ) {
-      return;
-    }
-    this.props.setSignupData({
-      address: this.props.address,
-      password: encryptPass(this.state.password),
-      email: this.state.email,
-      name: this._onSetName(),
-      telegram_id: this.state.telegram_id,
-      referrer_id: null,
-    });
-    this.props.onNextHandler();
+  _onUsePass = () => {
+    this.setState(
+      {
+        use_password: !this.state.use_password,
+      },
+      () => {
+        this._onConfirmPINChanged(this.state.confirm_pin);
+      },
+    );
   };
 
   render() {
-    const {handleSubmit} = this.props;
-    const {goBack} = this.props.navigation;
+    const {navigate} = this.props.navigation;
 
     return (
       <ScrollView
@@ -138,108 +168,139 @@ class RegisterScreen1 extends React.Component {
             </Text>
 
             <View style={s.inputField}>
-              <Text style={s.inputLabel}>PASSWORD</Text>
+              <Text style={s.inputLabel}>PLEASE ENTER A PIN</Text>
               <TextInput
-                label="Password"
-                placeholder="Enter 8 characters or more"
-                style={s.inputPrimary}
+                label="PIN"
+                placeholder="Enter 6 characters or more"
                 placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
-                value={this.state.password}
+                style={[
+                  s.inputPrimary,
+                  this.state.errorPIN ? s.inputError : '',
+                ]}
+                value={this.state.pin}
                 autoCorrect={false}
                 underlineColorAndroid="transparent"
                 secureTextEntry={true}
+                keyboardType={'number-pad'}
                 textContentType={'password'}
-                onChangeText={this._onPasswordChanged}
+                onChangeText={this._onPINChanged}
               />
               <Text
                 style={[
                   s.textErrorInput,
-                  this.state.errorPass ? s.isShow : s.isHide,
+                  this.state.errorPIN ? s.isShow : s.isHide,
                 ]}>
-                {this.state.errorPass}
+                {this.state.errorPIN}
               </Text>
             </View>
 
             <View style={s.inputField}>
-              <Text style={s.inputLabel}>CONFIRM PASSWORD</Text>
+              <Text style={s.inputLabel}>CONFIRM PIN</Text>
               <TextInput
-                label="Confirm Password"
-                placeholder="Confirm Password"
-                style={s.inputPrimary}
-                value={this.state.confirm_password}
+                label="Confirm PIN"
+                placeholder="Confirm PIN"
+                placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
+                style={[
+                  s.inputPrimary,
+                  this.state.errorConfPIN ? s.inputError : '',
+                ]}
+                value={this.state.confirm_pin}
                 autoCorrect={false}
                 underlineColorAndroid="transparent"
                 secureTextEntry={true}
+                keyboardType={'number-pad'}
                 textContentType={'password'}
-                onChangeText={this._onConfirmPasswordChanged}
+                onChangeText={this._onConfirmPINChanged}
               />
               <Text
                 style={[
                   s.textErrorInput,
-                  this.state.errorConfPass ? s.isShow : s.isHide,
+                  this.state.errorConfPIN ? s.isShow : s.isHide,
                 ]}>
-                {this.state.errorConfPass}
+                {this.state.errorConfPIN}
               </Text>
-            </View>
-
-            <View style={[s.inputField, {marginTop: 40}]}>
-              <Text style={s.inputLabel}>FULL NAME (Optional)</Text>
-              <TextInput
-                label="Name"
-                placeholder="Name"
-                style={s.inputPrimary}
-                value={this.state.name}
-                autoCorrect={false}
-                underlineColorAndroid="transparent"
-                textContentType={'name'}
-                onChangeText={this._onNameChanged}
-              />
-            </View>
-
-            <View style={s.inputField}>
-              <Text style={s.inputLabel}>EMAIL ADDRESS (Optional)</Text>
-              <TextInput
-                label="Email"
-                placeholder="Email"
-                style={s.inputPrimary}
-                value={this.state.email}
-                autoCorrect={false}
-                textContentType={'emailAddress'}
-                underlineColorAndroid="transparent"
-                onChangeText={this._onEmailChanged}
-              />
-              <Text
-                style={[
-                  s.textErrorInput,
-                  this.state.errorEmail ? s.isShow : s.isHide,
-                ]}>
-                {this.state.errorEmail}
-              </Text>
-            </View>
-
-            <View style={s.inputField}>
-              <Text style={s.inputLabel}>TELEGRAM ID (Optional)</Text>
-              <TextInput
-                label="Telegram ID"
-                placeholder="Telegram ID"
-                style={s.inputPrimary}
-                value={this.state.telegram_id}
-                autoCorrect={false}
-                underlineColorAndroid="transparent"
-                onChangeText={this._onTelegramIDChanged}
-              />
             </View>
 
             <Text style={s.textError}>{this.props.error}</Text>
 
-            <ButtonPrimary
-              title="Create My Wallet"
-              onPress={handleSubmit(this._onButtonPress)}
-              disabled={this.state.isLoading}
-            />
-            <View>
-              <Text>Already have an account?</Text>
-              <Text>Import Wallet</Text>
+            {this.state.use_password ? (
+              <View>
+                <View style={s.inputField}>
+                  <Text style={s.inputLabel}>PASSWORD</Text>
+                  <TextInput
+                    label="Password"
+                    placeholder="Enter 8 characters or more"
+                    placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
+                    style={[
+                      s.inputPrimary,
+                      this.state.errorPass ? s.inputError : '',
+                    ]}
+                    value={this.state.password}
+                    autoCorrect={false}
+                    underlineColorAndroid="transparent"
+                    secureTextEntry={true}
+                    textContentType={'password'}
+                    onChangeText={this._onPasswordChanged}
+                  />
+                  <Text
+                    style={[
+                      s.textErrorInput,
+                      this.state.errorPass ? s.isShow : s.isHide,
+                    ]}>
+                    {this.state.errorPass}
+                  </Text>
+                </View>
+
+                <View style={s.inputField}>
+                  <Text style={s.inputLabel}>CONFIRM PASSWORD</Text>
+                  <TextInput
+                    label="Confirm Password"
+                    placeholder="Confirm Password"
+                    placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
+                    style={[
+                      s.inputPrimary,
+                      this.state.errorConfPass ? s.inputError : '',
+                    ]}
+                    value={this.state.confirm_password}
+                    autoCorrect={false}
+                    underlineColorAndroid="transparent"
+                    secureTextEntry={true}
+                    textContentType={'password'}
+                    onChangeText={this._onConfirmPasswordChanged}
+                  />
+                  <Text
+                    style={[
+                      s.textErrorInput,
+                      this.state.errorConfPass ? s.isShow : s.isHide,
+                    ]}>
+                    {this.state.errorConfPass}
+                  </Text>
+                </View>
+              </View>
+            ) : null}
+            <View
+              style={{
+                marginTop: 6,
+                flexDirection: 'row',
+                justifyContent: 'center',
+              }}>
+              <Text style={s.textLink} onPress={this._onUsePass}>
+                {this.state.use_password
+                  ? 'No use password'
+                  : 'Click here to use password instead'}
+              </Text>
+            </View>
+
+            <View
+              style={{
+                marginTop: 8,
+                flexDirection: 'row',
+                justifyContent: 'center',
+              }}>
+              <Text style={s.textHelp}>Already have an account? </Text>
+              <Text style={s.textLink} onPress={() => navigate('import')}>
+                Import Wallet
+              </Text>
             </View>
           </KeyboardAvoidingView>
         </View>

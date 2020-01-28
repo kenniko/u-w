@@ -6,6 +6,7 @@ import {View} from 'react-native';
 import {NavigationActions, StackActions} from 'react-navigation';
 import RegisterScreen1 from '../components/register/RegisterScreen1';
 import RegisterScreen2 from '../components/register/RegisterScreen2';
+import RegisterScreen3 from '../components/register/RegisterScreen3';
 import {randomSeed, address} from '@waves/ts-lib-crypto';
 
 class Register extends Component {
@@ -13,11 +14,6 @@ class Register extends Component {
     super(props);
     this.state = {
       isLoading: false,
-      name: '',
-      password: '',
-      confirm_password: '',
-      email: '',
-      telegram_id: '',
     };
 
     this.seedphrase = randomSeed();
@@ -70,6 +66,13 @@ class Register extends Component {
         )}
         {screen === 2 && (
           <RegisterScreen2
+            onNextHandler={this.onNextHandler}
+            onBackHandler={this.onBackHandler}
+            {...this.props}
+          />
+        )}
+        {screen === 3 && (
+          <RegisterScreen3
             onNextHandler={this.onNextHandler}
             onBackHandler={this.onBackHandler}
             {...this.props}
