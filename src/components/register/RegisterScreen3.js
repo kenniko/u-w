@@ -59,8 +59,6 @@ class RegisterScreen2 extends Component {
           });
         } else {
           data.pin = ini.props.signup_data.pin;
-          data.password = ini.props.signup_data.password;
-          data.use_password = ini.props.use_password;
           data.use_fingerprint = ini.props.use_fingerprint;
           data.is_phrase_saved = ini.props.is_phrase_saved;
           data.phrase_encrypt = ini.props.phrase_encrypt;
@@ -80,7 +78,6 @@ class RegisterScreen2 extends Component {
 
   render() {
     const {handleSubmit} = this.props;
-    const {goBack} = this.props.navigation;
 
     return (
       <ScrollView keyboardShouldPersistTaps={'handled'}>
@@ -122,7 +119,7 @@ class RegisterScreen2 extends Component {
           <View style={styles.buttonStyle}>
             <Button
               title="Back"
-              onPress={() => goBack()}
+              onPress={this.props.onNextHandler}
               disabled={this.state.isLoading}
             />
           </View>

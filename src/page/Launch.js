@@ -16,7 +16,7 @@ class Launch extends Component {
 
   componentDidMount() {
     if (this.props.loginData == null) {
-      this.redirectTo('login');
+      this.redirectTo('signin');
     } else {
       this.redirectTo('home');
     }

@@ -9,8 +9,7 @@ import {
 } from 'react-native';
 import {Spinner} from '../Spinner';
 import PropTypes from 'prop-types';
-import {Field, reduxForm} from 'redux-form';
-import {encryptPass} from '../../utils/utils';
+import {reduxForm} from 'redux-form';
 import s from '../../assets/styles/Styles';
 import {vars} from '../../assets/styles/Vars';
 import ButtonPrimary from '../ButtonPrimary';
@@ -76,8 +75,6 @@ class RegisterScreen1 extends React.Component {
     this.props.setSignupData({
       address: this.props.address,
       pin: this.props.signup_data.pin,
-      use_password: this.props.signup_data.use_password,
-      password: this.props.signup_data.password,
       use_fingerprint: this.props.signup_data.use_fingerprint,
       fingerprint: this.props.signup_data.fingerprint,
       is_phrase_saved: false,

@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, TextInput, Picker, Button} from 'react-native';
+import {Platform, View, Text, TextInput, Picker, Button} from 'react-native';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as ReduxActions from '../actions';
@@ -23,6 +23,8 @@ class Login extends Component {
       error: '',
       errorPass: '',
       errorAddress: '',
+      label:
+        Platform.OS === 'ios' || Platform.OS === 'android' ? 'PIN' : 'Password',
     };
     this.checkWallets = this.checkWallets.bind(this);
   }
@@ -108,8 +110,6 @@ class Login extends Component {
   _isPasswordAllowed(data, password, callback) {
     data.is_phrase_saved = false;
     data.pin = null;
-    data.password = null;
-    data.use_password = false;
     data.fingerprint = null;
     data.use_fingerprint = false;
     data.phrase_encrypt = null;
@@ -119,20 +119,10 @@ class Login extends Component {
       let wallets = this._getWalletStoredLocalByAddress(data.address);
       let allowed = false;
       for (let index = 0; index < wallets.length; index++) {
-        if (wallets[index].use_password) {
-          if (decryptPass(wallets[index].password) === password) {
-            data.password = encryptPass(wallets[index].password);
-            allowed = true;
-          }
-        } else {
-          if (decryptPass(wallets[index].pin) === password) {
-            allowed = true;
-          }
-        }
-        if (allowed) {
+        if (decryptPass(wallets[index].pin) === password) {
+          allowed = true;
           data.pin = encryptPass(wallets[index].pin);
           data.is_phrase_saved = wallets[index].is_phrase_saved;
-          data.use_password = wallets[index].use_password;
           data.use_fingerprint = wallets[index].use_fingerprint;
           data.fingerprint = wallets[index].fingerprint;
           data.phrase_encrypt = wallets[index].phrase_encrypt;
@@ -173,7 +163,7 @@ class Login extends Component {
             if (!s) {
               ini.setState({
                 isLoading: false,
-                error: 'Incorrect password',
+                error: 'Incorrect ' + ini.state.label,
               });
             } else {
               ini.setState(
@@ -196,7 +186,7 @@ class Login extends Component {
 
   _onButtonCreatePress = () => {
     this.props.onBack(1);
-    this.redirectTo('register');
+    this.redirectTo('create');
   };
 
   render() {
@@ -252,13 +242,14 @@ class Login extends Component {
 
         <View style={styles.inputViewStyle}>
           <TextInput
-            label="Password"
-            placeholder="Password"
+            label={this.state.label}
+            placeholder={this.state.label}
             style={styles.inputStyle}
             value={this.state.password}
             autoCorrect={false}
             secureTextEntry={true}
             textContentType={'password'}
+            keyboardType={'number-pad'}
             underlineColorAndroid="transparent"
             onChangeText={this._onPasswordChanged}
           />
@@ -283,7 +274,7 @@ class Login extends Component {
           <Text
             style={styles.linkTextSubTitle}
             disabled={this.state.isLoading}
-            onPress={() => navigate('register')}>
+            onPress={() => navigate('create')}>
             Create new wallet
           </Text>
         </View>

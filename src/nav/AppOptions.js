@@ -1,7 +1,7 @@
 // import {Platform} from 'react-native';
 
 const AppOptions = {
-  initialRouteName: 'launch',
+  initialRouteName: 'home',
   headerMode: 'none',
   // defaultNavigationOptions: {
   //   headerStyle: {

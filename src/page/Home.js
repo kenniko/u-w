@@ -15,7 +15,7 @@ class Home extends React.Component {
 
   componentDidMount() {
     if (this.props.loginData == null) {
-      this.redirectTo('login');
+      this.redirectTo('signin');
     } else {
       this.props.setWalletList(this.props.listWallet, this.props.loginData);
     }
@@ -37,7 +37,7 @@ class Home extends React.Component {
 
   _onButtonLogoutPress = () => {
     this.props.setLoginData(null);
-    this.redirectTo('login');
+    this.redirectTo('signin');
   };
 
   render() {

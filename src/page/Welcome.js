@@ -24,7 +24,7 @@ class Welcome extends Component {
       this.props.listWallet != null &&
       this.props.listWallet.length > 0
     ) {
-      this.redirectTo('login');
+      this.redirectTo('signin');
     }
   }
 
@@ -61,7 +61,7 @@ class Welcome extends Component {
 
           <ButtonPrimary
             title="Create New Wallet"
-            onPress={() => navigate('register')}
+            onPress={() => navigate('create')}
             disabled={this.state.isLoading}
           />
 

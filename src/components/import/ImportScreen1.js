@@ -135,7 +135,7 @@ class ImportScreen1 extends React.Component {
             <Text
               style={styles.linkTextSubTitle}
               disabled={this.state.isLoading}
-              onPress={() => this.redirectTo('login')}>
+              onPress={() => this.redirectTo('signin')}>
               Sign In
             </Text>
           </View>

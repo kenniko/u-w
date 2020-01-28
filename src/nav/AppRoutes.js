@@ -7,8 +7,8 @@ import Import from '../page/Import';
 
 const AppRoutes = {
   launch: Launch,
-  register: Register,
-  login: Login,
+  create: Register,
+  signin: Login,
   //   screen: Login,
   //   headerMode: 'none',
   //   navigationOptions: {

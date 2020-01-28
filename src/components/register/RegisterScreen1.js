@@ -22,19 +22,14 @@ class RegisterScreen1 extends React.Component {
       isLoading: false,
       pin: '',
       confirm_pin: '',
-      password: '',
-      confirm_password: '',
-      use_password: false,
       use_fingerprint: false,
       fingerprint: '',
       error: '',
       errorPIN: '',
       errorConfPIN: '',
-      errorPass: '',
-      errorConfPass: '',
       errorFP: '',
-      autofocus_pin: false,
-      autofocus_pass: false,
+      label:
+        Platform.OS === 'ios' || Platform.OS === 'android' ? 'PIN' : 'Password',
     };
   }
 
@@ -50,22 +45,9 @@ class RegisterScreen1 extends React.Component {
     ) {
       return false;
     }
-    if (this.state.use_password) {
-      if (
-        this.state.password === '' ||
-        this.state.errorPass !== '' ||
-        this.state.errorConfPass !== ''
-      ) {
-        return false;
-      }
-    }
     this.props.setSignupData({
       address: this.props.address,
       pin: encryptPass(this.state.pin),
-      use_password: this.state.use_password,
-      password: this.state.use_password
-        ? encryptPass(this.state.password)
-        : null,
       use_fingerprint: this.state.use_fingerprint,
       fingerprint: null,
       is_phrase_saved: false,
@@ -79,13 +61,15 @@ class RegisterScreen1 extends React.Component {
   };
 
   _onValidatePIN = () => {
-    return this.state.pin.trim().length > 5;
+    return this.state.pin.trim().length > 7;
   };
 
   _onPINChanged = pin => {
     this.setState({pin: pin.trim()}, () => {
       if (!this._onValidatePIN()) {
-        this.setState({errorPIN: 'PIN must be at least 6 characters.'});
+        this.setState({
+          errorPIN: this.state.label + ' must be at least 8 characters.',
+        });
       } else {
         this.setState({errorPIN: ''});
       }
@@ -96,13 +80,15 @@ class RegisterScreen1 extends React.Component {
     this.setState({confirm_pin: confirm_pin.trim()}, () => {
       if (!this._onValidateConfPIN()) {
         this.setState({
-          errorConfPIN: 'Confirm PIN does not match the PIN.',
+          errorConfPIN:
+            'Confirm ' +
+            this.state.label +
+            ' does not match the ' +
+            this.state.label,
         });
       } else {
         this.setState({errorConfPIN: ''}, () => {
-          if (!this.state.use_password) {
-            this.gotoNext();
-          }
+          this.gotoNext();
         });
       }
     });
@@ -110,51 +96,6 @@ class RegisterScreen1 extends React.Component {
 
   _onValidateConfPIN = () => {
     return this.state.pin.trim() === this.state.confirm_pin.trim();
-  };
-
-  _onValidatePass = () => {
-    return this.state.password.trim().length > 7;
-  };
-
-  _onPasswordChanged = password => {
-    this.setState({password: password.trim()}, () => {
-      if (!this._onValidatePass()) {
-        this.setState({errorPass: 'Password must be at least 8 characters.'});
-      } else {
-        this.setState({errorPass: ''});
-      }
-    });
-  };
-
-  _onConfirmPasswordChanged = confirm_password => {
-    this.setState({confirm_password: confirm_password.trim()}, () => {
-      if (!this._onValidateConfPass()) {
-        this.setState({
-          errorConfPass: 'Confirm password does not match the password.',
-        });
-      } else {
-        this.setState({errorConfPass: ''}, () => {
-          if (this.state.use_password) {
-            this.gotoNext();
-          }
-        });
-      }
-    });
-  };
-
-  _onValidateConfPass = () => {
-    return this.state.password.trim() === this.state.confirm_password.trim();
-  };
-
-  _onUsePass = () => {
-    this.setState(
-      {
-        use_password: !this.state.use_password,
-      },
-      () => {
-        this._onConfirmPINChanged(this.state.confirm_pin);
-      },
-    );
   };
 
   render() {
@@ -168,7 +109,7 @@ class RegisterScreen1 extends React.Component {
         <View style={[s.container, s.conCenter]}>
           <KeyboardAvoidingView
             behavior="padding"
-            enabled={Platform.OS == 'ios'}>
+            enabled={Platform.OS === 'ios'}>
             <Spinner visible={this.state.isLoading} />
             <Text style={s.textTitle}>Create New Wallet</Text>
             <Text style={[s.textBody, {marginBottom: 30}]}>
@@ -176,10 +117,18 @@ class RegisterScreen1 extends React.Component {
             </Text>
 
             <View style={s.inputField}>
-              <Text style={s.inputLabel}>PLEASE ENTER A PIN</Text>
+              <Text style={s.inputLabel}>
+                {Platform.OS === 'ios' || Platform.OS === 'android'
+                  ? 'PLEASE ENTER A PIN'
+                  : 'PLEASE ENTER A PASSWORD'}
+              </Text>
               <TextInput
-                label="PIN"
-                placeholder="Enter 6 characters or more"
+                label={
+                  Platform.OS === 'ios' || Platform.OS === 'android'
+                    ? 'PIN'
+                    : 'PASSWORD'
+                }
+                placeholder="Enter 8 characters or more"
                 placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
                 style={[
                   s.inputPrimary,
@@ -203,10 +152,22 @@ class RegisterScreen1 extends React.Component {
             </View>
 
             <View style={s.inputField}>
-              <Text style={s.inputLabel}>CONFIRM PIN</Text>
+              <Text style={s.inputLabel}>
+                {Platform.OS === 'ios' || Platform.OS === 'android'
+                  ? 'CONFIRM PIN'
+                  : 'CONFIRM PASSWORD'}
+              </Text>
               <TextInput
-                label="Confirm PIN"
-                placeholder="Confirm PIN"
+                label={
+                  Platform.OS === 'ios' || Platform.OS === 'android'
+                    ? 'CONFIRM PIN'
+                    : 'CONFIRM PASSWORD'
+                }
+                placeholder={
+                  Platform.OS === 'ios' || Platform.OS === 'android'
+                    ? 'Confirm PIN'
+                    : 'Confirm Password'
+                }
                 placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
                 style={[
                   s.inputPrimary,
@@ -231,77 +192,9 @@ class RegisterScreen1 extends React.Component {
 
             <Text style={s.textError}>{this.props.error}</Text>
 
-            {this.state.use_password ? (
-              <View>
-                <View style={s.inputField}>
-                  <Text style={s.inputLabel}>PASSWORD</Text>
-                  <TextInput
-                    label="Password"
-                    placeholder="Enter 8 characters or more"
-                    placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
-                    style={[
-                      s.inputPrimary,
-                      this.state.errorPass ? s.inputError : '',
-                    ]}
-                    value={this.state.password}
-                    autoCorrect={false}
-                    underlineColorAndroid="transparent"
-                    secureTextEntry={true}
-                    textContentType={'password'}
-                    onChangeText={this._onPasswordChanged}
-                  />
-                  <Text
-                    style={[
-                      s.textErrorInput,
-                      this.state.errorPass ? s.isShow : s.isHide,
-                    ]}>
-                    {this.state.errorPass}
-                  </Text>
-                </View>
-
-                <View style={s.inputField}>
-                  <Text style={s.inputLabel}>CONFIRM PASSWORD</Text>
-                  <TextInput
-                    label="Confirm Password"
-                    placeholder="Confirm Password"
-                    placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
-                    style={[
-                      s.inputPrimary,
-                      this.state.errorConfPass ? s.inputError : '',
-                    ]}
-                    value={this.state.confirm_password}
-                    autoCorrect={false}
-                    underlineColorAndroid="transparent"
-                    secureTextEntry={true}
-                    textContentType={'password'}
-                    onChangeText={this._onConfirmPasswordChanged}
-                  />
-                  <Text
-                    style={[
-                      s.textErrorInput,
-                      this.state.errorConfPass ? s.isShow : s.isHide,
-                    ]}>
-                    {this.state.errorConfPass}
-                  </Text>
-                </View>
-              </View>
-            ) : null}
             <View
               style={{
                 marginTop: 6,
-                flexDirection: 'row',
-                justifyContent: 'center',
-              }}>
-              <Text style={s.textLink} onPress={this._onUsePass}>
-                {this.state.use_password
-                  ? 'No use password'
-                  : 'Click here to use password instead'}
-              </Text>
-            </View>
-
-            <View
-              style={{
-                marginTop: 8,
                 flexDirection: 'row',
                 justifyContent: 'center',
               }}>
