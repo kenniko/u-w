@@ -1,11 +1,22 @@
 import React, {Component} from 'react';
-import {Platform, View, Text, TextInput, Picker, Button} from 'react-native';
+import {
+  Platform,
+  View,
+  Text,
+  TextInput,
+  ScrollView,
+  Picker,
+  KeyboardAvoidingView,
+} from 'react-native';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as ReduxActions from '../actions';
 import {Spinner} from '../components/Spinner';
 import {NavigationActions, StackActions} from 'react-navigation';
 import {encryptPass, decryptPass} from '../utils/utils';
+import s from '../assets/styles/Styles';
+import {vars} from '../assets/styles/Vars';
+import ButtonPrimary from '../components/ButtonPrimary';
 
 class Login extends Component {
   static navigationOptions = {
@@ -18,10 +29,11 @@ class Login extends Component {
     this.state = {
       isLoading: false,
       showDeleteAccount: false,
+      isOneWallet: true,
       address: '',
-      password: '',
+      pin: '',
       error: '',
-      errorPass: '',
+      errorPIN: '',
       errorAddress: '',
       label:
         Platform.OS === 'ios' || Platform.OS === 'android' ? 'PIN' : 'Password',
@@ -39,6 +51,14 @@ class Login extends Component {
     } else {
       this.props.initLogin();
     }
+    this.setState({
+      isOneWallet: this.props.listWallet.length < 2 ? true : false,
+      showDeleteAccount: this.props.listWallet.length === 1 ? true : false,
+      address:
+        this.props.listWallet.length === 1
+          ? this.props.listWallet[0].address
+          : this.state.address,
+    });
   }
 
   componentDidMount() {
@@ -60,7 +80,7 @@ class Login extends Component {
   }
 
   setTimer() {
-    this.timer = setTimeout(this.checkWallets, 1000);
+    this.timer = setTimeout(this.checkWallets, 700);
   }
 
   _onDeleteAccount = () => {
@@ -94,20 +114,20 @@ class Login extends Component {
   };
 
   _onValidatePass = () => {
-    return this.state.password.trim().length > 1;
+    return this.state.pin.trim().length > 1;
   };
 
-  _onPasswordChanged = password => {
-    this.setState({password: password.trim()}, () => {
+  _onPINChanged = pin => {
+    this.setState({pin: pin.trim()}, () => {
       if (!this._onValidatePass()) {
-        this.setState({errorPass: 'Required'});
+        this.setState({errorPIN: 'Required'});
       } else {
-        this.setState({errorPass: ''});
+        this.setState({errorPIN: ''});
       }
     });
   };
 
-  _isPasswordAllowed(data, password, callback) {
+  _isPINAllowed(data, pin, callback) {
     data.is_phrase_saved = false;
     data.pin = null;
     data.fingerprint = null;
@@ -119,9 +139,9 @@ class Login extends Component {
       let wallets = this._getWalletStoredLocalByAddress(data.address);
       let allowed = false;
       for (let index = 0; index < wallets.length; index++) {
-        if (decryptPass(wallets[index].pin) === password) {
+        if (decryptPass(wallets[index].pin) === pin) {
           allowed = true;
-          data.pin = encryptPass(wallets[index].pin);
+          data.pin = wallets[index].pin;
           data.is_phrase_saved = wallets[index].is_phrase_saved;
           data.use_fingerprint = wallets[index].use_fingerprint;
           data.fingerprint = wallets[index].fingerprint;
@@ -144,7 +164,7 @@ class Login extends Component {
   }
 
   _onButtonPress = () => {
-    const {address, password} = this.state;
+    const {address, pin} = this.state;
     if (!this._onValidatePass() || !this._onValidateAddress()) {
       return;
     }
@@ -159,8 +179,8 @@ class Login extends Component {
             error: data,
           });
         } else {
-          ini._isPasswordAllowed(data, password, function(s, d) {
-            if (!s) {
+          ini._isPINAllowed(data, pin, function(suc, d) {
+            if (!suc) {
               ini.setState({
                 isLoading: false,
                 error: 'Incorrect ' + ini.state.label,
@@ -196,93 +216,127 @@ class Login extends Component {
       dropdown = [];
     }
     return (
-      <View style={styles.containerStyle}>
-        <Spinner visible={this.state.isLoading} />
-        <View style={styles.logoViewStyle}>
-          <Text style={styles.logoTextTitle}>Unity Wallet</Text>
-        </View>
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        contentContainerStyle={{flexGrow: 1}}
+        keyboardShouldPersistTaps="handled">
+        <View style={[s.container, s.conCenter]}>
+          <KeyboardAvoidingView
+            behavior="padding"
+            enabled={Platform.OS === 'ios'}>
+            <Spinner visible={this.state.isLoading} />
+            <Text style={s.textTitle}>Welcome Back!</Text>
+            <View
+              style={{
+                marginBottom: 30,
+                flexDirection: 'row',
+                justifyContent: 'left',
+              }}>
+              <Text style={s.textBody}>Please sign in to your account or </Text>
+              <Text style={s.textLink} onPress={() => navigate('import')}>
+                Import Account
+              </Text>
+            </View>
 
-        <View style={styles.logoViewStyle}>
-          <Text style={styles.logoTextSubTitle}>
-            Sign in to your account or{' '}
-          </Text>
-          <Text
-            style={styles.linkTextSubTitle}
-            disabled={this.state.isLoading}
-            onPress={() => navigate('import')}>
-            Import Account
-          </Text>
-        </View>
+            <View style={s.inputField}>
+              {this.state.showDeleteAccount ? (
+                <Text
+                  style={[s.textErrorInput, s.inputError]}
+                  disabled={this.state.isLoading}
+                  onPress={() => this._onDeleteAccount()}>
+                  Delete this account
+                </Text>
+              ) : null}
+              <Text style={s.inputLabel}>WALLET ADDRESS</Text>
+              <Picker
+                label={'WALLET ADDRESS'}
+                placeholder="Select a wallet address"
+                placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
+                selectedValue={this.state.address}
+                style={[
+                  s.inputPrimary,
+                  this.state.errorAddress ? s.inputError : '',
+                ]}
+                onValueChange={this._onAddressChanged}>
+                {!this.state.isOneWallet ? (
+                  <Picker.Item value={''} label={'Select a wallet address'} />
+                ) : null}
+                {dropdown.map((wallet, index) => {
+                  return (
+                    <Picker.Item
+                      label={wallet.name + ' : ' + wallet.address}
+                      value={wallet.address}
+                      key={index}
+                    />
+                  );
+                })}
+              </Picker>
+              <Text
+                style={[
+                  s.textErrorInput,
+                  this.state.errorAddress ? s.isShow : s.isHide,
+                ]}>
+                {this.state.errorAddress}
+              </Text>
+            </View>
 
-        <View style={styles.inputViewStyle}>
-          {this.state.showDeleteAccount ? (
-            <Text
-              style={styles.deleteText}
+            <View style={s.inputField}>
+              <Text style={s.inputLabel}>
+                {Platform.OS === 'ios' || Platform.OS === 'android'
+                  ? 'PLEASE ENTER A PIN'
+                  : 'PLEASE ENTER A PASSWORD'}
+              </Text>
+              <TextInput
+                label={
+                  Platform.OS === 'ios' || Platform.OS === 'android'
+                    ? 'PIN'
+                    : 'PASSWORD'
+                }
+                placeholder=""
+                placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
+                style={[
+                  s.inputPrimary,
+                  this.state.errorPIN ? s.inputError : '',
+                ]}
+                value={this.state.pin}
+                autoCorrect={false}
+                underlineColorAndroid="transparent"
+                secureTextEntry={true}
+                keyboardType={'number-pad'}
+                textContentType={'password'}
+                onChangeText={this._onPINChanged}
+              />
+              <Text
+                style={[
+                  s.textErrorInput,
+                  this.state.errorPIN ? s.isShow : s.isHide,
+                ]}>
+                {this.state.errorPIN}
+              </Text>
+            </View>
+
+            <Text style={s.textError}>{this.state.error}</Text>
+
+            <ButtonPrimary
+              title="Continue"
+              onPress={this._onButtonPress}
               disabled={this.state.isLoading}
-              onPress={() => this._onDeleteAccount()}>
-              Delete this account
-            </Text>
-          ) : null}
-          <Picker
-            selectedValue={this.state.address}
-            onValueChange={this._onAddressChanged}>
-            <Picker.Item value={''} label={'Select a wallet address'} />
-            {dropdown.map((wallet, index) => {
-              return (
-                <Picker.Item
-                  label={wallet.name + ' : ' + wallet.address}
-                  value={wallet.address}
-                  key={index}
-                />
-              );
-            })}
-          </Picker>
-          <Text style={styles.errorText}>{this.state.errorAddress}</Text>
-        </View>
+            />
 
-        <View style={styles.inputViewStyle}>
-          <TextInput
-            label={this.state.label}
-            placeholder={this.state.label}
-            style={styles.inputStyle}
-            value={this.state.password}
-            autoCorrect={false}
-            secureTextEntry={true}
-            textContentType={'password'}
-            keyboardType={'number-pad'}
-            underlineColorAndroid="transparent"
-            onChangeText={this._onPasswordChanged}
-          />
-          <Text style={styles.errorText}>{this.state.errorPass}</Text>
+            <View
+              style={{
+                marginTop: 6,
+                flexDirection: 'row',
+                justifyContent: 'center',
+              }}>
+              <Text style={s.textDefault}>Don't have an account? </Text>
+              <Text style={s.textLink} onPress={() => navigate('create')}>
+                Create a new wallet
+              </Text>
+            </View>
+          </KeyboardAvoidingView>
         </View>
-
-        <Text style={styles.errorTextStyle}>{this.state.error}</Text>
-
-        <View style={styles.buttonStyle}>
-          <Button
-            title="Continue"
-            onPress={this._onButtonPress}
-            disabled={this.state.isLoading}
-          />
-        </View>
-
-        <View style={styles.logoViewStyle}>
-          <Text style={styles.logoTextSubTitle}>Or</Text>
-        </View>
-
-        <View style={styles.linkStyle}>
-          <Text
-            style={styles.linkTextSubTitle}
-            disabled={this.state.isLoading}
-            onPress={() => navigate('create')}>
-            Create new wallet
-          </Text>
-        </View>
-
-        <View style={[styles.footerViewStyle]}>
-          <Text style={styles.footerTextStyle}>Unity Wallet v1.0.0</Text>
-        </View>
-      </View>
+      </ScrollView>
     );
   }
 }
@@ -309,85 +363,3 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps,
 )(Login);
-
-const styles = {
-  containerStyle: {
-    backgroundColor: '#fff',
-    flex: 1,
-  },
-  logoViewStyle: {
-    marginTop: 35,
-    marginBottom: 5,
-    alignItems: 'center',
-  },
-  logoTextTitle: {
-    color: '#7d62d9',
-    fontSize: 30,
-    fontWeight: '600',
-  },
-  logoTextSubTitle: {
-    color: '#8e8e8e',
-    fontSize: 13,
-    fontWeight: '500',
-  },
-  linkTextSubTitle: {
-    color: '#7d62d9',
-    fontSize: 13,
-    fontWeight: '500',
-    textAlign: 'center',
-  },
-  errorText: {
-    color: '#a94442',
-    fontSize: 13,
-    fontWeight: '500',
-    textAlign: 'right',
-  },
-  deleteText: {
-    color: '#a94442',
-    fontSize: 13,
-    fontWeight: '500',
-    textAlign: 'right',
-  },
-  inputViewStyle: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 5,
-    paddingLeft: 8,
-    paddingRight: 8,
-    marginLeft: 28,
-    marginRight: 28,
-    marginTop: 8,
-  },
-  inputStyle: {
-    alignItems: 'center',
-    fontSize: 13,
-    backgroundColor: '#fff',
-  },
-  buttonStyle: {
-    paddingLeft: 12,
-    paddingRight: 12,
-    marginTop: 30,
-  },
-  linkStyle: {
-    alignItems: 'center',
-    paddingLeft: 12,
-    paddingRight: 12,
-    marginTop: 30,
-  },
-  errorTextStyle: {
-    alignSelf: 'center',
-    fontSize: 12,
-    color: '#e03131',
-  },
-  footerViewStyle: {
-    paddingLeft: 28,
-    paddingRight: 28,
-    marginTop: 45,
-    flexDirection: 'column',
-  },
-  footerTextStyle: {
-    alignSelf: 'center',
-    fontSize: 12,
-    color: '#8e8e8e',
-  },
-};
