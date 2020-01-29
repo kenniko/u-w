@@ -1,10 +1,19 @@
 import React from 'react';
-import {View, Text, TextInput, ScrollView, Button} from 'react-native';
+import {
+  Platform,
+  View,
+  Text,
+  TextInput,
+  ScrollView,
+  KeyboardAvoidingView,
+} from 'react-native';
 import {Spinner} from '../Spinner';
 import PropTypes from 'prop-types';
-import {Field, reduxForm} from 'redux-form';
+import {reduxForm} from 'redux-form';
 import {encryptPass} from '../../utils/utils';
 import {NavigationActions, StackActions} from 'react-navigation';
+import s from '../../assets/styles/Styles';
+import {vars} from '../../assets/styles/Vars';
 
 class ImportScreen3 extends React.Component {
   static navigationOptions = {
@@ -16,42 +25,52 @@ class ImportScreen3 extends React.Component {
     super(props);
     this.state = {
       isLoading: false,
-      password: '',
-      confirm_password: '',
+      pin: '',
+      confirm_pin: '',
       error: '',
-      errorPass: '',
-      errorConfPass: '',
+      errorPIN: '',
+      errorConfPIN: '',
+      label:
+        Platform.OS === 'ios' || Platform.OS === 'android' ? 'PIN' : 'Password',
     };
   }
 
-  _onValidatePass = () => {
-    return this.state.password.trim().length > 7;
+  _onValidatePIN = () => {
+    return this.state.pin.trim().length > 7;
   };
 
-  _onPasswordChanged = password => {
-    this.setState({password: password.trim()}, () => {
-      if (!this._onValidatePass()) {
-        this.setState({errorPass: 'Password must be at least 8 characters.'});
-      } else {
-        this.setState({errorPass: ''});
-      }
-    });
-  };
-
-  _onConfirmPasswordChanged = confirm_password => {
-    this.setState({confirm_password: confirm_password.trim()}, () => {
-      if (!this._onValidateConfPass()) {
+  _onPINChanged = pin => {
+    this.setState({pin: pin.trim()}, () => {
+      if (!this._onValidatePIN()) {
         this.setState({
-          errorConfPass: 'Confirm password does not match the password.',
+          errorPIN: this.state.label + ' must be at least 8 characters.',
         });
       } else {
-        this.setState({errorConfPass: ''});
+        this.setState({errorPIN: ''});
       }
     });
   };
 
-  _onValidateConfPass = () => {
-    return this.state.password.trim() === this.state.confirm_password.trim();
+  _onConfirmPINChanged = confirm_pin => {
+    this.setState({confirm_pin: confirm_pin.trim()}, () => {
+      if (!this._onValidateConfPIN()) {
+        this.setState({
+          errorConfPIN:
+            'Confirm ' +
+            this.state.label +
+            ' does not match the ' +
+            this.state.label,
+        });
+      } else {
+        this.setState({errorConfPIN: ''}, () => {
+          this._onButtonPress();
+        });
+      }
+    });
+  };
+
+  _onValidateConfPIN = () => {
+    return this.state.pin.trim() === this.state.confirm_pin.trim();
   };
 
   redirectTo(page, params) {
@@ -68,90 +87,123 @@ class ImportScreen3 extends React.Component {
     );
   }
 
-  _onButtonPress = e => {
-    if (!this._onValidatePass() || !this._onValidateConfPass()) {
-      return;
+  setTimer() {
+    this.timer = setTimeout(this.redirectTo('home'), 1000);
+  }
+
+  _onButtonPress = () => {
+    if (
+      this.state.pin === '' ||
+      this.state.errorPIN !== '' ||
+      this.state.errorConfPIN !== ''
+    ) {
+      return false;
     }
     this.setState({isLoading: true}, () => {
       let data = this.props.import_data;
-      data.password = encryptPass(this.state.password);
-      data.is_phrase_saved = true;
+      data.pin = encryptPass(this.state.pin);
       this.props.setAddress(null);
       this.props.setPhrase(null);
       this.props.setImportData(null);
       this.props.setLoginData(data);
       this.props.setWalletList(this.props.listWallet, data);
-      this.redirectTo('home');
+      this.setState({isLoading: true}, () => this.setTimer());
     });
   };
 
   render() {
-    const {handleSubmit} = this.props;
-
     return (
-      <ScrollView keyboardShouldPersistTaps={'handled'}>
-        <View style={styles.containerStyle}>
-          <Spinner visible={this.state.isLoading} />
-          <View style={styles.logoViewStyle}>
-            <Text style={styles.logoTextTitle}>Import Wallet</Text>
-          </View>
-          <View style={styles.logoViewStyle}>
-            <Text style={styles.logoTextSubTitle}>
-              Fill out the details below to continue to your secure wallet.
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        contentContainerStyle={{flexGrow: 1}}
+        keyboardShouldPersistTaps="handled">
+        <View style={[s.container, s.conCenter]}>
+          <KeyboardAvoidingView
+            behavior="padding"
+            enabled={Platform.OS === 'ios'}>
+            <Spinner visible={this.state.isLoading} />
+            <Text style={s.textTitle}>Import Wallet</Text>
+            <Text style={[s.textBody, {marginBottom: 30}]}>
+              Fill out the details below to create your secure wallet.
             </Text>
-          </View>
 
-          <View style={styles.inputViewStyle}>
-            <TextInput
-              label="Password"
-              placeholder="Password"
-              style={styles.inputStyle}
-              value={this.state.password}
-              autoCorrect={false}
-              underlineColorAndroid="transparent"
-              secureTextEntry={true}
-              textContentType={'password'}
-              onChangeText={this._onPasswordChanged}
-            />
-            <Text style={styles.errorText}>{this.state.errorPass}</Text>
-          </View>
+            <View style={s.inputField}>
+              <Text style={s.inputLabel}>
+                {Platform.OS === 'ios' || Platform.OS === 'android'
+                  ? 'PLEASE ENTER A PIN'
+                  : 'PLEASE ENTER A PASSWORD'}
+              </Text>
+              <TextInput
+                label={
+                  Platform.OS === 'ios' || Platform.OS === 'android'
+                    ? 'PIN'
+                    : 'PASSWORD'
+                }
+                placeholder="Enter 8 characters or more"
+                placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
+                style={[
+                  s.inputPrimary,
+                  this.state.errorPIN ? s.inputError : '',
+                ]}
+                value={this.state.pin}
+                autoCorrect={false}
+                autoFocus={true}
+                underlineColorAndroid="transparent"
+                secureTextEntry={true}
+                keyboardType={'number-pad'}
+                textContentType={'password'}
+                onChangeText={this._onPINChanged}
+              />
+              <Text
+                style={[
+                  s.textErrorInput,
+                  this.state.errorPIN ? s.isShow : s.isHide,
+                ]}>
+                {this.state.errorPIN}
+              </Text>
+            </View>
 
-          <View style={styles.inputViewStyle}>
-            <TextInput
-              label="Confirm Password"
-              placeholder="Confirm Password"
-              style={styles.inputStyle}
-              value={this.state.confirm_password}
-              autoCorrect={false}
-              underlineColorAndroid="transparent"
-              secureTextEntry={true}
-              textContentType={'password'}
-              onChangeText={this._onConfirmPasswordChanged}
-            />
-            <Text style={styles.errorText}>{this.state.errorConfPass}</Text>
-          </View>
+            <View style={s.inputField}>
+              <Text style={s.inputLabel}>
+                {Platform.OS === 'ios' || Platform.OS === 'android'
+                  ? 'CONFIRM PIN'
+                  : 'CONFIRM PASSWORD'}
+              </Text>
+              <TextInput
+                label={
+                  Platform.OS === 'ios' || Platform.OS === 'android'
+                    ? 'CONFIRM PIN'
+                    : 'CONFIRM PASSWORD'
+                }
+                placeholder={
+                  Platform.OS === 'ios' || Platform.OS === 'android'
+                    ? 'Re-enter your PIN'
+                    : 'Re-enter your password'
+                }
+                placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
+                style={[
+                  s.inputPrimary,
+                  this.state.errorConfPIN ? s.inputError : '',
+                ]}
+                value={this.state.confirm_pin}
+                autoCorrect={false}
+                underlineColorAndroid="transparent"
+                secureTextEntry={true}
+                keyboardType={'number-pad'}
+                textContentType={'password'}
+                onChangeText={this._onConfirmPINChanged}
+              />
+              <Text
+                style={[
+                  s.textErrorInput,
+                  this.state.errorConfPIN ? s.isShow : s.isHide,
+                ]}>
+                {this.state.errorConfPIN}
+              </Text>
+            </View>
 
-          <Text style={styles.errorTextStyle}>{this.props.error}</Text>
-
-          <View style={styles.buttonStyle}>
-            <Button
-              title="Continue"
-              onPress={handleSubmit(this._onButtonPress)}
-              disabled={this.state.isLoading}
-            />
-          </View>
-
-          <View style={styles.buttonStyle}>
-            <Button
-              title="Back"
-              onPress={() => this.props.onGoToHandler(1)}
-              disabled={this.state.isLoading}
-            />
-          </View>
-
-          <View style={[styles.footerViewStyle]}>
-            <Text style={styles.footerTextStyle}>Unity Wallet v1.0.0</Text>
-          </View>
+            <Text style={s.textError}>{this.props.error}</Text>
+          </KeyboardAvoidingView>
         </View>
       </ScrollView>
     );

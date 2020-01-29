@@ -11,9 +11,9 @@ import {Spinner} from '../Spinner';
 import PropTypes from 'prop-types';
 import {reduxForm} from 'redux-form';
 import {encryptPass} from '../../utils/utils';
+import {encryptSeed} from '@waves/ts-lib-crypto';
 import s from '../../assets/styles/Styles';
 import {vars} from '../../assets/styles/Vars';
-import ButtonPrimary from '../../components/ButtonPrimary';
 
 class RegisterScreen1 extends React.Component {
   constructor(props) {
@@ -51,7 +51,7 @@ class RegisterScreen1 extends React.Component {
       use_fingerprint: this.state.use_fingerprint,
       fingerprint: null,
       is_phrase_saved: false,
-      phrase_encrypt: null,
+      phrase_encrypt: encryptSeed(this.props.phrase, this.state.pin),
       email: null,
       name: null,
       telegram_id: null,
@@ -136,6 +136,7 @@ class RegisterScreen1 extends React.Component {
                 ]}
                 value={this.state.pin}
                 autoCorrect={false}
+                autoFocus={true}
                 underlineColorAndroid="transparent"
                 secureTextEntry={true}
                 keyboardType={'number-pad'}

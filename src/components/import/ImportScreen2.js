@@ -1,10 +1,19 @@
 import React from 'react';
-import {View, Text, TextInput, ScrollView, Button} from 'react-native';
+import {
+  Platform,
+  View,
+  Text,
+  TextInput,
+  ScrollView,
+  KeyboardAvoidingView,
+} from 'react-native';
 import {NavigationActions, StackActions} from 'react-navigation';
 import {Spinner} from '../Spinner';
 import PropTypes from 'prop-types';
-import {Field, reduxForm} from 'redux-form';
-import {encryptPass} from '../../utils/utils';
+import {reduxForm} from 'redux-form';
+import s from '../../assets/styles/Styles';
+import {vars} from '../../assets/styles/Vars';
+import ButtonPrimary from '../ButtonPrimary';
 
 class ImportScreen2 extends React.Component {
   static navigationOptions = {
@@ -17,13 +26,9 @@ class ImportScreen2 extends React.Component {
     this.state = {
       isLoading: false,
       name: '',
-      password: '',
-      confirm_password: '',
       email: '',
       telegram_id: '',
       error: '',
-      errorPass: '',
-      errorConfPass: '',
       errorEmail: '',
     };
   }
@@ -44,36 +49,6 @@ class ImportScreen2 extends React.Component {
 
   _onNameChanged = name => {
     this.setState({name: name.trim()});
-  };
-
-  _onValidatePass = () => {
-    return this.state.password.trim().length > 7;
-  };
-
-  _onPasswordChanged = password => {
-    this.setState({password: password.trim()}, () => {
-      if (!this._onValidatePass()) {
-        this.setState({errorPass: 'Password must be at least 8 characters.'});
-      } else {
-        this.setState({errorPass: ''});
-      }
-    });
-  };
-
-  _onConfirmPasswordChanged = confirm_password => {
-    this.setState({confirm_password: confirm_password.trim()}, () => {
-      if (!this._onValidateConfPass()) {
-        this.setState({
-          errorConfPass: 'Confirm password does not match the password.',
-        });
-      } else {
-        this.setState({errorConfPass: ''});
-      }
-    });
-  };
-
-  _onValidateConfPass = () => {
-    return this.state.password.trim() === this.state.confirm_password.trim();
   };
 
   _onEmailChanged = email => {
@@ -110,15 +85,10 @@ class ImportScreen2 extends React.Component {
   };
 
   _onButtonPress = e => {
-    if (
-      !this._onValidatePass() ||
-      !this._onValidateConfPass() ||
-      !this._onValidateEmail()
-    ) {
-      return;
+    if (!this._onValidateEmail()) {
+      return false;
     }
     let ini;
-    let pass = encryptPass(this.state.password);
     // eslint-disable-next-line consistent-this
     ini = this;
     this.setState({isLoading: true}, () => {
@@ -137,8 +107,11 @@ class ImportScreen2 extends React.Component {
               error: data,
             });
           } else {
-            data.password = pass;
-            data.is_phrase_saved = true;
+            data.pin = ini.props.import_data.pin;
+            data.use_fingerprint = ini.props.import_data.use_fingerprint;
+            data.fingerprint = ini.props.import_data.fingerprint;
+            data.is_phrase_saved = ini.props.import_data.is_phrase_saved;
+            data.phrase_encrypt = ini.props.import_data.phrase_encrypt;
             ini.props.setAddress(null);
             ini.props.setPhrase(null);
             ini.props.setImportData(null);
@@ -153,111 +126,101 @@ class ImportScreen2 extends React.Component {
 
   render() {
     const {handleSubmit} = this.props;
-    const {goBack} = this.props.navigation;
 
     return (
-      <ScrollView keyboardShouldPersistTaps={'handled'}>
-        <View style={styles.containerStyle}>
-          <Spinner visible={this.state.isLoading} />
-          <View style={styles.logoViewStyle}>
-            <Text style={styles.logoTextTitle}>Import Wallet</Text>
-          </View>
-          <View style={styles.logoViewStyle}>
-            <Text style={styles.logoTextSubTitle}>
-              Fill out the details below.
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        contentContainerStyle={{flexGrow: 1}}
+        keyboardShouldPersistTaps="handled">
+        <View style={[s.container, s.conCenter]}>
+          <KeyboardAvoidingView
+            behavior="padding"
+            enabled={Platform.OS === 'ios'}>
+            <Spinner visible={this.state.isLoading} />
+            <Text style={s.textTitle}>Import Wallet</Text>
+            <Text style={[s.textBody, {marginBottom: 30}]}>
+              Fill out the details below to create your secure wallet.
             </Text>
-          </View>
 
-          <View style={styles.inputViewStyle}>
-            <TextInput
-              label="Password"
-              placeholder="Password"
-              style={styles.inputStyle}
-              value={this.state.password}
-              autoCorrect={false}
-              underlineColorAndroid="transparent"
-              secureTextEntry={true}
-              textContentType={'password'}
-              onChangeText={this._onPasswordChanged}
-            />
-            <Text style={styles.errorText}>{this.state.errorPass}</Text>
-          </View>
+            <View
+              style={{
+                marginTop: 6,
+                flexDirection: 'row',
+                justifyContent: 'left',
+              }}>
+              <Text
+                style={s.textLink}
+                onPress={() => this.props.onGoToHandler(1)}>
+                &#60; BACK
+              </Text>
+            </View>
 
-          <View style={styles.inputViewStyle}>
-            <TextInput
-              label="Confirm Password"
-              placeholder="Confirm Password"
-              style={styles.inputStyle}
-              value={this.state.confirm_password}
-              autoCorrect={false}
-              underlineColorAndroid="transparent"
-              secureTextEntry={true}
-              textContentType={'password'}
-              onChangeText={this._onConfirmPasswordChanged}
-            />
-            <Text style={styles.errorText}>{this.state.errorConfPass}</Text>
-          </View>
+            <View style={[s.inputField, {marginTop: 20}]}>
+              <Text style={s.inputLabel}>FULL NAME (Optional)</Text>
+              <TextInput
+                label="Name"
+                placeholder="What's your full name?"
+                placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
+                style={[s.inputPrimary]}
+                value={this.state.name}
+                autoCorrect={false}
+                autoFocus={true}
+                underlineColorAndroid="transparent"
+                textContentType={'name'}
+                onChangeText={this._onNameChanged}
+              />
+            </View>
 
-          <View style={styles.inputViewStyle}>
-            <TextInput
-              label="Name"
-              placeholder="Name"
-              style={styles.inputStyle}
-              value={this.state.name}
-              autoCorrect={false}
-              underlineColorAndroid="transparent"
-              textContentType={'name'}
-              onChangeText={this._onNameChanged}
-            />
-          </View>
+            <View style={s.inputField}>
+              <Text style={s.inputLabel}>EMAIL ADDRESS (Optional)</Text>
+              <TextInput
+                label="Email"
+                placeholder="you@example.com"
+                placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
+                style={[
+                  s.inputPrimary,
+                  this.state.errorEmail ? s.inputError : '',
+                ]}
+                value={this.state.email}
+                autoCorrect={false}
+                textContentType={'emailAddress'}
+                underlineColorAndroid="transparent"
+                onChangeText={this._onEmailChanged}
+              />
+              <Text
+                style={[s.textErrorInput, !this.state.errorEmail && s.isHide]}>
+                {this.state.errorEmail}
+              </Text>
+            </View>
 
-          <View style={styles.inputViewStyle}>
-            <TextInput
-              label="Email"
-              placeholder="Email"
-              style={styles.inputStyle}
-              value={this.state.email}
-              autoCorrect={false}
-              textContentType={'emailAddress'}
-              underlineColorAndroid="transparent"
-              onChangeText={this._onEmailChanged}
-            />
-            <Text style={styles.errorText}>{this.state.errorEmail}</Text>
-          </View>
+            <View style={s.inputField}>
+              <Text style={s.inputLabel}>TELEGRAM ID (Optional)</Text>
+              <TextInput
+                label="Telegram ID"
+                placeholder="Your telegram ID"
+                placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
+                style={[
+                  s.inputPrimary,
+                  this.state.errorPass ? s.inputError : '',
+                ]}
+                value={this.state.telegram_id}
+                autoCorrect={false}
+                underlineColorAndroid="transparent"
+                onChangeText={this._onTelegramIDChanged}
+              />
+              <Text style={s.textHelp}>
+                This will allow automatic VIP membership for token holders
+              </Text>
+            </View>
 
-          <View style={styles.inputViewStyle}>
-            <TextInput
-              label="Telegram ID"
-              placeholder="Telegram ID"
-              style={styles.inputStyle}
-              value={this.state.telegram_id}
-              autoCorrect={false}
-              underlineColorAndroid="transparent"
-              onChangeText={this._onTelegramIDChanged}
-            />
-          </View>
+            <Text style={s.textError}>{this.props.error}</Text>
 
-          <Text style={styles.errorTextStyle}>{this.props.error}</Text>
-
-          <View style={styles.buttonStyle}>
-            <Button
+            <ButtonPrimary
               title="Continue"
               onPress={handleSubmit(this._onButtonPress)}
               disabled={this.state.isLoading}
             />
-          </View>
-
-          <View style={styles.buttonStyle}>
-            <Button
-              title="Back"
-              onPress={() => goBack()}
-              disabled={this.state.isLoading}
-            />
-          </View>
-
-          <View style={[styles.footerViewStyle]}>
-            <Text style={styles.footerTextStyle}>Unity Wallet v1.0.0</Text>
-          </View>
+          </KeyboardAvoidingView>
         </View>
       </ScrollView>
     );
@@ -273,79 +236,3 @@ export default reduxForm({
   form: 'import',
   destroyOnUnmount: true,
 })(ImportScreen2);
-
-const styles = {
-  containerStyle: {
-    backgroundColor: '#fff',
-    flex: 1,
-  },
-  logoViewStyle: {
-    marginTop: 35,
-    marginBottom: 5,
-    alignItems: 'center',
-  },
-  logoTextTitle: {
-    color: '#7d62d9',
-    fontSize: 30,
-    fontWeight: '600',
-  },
-  logoTextSubTitle: {
-    color: '#8e8e8e',
-    fontSize: 13,
-    fontWeight: '500',
-  },
-  linkTextSubTitle: {
-    color: '#7d62d9',
-    fontSize: 13,
-    fontWeight: '500',
-    textAlign: 'center',
-  },
-  errorText: {
-    color: '#a94442',
-    fontSize: 13,
-    fontWeight: '500',
-    textAlign: 'right',
-  },
-  inputViewStyle: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 5,
-    paddingLeft: 8,
-    paddingRight: 8,
-    marginLeft: 28,
-    marginRight: 28,
-    marginTop: 8,
-  },
-  inputStyle: {
-    alignItems: 'center',
-    fontSize: 13,
-    backgroundColor: '#fff',
-  },
-  buttonStyle: {
-    paddingLeft: 12,
-    paddingRight: 12,
-    marginTop: 30,
-  },
-  linkStyle: {
-    alignItems: 'center',
-    paddingLeft: 12,
-    paddingRight: 12,
-    marginTop: 30,
-  },
-  errorTextStyle: {
-    alignSelf: 'center',
-    fontSize: 12,
-    color: '#e03131',
-  },
-  footerViewStyle: {
-    paddingLeft: 28,
-    paddingRight: 28,
-    marginTop: 45,
-    flexDirection: 'column',
-  },
-  footerTextStyle: {
-    alignSelf: 'center',
-    fontSize: 12,
-    color: '#8e8e8e',
-  },
-};

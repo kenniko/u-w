@@ -1,10 +1,21 @@
 import React from 'react';
-import {View, Text, TextInput, ScrollView, Button} from 'react-native';
+import {
+  Platform,
+  View,
+  Text,
+  TextInput,
+  ScrollView,
+  KeyboardAvoidingView,
+} from 'react-native';
 import {NavigationActions, StackActions} from 'react-navigation';
 import {Spinner} from '../Spinner';
 import PropTypes from 'prop-types';
-import {Field, reduxForm} from 'redux-form';
-import {address} from '@waves/ts-lib-crypto';
+import {reduxForm} from 'redux-form';
+import {address, encryptSeed} from '@waves/ts-lib-crypto';
+import {encryptPass} from '../../utils/utils';
+import s from '../../assets/styles/Styles';
+import {vars} from '../../assets/styles/Vars';
+import ButtonPrimary from '../../components/ButtonPrimary';
 
 class ImportScreen1 extends React.Component {
   static navigationOptions = {
@@ -21,6 +32,15 @@ class ImportScreen1 extends React.Component {
       error: '',
       errorPhrase: '',
       errorAddress: '',
+      pin: '',
+      confirm_pin: '',
+      use_fingerprint: false,
+      fingerprint: '',
+      errorPIN: '',
+      errorConfPIN: '',
+      errorFP: '',
+      label:
+        Platform.OS === 'ios' || Platform.OS === 'android' ? 'PIN' : 'Password',
     };
   }
 
@@ -76,17 +96,65 @@ class ImportScreen1 extends React.Component {
     });
   };
 
-  _onSetName = () => {
-    let random = Math.floor(100 + Math.random() * 900);
-    return this.state.name === ''
-      ? 'Wallet ' + random.toString()
-      : this.state.name;
+  setTimer() {
+    this.timer = setTimeout(this.props.onNextHandler, 500);
+  }
+
+  _onValidatePIN = () => {
+    return this.state.pin.trim().length > 7;
   };
 
-  _onButtonPress = e => {
-    if (!this._onValidatePhrase() || !this._onValidateAddress()) {
-      return;
+  _onPINChanged = pin => {
+    this.setState({pin: pin.trim()}, () => {
+      if (!this._onValidatePIN()) {
+        this.setState({
+          errorPIN: this.state.label + ' must be at least 8 characters.',
+        });
+      } else {
+        this.setState({errorPIN: ''});
+      }
+    });
+  };
+
+  _onConfirmPINChanged = confirm_pin => {
+    this.setState({confirm_pin: confirm_pin.trim()}, () => {
+      if (!this._onValidateConfPIN()) {
+        this.setState({
+          errorConfPIN:
+            'Confirm ' +
+            this.state.label +
+            ' does not match the ' +
+            this.state.label,
+        });
+      } else {
+        this.setState({errorConfPIN: ''}, () => {
+          this._onButtonPress();
+        });
+      }
+    });
+  };
+
+  _onValidateConfPIN = () => {
+    return this.state.pin.trim() === this.state.confirm_pin.trim();
+  };
+
+  _onButtonPress = () => {
+    if (
+      this.state.address === '' ||
+      this.state.phrase === '' ||
+      this.state.errorAddress !== '' ||
+      this.state.errorPhrase !== ''
+    ) {
+      return false;
     }
+    if (
+      this.state.pin === '' ||
+      this.state.errorPIN !== '' ||
+      this.state.errorConfPIN !== ''
+    ) {
+      return false;
+    }
+
     let ini;
     // eslint-disable-next-line consistent-this
     ini = this;
@@ -95,106 +163,202 @@ class ImportScreen1 extends React.Component {
     this.setState({isLoading: true}, () => {
       this.props.getWalletFromServ(this.state.address, function(success, data) {
         if (!success) {
-          ini.setState(
-            {
-              isLoading: false,
-            },
-            () => ini.props.onGoToHandler(2),
-          );
+          ini.props.setImportData({
+            address: ini.props.address,
+            pin: encryptPass(ini.state.pin),
+            use_fingerprint: ini.state.use_fingerprint,
+            fingerprint: null,
+            is_phrase_saved: true,
+            phrase_encrypt: encryptSeed(ini.state.phrase, ini.state.pin),
+            email: null,
+            name: null,
+            telegram_id: null,
+            referrer_id: null,
+          });
+          ini.props.onGoToHandler(2);
         } else {
-          ini.setState(
-            {
-              isLoading: false,
-            },
-            () => {
-              ini.props.setImportData(data);
-              ini.props.onGoToHandler(3);
-            },
-          );
+          data.pin = encryptPass(ini.state.pin);
+          data.use_fingerprint = ini.state.use_fingerprint;
+          data.fingerprint = null;
+          data.is_phrase_saved = true;
+          data.phrase_encrypt = encryptSeed(ini.state.phrase, ini.state.pin);
+          ini.props.setAddress(null);
+          ini.props.setPhrase(null);
+          ini.props.setImportData(null);
+          ini.props.setLoginData(data);
+          ini.props.setWalletList(ini.props.listWallet, data);
+          ini.redirectTo('home');
         }
       });
     });
   };
 
   render() {
-    const {handleSubmit} = this.props;
     const {navigate} = this.props.navigation;
 
     return (
-      <ScrollView keyboardShouldPersistTaps={'handled'}>
-        <View style={styles.containerStyle}>
-          <Spinner visible={this.state.isLoading} />
-          <View style={styles.logoViewStyle}>
-            <Text style={styles.logoTextTitle}>Import Wallet</Text>
-          </View>
+      <ScrollView
+        contentInsetAdjustmentBehavior="automatic"
+        contentContainerStyle={{flexGrow: 1}}
+        keyboardShouldPersistTaps="handled">
+        <View style={[s.container, s.conCenter]}>
+          <KeyboardAvoidingView
+            behavior="padding"
+            enabled={Platform.OS === 'ios'}>
+            <Spinner visible={this.state.isLoading} />
+            <Text style={s.textTitle}>Import Wallet</Text>
+            <View
+              style={{
+                marginBottom: 30,
+                flexDirection: 'row',
+                justifyContent: 'left',
+              }}>
+              <Text style={s.textBody}>
+                Import your wallet from backup seed phrase or{' '}
+              </Text>
+              <Text style={s.textLink} onPress={() => navigate('signin')}>
+                Go Back
+              </Text>
+            </View>
 
-          <View style={styles.logoViewStyle}>
-            <Text style={styles.logoTextSubTitle}>
-              Import your wallet from Backup Seed Phrase or{' '}
-            </Text>
-            <Text
-              style={styles.linkTextSubTitle}
-              disabled={this.state.isLoading}
-              onPress={() => this.redirectTo('signin')}>
-              Sign In
-            </Text>
-          </View>
+            <View style={s.inputField}>
+              <Text style={s.inputLabel}>BACKUP SEED PHRASE</Text>
+              <TextInput
+                label="BACKUP SEED PHRASE"
+                placeholder="Enter your Backup Seed Phrase"
+                placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
+                style={[
+                  s.inputPrimary,
+                  this.state.errorPhrase ? s.inputError : '',
+                ]}
+                value={this.state.phrase}
+                autoCorrect={false}
+                autoFocus={true}
+                underlineColorAndroid="transparent"
+                textContentType={'name'}
+                onChangeText={this._onPhraseChanged}
+              />
+              <Text
+                style={[s.textErrorInput, !this.state.errorPhrase && s.isHide]}>
+                {this.state.errorPhrase}
+              </Text>
+            </View>
 
-          <View style={styles.inputViewStyle}>
-            <TextInput
-              label="Backup Seed Phrase"
-              placeholder="Backup Seed Phrase"
-              style={styles.inputStyle}
-              value={this.state.phrase}
-              autoCorrect={false}
-              underlineColorAndroid="transparent"
-              textContentType={'name'}
-              onChangeText={this._onPhraseChanged}
-            />
-            <Text style={styles.errorText}>{this.state.errorPhrase}</Text>
-          </View>
+            <View style={s.inputField}>
+              <Text style={s.inputLabel}>WALLET ADDRESS</Text>
+              <TextInput
+                label="WALLET ADDRESS"
+                placeholder="Wallet Address"
+                placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
+                style={[
+                  s.inputPrimary,
+                  this.state.errorAddress ? s.inputError : '',
+                ]}
+                value={this.state.address}
+                autoCorrect={false}
+                autoFocus={false}
+                editable={false}
+                underlineColorAndroid="transparent"
+                textContentType={'username'}
+                onChangeText={this._onAddressChanged}
+              />
+              <Text
+                style={[
+                  s.textErrorInput,
+                  !this.state.errorAddress && s.isHide,
+                ]}>
+                {this.state.errorAddress}
+              </Text>
+            </View>
 
-          <View style={styles.inputViewStyle}>
-            <TextInput
-              label="Wallet Address"
-              placeholder="Wallet Address"
-              style={styles.inputStyle}
-              value={this.state.address}
-              editable={false}
-              autoCorrect={false}
-              underlineColorAndroid="transparent"
-              textContentType={'username'}
-              onChangeText={this._onAddressChanged}
-            />
-            <Text style={styles.errorText}>{this.state.errorAddress}</Text>
-          </View>
+            <View style={s.inputField}>
+              <Text style={s.inputLabel}>
+                {Platform.OS === 'ios' || Platform.OS === 'android'
+                  ? 'PLEASE ENTER A PIN'
+                  : 'PLEASE ENTER A PASSWORD'}
+              </Text>
+              <TextInput
+                label={
+                  Platform.OS === 'ios' || Platform.OS === 'android'
+                    ? 'PIN'
+                    : 'PASSWORD'
+                }
+                placeholder="Enter 8 characters or more"
+                placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
+                style={[
+                  s.inputPrimary,
+                  this.state.errorPIN ? s.inputError : '',
+                ]}
+                value={this.state.pin}
+                autoCorrect={false}
+                underlineColorAndroid="transparent"
+                secureTextEntry={true}
+                keyboardType={'number-pad'}
+                textContentType={'password'}
+                onChangeText={this._onPINChanged}
+              />
+              <Text
+                style={[
+                  s.textErrorInput,
+                  this.state.errorPIN ? s.isShow : s.isHide,
+                ]}>
+                {this.state.errorPIN}
+              </Text>
+            </View>
 
-          <Text style={styles.errorTextStyle}>{this.props.error}</Text>
+            <View style={s.inputField}>
+              <Text style={s.inputLabel}>
+                {Platform.OS === 'ios' || Platform.OS === 'android'
+                  ? 'CONFIRM PIN'
+                  : 'CONFIRM PASSWORD'}
+              </Text>
+              <TextInput
+                label={
+                  Platform.OS === 'ios' || Platform.OS === 'android'
+                    ? 'CONFIRM PIN'
+                    : 'CONFIRM PASSWORD'
+                }
+                placeholder={
+                  Platform.OS === 'ios' || Platform.OS === 'android'
+                    ? 'Re-enter your PIN'
+                    : 'Re-enter your password'
+                }
+                placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
+                style={[
+                  s.inputPrimary,
+                  this.state.errorConfPIN ? s.inputError : '',
+                ]}
+                value={this.state.confirm_pin}
+                autoCorrect={false}
+                underlineColorAndroid="transparent"
+                secureTextEntry={true}
+                keyboardType={'number-pad'}
+                textContentType={'password'}
+                onChangeText={this._onConfirmPINChanged}
+              />
+              <Text
+                style={[
+                  s.textErrorInput,
+                  this.state.errorConfPIN ? s.isShow : s.isHide,
+                ]}>
+                {this.state.errorConfPIN}
+              </Text>
+            </View>
 
-          <View style={styles.buttonStyle}>
-            <Button
-              title="Continue"
-              onPress={handleSubmit(this._onButtonPress)}
-              disabled={this.state.isLoading}
-            />
-          </View>
+            <Text style={s.textError}>{this.props.error}</Text>
 
-          <View style={styles.logoViewStyle}>
-            <Text style={styles.logoTextSubTitle}>Or</Text>
-          </View>
-
-          <View style={styles.linkStyle}>
-            <Text
-              style={styles.linkTextSubTitle}
-              disabled={this.state.isLoading}
-              onPress={() => navigate('create')}>
-              Create new wallet
-            </Text>
-          </View>
-
-          <View style={[styles.footerViewStyle]}>
-            <Text style={styles.footerTextStyle}>Unity Wallet v1.0.0</Text>
-          </View>
+            <View
+              style={{
+                marginTop: 6,
+                flexDirection: 'row',
+                justifyContent: 'center',
+              }}>
+              <Text style={s.textDefault}>Don't have an account? </Text>
+              <Text style={s.textLink} onPress={() => navigate('create')}>
+                Create a new wallet
+              </Text>
+            </View>
+          </KeyboardAvoidingView>
         </View>
       </ScrollView>
     );

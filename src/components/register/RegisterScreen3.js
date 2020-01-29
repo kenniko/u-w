@@ -59,9 +59,10 @@ class RegisterScreen2 extends Component {
           });
         } else {
           data.pin = ini.props.signup_data.pin;
-          data.use_fingerprint = ini.props.use_fingerprint;
-          data.is_phrase_saved = ini.props.is_phrase_saved;
-          data.phrase_encrypt = ini.props.phrase_encrypt;
+          data.use_fingerprint = ini.props.signup_data.use_fingerprint;
+          data.fingerprint = ini.props.signup_data.fingerprint;
+          data.is_phrase_saved = ini.props.signup_data.is_phrase_saved;
+          data.phrase_encrypt = ini.props.signup_data.phrase_encrypt;
           ini.props.setAddress(null);
           ini.props.setPhrase(null);
           ini.props.setSignupData(null);

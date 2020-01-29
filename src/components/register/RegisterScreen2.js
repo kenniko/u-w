@@ -127,6 +127,7 @@ class RegisterScreen1 extends React.Component {
                 style={[s.inputPrimary]}
                 value={this.state.name}
                 autoCorrect={false}
+                autoFocus={true}
                 underlineColorAndroid="transparent"
                 textContentType={'name'}
                 onChangeText={this._onNameChanged}
@@ -159,7 +160,7 @@ class RegisterScreen1 extends React.Component {
               <Text style={s.inputLabel}>TELEGRAM ID (Optional)</Text>
               <TextInput
                 label="Telegram ID"
-                placeholder="youtelegramid"
+                placeholder="Your telegram ID"
                 placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
                 style={[
                   s.inputPrimary,
