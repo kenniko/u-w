@@ -18,4 +18,5 @@ export const vars = {
   COLOR_ERROR: '#e03131',
   COLOR_INPUT_BORDER: '#e0e7ff',
   WIDTH_SCREEN_DESKTOP: 899,
+  WIDTH_HOME_SIDEBAR: 535,
 };
