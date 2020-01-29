@@ -31,7 +31,7 @@ class Register extends Component {
 
   componentDidMount() {
     if (this.props.loginData != null) {
-      this.redirectTo('home');
+      this.redirectTo('dashboard');
     } else {
       this.props.initRegister();
       this.props.setAddress(address(this.seedphrase));

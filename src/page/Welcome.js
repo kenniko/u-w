@@ -53,7 +53,7 @@ class Welcome extends Component {
 
   componentDidMount() {
     if (this.props.loginData != null) {
-      this.redirectTo('home');
+      this.redirectTo('dashboard');
     } else if (
       this.props.listWallet != null &&
       this.props.listWallet.length > 0

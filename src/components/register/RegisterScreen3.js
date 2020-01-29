@@ -69,7 +69,7 @@ class RegisterScreen2 extends Component {
           ini.props.onBack(1);
           ini.props.setLoginData(data);
           ini.props.setWalletList(ini.props.listWallet, data);
-          ini.redirectTo('home');
+          ini.redirectTo('dashboard');
         }
       });
     });

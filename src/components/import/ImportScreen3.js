@@ -88,7 +88,7 @@ class ImportScreen3 extends React.Component {
   }
 
   setTimer() {
-    this.timer = setTimeout(this.redirectTo('home'), 1000);
+    this.timer = setTimeout(this.redirectTo('dashboard'), 1000);
   }
 
   _onButtonPress = () => {

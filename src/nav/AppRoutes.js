@@ -16,7 +16,7 @@ const AppRoutes = {
   //     headershown: false,
   //   },
   // },
-  home: Home,
+  dashboard: Home,
   welcome: Welcome,
   import: Import,
 };

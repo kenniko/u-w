@@ -43,7 +43,7 @@ class Login extends Component {
 
   checkWallets() {
     if (this.props.loginData != null) {
-      this.redirectTo('home');
+      this.redirectTo('dashboard');
     } else if (this.props.listWallet == null) {
       this.redirectTo('welcome');
     } else if (this.props.listWallet.length < 1) {
@@ -194,7 +194,7 @@ class Login extends Component {
                 () => {
                   ini.props.setLoginData(d);
                   ini.props.setWalletList(ini.props.listWallet, d);
-                  ini.redirectTo('home');
+                  ini.redirectTo('dashboard');
                 },
               );
             }

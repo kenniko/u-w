@@ -34,7 +34,7 @@ class Import extends Component {
 
   componentDidMount() {
     if (this.props.loginData != null) {
-      this.redirectTo('home');
+      this.redirectTo('dashboard');
     } else {
       this.props.initImport();
     }

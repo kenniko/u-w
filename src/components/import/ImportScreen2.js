@@ -117,7 +117,7 @@ class ImportScreen2 extends React.Component {
             ini.props.setImportData(null);
             ini.props.setLoginData(data);
             ini.props.setWalletList(ini.props.listWallet, data);
-            ini.redirectTo('home');
+            ini.redirectTo('dashboard');
           }
         },
       );
