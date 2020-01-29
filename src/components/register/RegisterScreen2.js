@@ -89,7 +89,6 @@ class RegisterScreen1 extends React.Component {
 
   render() {
     const {handleSubmit} = this.props;
-    const {navigate} = this.props.navigation;
 
     return (
       <ScrollView
@@ -183,17 +182,6 @@ class RegisterScreen1 extends React.Component {
               onPress={handleSubmit(this._onButtonPress)}
               disabled={this.state.isLoading}
             />
-            <View
-              style={{
-                marginTop: 6,
-                flexDirection: 'row',
-                justifyContent: 'center',
-              }}>
-              <Text style={s.textHelp}>Already have an account? </Text>
-              <Text style={s.textLink} onPress={() => navigate('import')}>
-                Import Wallet
-              </Text>
-            </View>
           </KeyboardAvoidingView>
         </View>
       </ScrollView>

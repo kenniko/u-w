@@ -146,7 +146,7 @@ class Welcome extends Component {
               <View style={styles.wrpAction}>
                 <ButtonPrimary
                   title="Create New Wallet"
-                  onPress={() => navigate('register')}
+                  onPress={() => navigate('create')}
                   disabled={this.state.isLoading}
                 />
 
