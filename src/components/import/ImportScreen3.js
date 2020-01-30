@@ -105,6 +105,7 @@ class ImportScreen3 extends React.Component {
       this.props.setAddress(null);
       this.props.setPhrase(null);
       this.props.setImportData(null);
+      this.props.setPhraseSaved(false);
       this.props.setLoginData(data);
       this.props.setWalletList(this.props.listWallet, data);
       this.setState({isLoading: true}, () => this.setTimer());

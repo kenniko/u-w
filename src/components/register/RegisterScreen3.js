@@ -20,7 +20,7 @@ class RegisterScreen2 extends Component {
       isLoading: false,
       error: '',
       isModalVisible: false,
-      correctPhraseOrder: false,
+      goProcess: false,
     };
   }
 
@@ -39,11 +39,15 @@ class RegisterScreen2 extends Component {
   }
 
   toggleModal = () => {
-    this.setState({isModalVisible: !this.state.isModalVisible});
+    this.setState({isModalVisible: !this.state.isModalVisible}, () => {
+      if (this.state.goProcess) {
+        this._onButtonPress();
+      }
+    });
   };
 
-  phraseOrder = a => {
-    this.props.setPhraseSaved(a ? true : false);
+  goProcess = a => {
+    this.setState({goProcess: a});
   };
 
   _onButtonPress = () => {
@@ -61,11 +65,12 @@ class RegisterScreen2 extends Component {
           data.pin = ini.props.signup_data.pin;
           data.use_fingerprint = ini.props.signup_data.use_fingerprint;
           data.fingerprint = ini.props.signup_data.fingerprint;
-          data.is_phrase_saved = ini.props.signup_data.is_phrase_saved;
+          data.is_phrase_saved = ini.props.is_phrase_saved;
           data.phrase_encrypt = ini.props.signup_data.phrase_encrypt;
           ini.props.setAddress(null);
           ini.props.setPhrase(null);
           ini.props.setSignupData(null);
+          ini.props.setPhraseSaved(false);
           ini.props.onBack(1);
           ini.props.setLoginData(data);
           ini.props.setWalletList(ini.props.listWallet, data);
@@ -87,7 +92,7 @@ class RegisterScreen2 extends Component {
           <SeedBackupModal
             isVisible={this.state.isModalVisible}
             toggleModal={this.toggleModal}
-            phraseOrder={this.phraseOrder}
+            goProcess={this.goProcess}
             _onButtonPress={this._onButtonPress}
             {...this.props}
           />

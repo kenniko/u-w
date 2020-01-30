@@ -36,6 +36,7 @@ class Register extends Component {
       this.props.initRegister();
       this.props.setAddress(address(this.seedphrase));
       this.props.setPhrase(this.seedphrase);
+      this.props.setPhraseSaved(false);
     }
   }
 
