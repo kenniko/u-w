@@ -55,8 +55,12 @@ class ConfirmBackup extends Component {
 
   onConfirmPhrase() {
     this.props.setPhraseSaved(this.state.correctPhraseOrder);
-    this.props.goProcess(true);
-    this.props.toggleModal();
+    if (this.state.correctPhraseOrder) {
+      this.props.goProcess(true);
+      this.props.toggleModal();
+    } else {
+      this.props.goProcess(false);
+    }
   }
 
   onSelectedPrhaseBtnClick(e) {
