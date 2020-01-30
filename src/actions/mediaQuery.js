@@ -18,7 +18,10 @@ export const isPortrait = () => {
 };
 export const isScreenDesktop = () => {
   const dim = Dimensions.get('window');
-  return dim.width > vars.WIDTH_SCREEN_DESKTOP;
+  return (
+    dim.width > vars.WIDTH_SCREEN_DESKTOP &&
+    dim.height > vars.HEIGHT_SCREEN_DESKTOP
+  );
 };
 export const isWidthMin = min => {
   const dim = Dimensions.get('window');

@@ -75,7 +75,8 @@ body {
 }
 #root > div > div > div > div,
 #root > div > div > div > div > div > div > div:first-child > div,
-#root > div > div > div > div > div > div > div:first-child > div > div > div {
+#root > div > div > div > div > div > div > div:first-child > div > div > div,
+#root > div > div > div > div > div > div > div:first-child > div > div > div > div {
   flex: 1;
   /* padding-top: 0 !important; */
 }

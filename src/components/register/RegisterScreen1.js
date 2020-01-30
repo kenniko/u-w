@@ -1,11 +1,15 @@
 import React from 'react';
 import {
+  Dimensions,
   Platform,
   View,
   Text,
   TextInput,
   ScrollView,
   KeyboardAvoidingView,
+  TouchableOpacity,
+  Linking,
+  Image,
 } from 'react-native';
 import {Spinner} from '../Spinner';
 import PropTypes from 'prop-types';
@@ -14,6 +18,14 @@ import {encryptPass} from '../../utils/utils';
 import {encryptSeed} from '@waves/ts-lib-crypto';
 import s from '../../assets/styles/Styles';
 import {vars} from '../../assets/styles/Vars';
+import ButtonBack from '../ButtonBack';
+import HeroDesktop from '../HeroDesktop';
+import {
+  isWeb,
+  isLandscape,
+  isPortrait,
+  isScreenDesktop,
+} from '../../actions/mediaQuery';
 
 class RegisterScreen1 extends React.Component {
   constructor(props) {
@@ -30,7 +42,19 @@ class RegisterScreen1 extends React.Component {
       errorFP: '',
       label:
         Platform.OS === 'ios' || Platform.OS === 'android' ? 'PIN' : 'Password',
+      isWeb: isWeb(),
+      isLandscape: isLandscape(),
+      isPortrait: isPortrait(),
+      isDesktopScreen: isScreenDesktop(),
     };
+
+    Dimensions.addEventListener('change', () => {
+      this.setState({
+        isLandscape: isLandscape(),
+        isPortrait: isPortrait(),
+        isDesktopScreen: isScreenDesktop(),
+      });
+    });
   }
 
   setTimer() {
@@ -101,112 +125,159 @@ class RegisterScreen1 extends React.Component {
   render() {
     const {navigate} = this.props.navigation;
 
-    return (
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={{flexGrow: 1}}
-        keyboardShouldPersistTaps="handled">
-        <View style={[s.container, s.conCenter]}>
-          <KeyboardAvoidingView
-            behavior="padding"
-            enabled={Platform.OS === 'ios'}>
-            <Spinner visible={this.state.isLoading} />
-            <Text style={s.textTitle}>Create New Wallet</Text>
-            <Text style={[s.textBody, {marginBottom: 30}]}>
-              Fill out the details below to create your secure wallet.
-            </Text>
-
-            <View style={s.inputField}>
-              <Text style={s.inputLabel}>
-                {Platform.OS === 'ios' || Platform.OS === 'android'
-                  ? 'PLEASE ENTER A PIN'
-                  : 'PLEASE ENTER A PASSWORD'}
-              </Text>
-              <TextInput
-                label={
-                  Platform.OS === 'ios' || Platform.OS === 'android'
-                    ? 'PIN'
-                    : 'PASSWORD'
-                }
-                placeholder="Enter 8 characters or more"
-                placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
-                style={[
-                  s.inputPrimary,
-                  this.state.errorPIN ? s.inputError : '',
-                ]}
-                value={this.state.pin}
-                autoCorrect={false}
-                autoFocus={true}
-                underlineColorAndroid="transparent"
-                secureTextEntry={true}
-                keyboardType={'number-pad'}
-                textContentType={'password'}
-                onChangeText={this._onPINChanged}
-              />
-              <Text
-                style={[
-                  s.textErrorInput,
-                  this.state.errorPIN ? s.isShow : s.isHide,
-                ]}>
-                {this.state.errorPIN}
-              </Text>
-            </View>
-
-            <View style={s.inputField}>
-              <Text style={s.inputLabel}>
-                {Platform.OS === 'ios' || Platform.OS === 'android'
-                  ? 'CONFIRM PIN'
-                  : 'CONFIRM PASSWORD'}
-              </Text>
-              <TextInput
-                label={
-                  Platform.OS === 'ios' || Platform.OS === 'android'
-                    ? 'CONFIRM PIN'
-                    : 'CONFIRM PASSWORD'
-                }
-                placeholder={
-                  Platform.OS === 'ios' || Platform.OS === 'android'
-                    ? 'Re-enter your PIN'
-                    : 'Re-enter your password'
-                }
-                placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
-                style={[
-                  s.inputPrimary,
-                  this.state.errorConfPIN ? s.inputError : '',
-                ]}
-                value={this.state.confirm_pin}
-                autoCorrect={false}
-                underlineColorAndroid="transparent"
-                secureTextEntry={true}
-                keyboardType={'number-pad'}
-                textContentType={'password'}
-                onChangeText={this._onConfirmPINChanged}
-              />
-              <Text
-                style={[
-                  s.textErrorInput,
-                  this.state.errorConfPIN ? s.isShow : s.isHide,
-                ]}>
-                {this.state.errorConfPIN}
-              </Text>
-            </View>
-
-            <Text style={s.textError}>{this.props.error}</Text>
-
-            <View
-              style={{
-                marginTop: 6,
-                flexDirection: 'row',
-                justifyContent: 'center',
-              }}>
-              <Text style={s.textDefault}>Already have an account? </Text>
-              <Text style={s.textLink} onPress={() => navigate('import')}>
-                Import Wallet
-              </Text>
-            </View>
-          </KeyboardAvoidingView>
+    const logoUnity = this.state.isWeb &&
+      this.state.isDesktopScreen &&
+      this.state.isLandscape && (
+        <TouchableOpacity
+          style={s.homeBrandLogo}
+          activeOpacity={vars.OPACITY_TOUCH}
+          onPress={() => Linking.openURL('https://www.unity.sg/')}>
+          <Image
+            style={{width: 221, height: 64}}
+            source={require('../../assets/img/unity-logo-title.png')}
+          />
+        </TouchableOpacity>
+      );
+    const buttonBack = this.state.isWeb &&
+      (!this.state.isDesktopScreen || this.state.isPortrait) && (
+        <View style={s.homeButtonBack}>
+          <ButtonBack
+            title="Back to Home"
+            color="#2e384d"
+            onPress={() => Linking.openURL('https://www.unity.sg/')}
+          />
         </View>
-      </ScrollView>
+      );
+    const heroDesktop = this.state.isDesktopScreen &&
+      this.state.isLandscape &&
+      this.state.isWeb && <HeroDesktop />;
+
+    return (
+      <View>
+        {buttonBack}
+        <ScrollView
+          contentInsetAdjustmentBehavior="automatic"
+          contentContainerStyle={{flexGrow: 1}}
+          keyboardShouldPersistTaps="handled">
+          {logoUnity}
+          <View
+            style={[
+              s.container,
+              s.conCenter,
+              this.state.isWeb &&
+                this.state.isDesktopScreen &&
+                this.state.isLandscape && {
+                  width: vars.WIDTH_HOME_SIDEBAR,
+                  overflowY: 'hidden',
+                },
+              {
+                marginTop: this.state.isDesktopScreen ? 100 : 50,
+                paddingBottom: this.state.isDesktopScreen ? 100 : 10,
+              },
+            ]}>
+            <Spinner visible={this.state.isLoading} />
+            <KeyboardAvoidingView
+              style={s.homeWrpContent}
+              behavior="padding"
+              enabled={Platform.OS === 'ios'}>
+              <Text style={s.textTitle}>New Wallet</Text>
+              <Text style={[s.textBody, {marginBottom: 30}]}>
+                Fill out the details below to create your secure wallet.
+              </Text>
+
+              <View style={s.inputField}>
+                <Text style={s.inputLabel}>
+                  {Platform.OS === 'ios' || Platform.OS === 'android'
+                    ? 'CREATE NEW PIN'
+                    : 'CREATE NEW PASSWORD'}
+                </Text>
+                <TextInput
+                  label={
+                    Platform.OS === 'ios' || Platform.OS === 'android'
+                      ? 'PIN'
+                      : 'PASSWORD'
+                  }
+                  placeholder="Enter 8 characters or more"
+                  placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
+                  style={[
+                    s.inputPrimary,
+                    this.state.errorPIN ? s.inputError : '',
+                  ]}
+                  value={this.state.pin}
+                  autoCorrect={false}
+                  autoFocus={true}
+                  underlineColorAndroid="transparent"
+                  secureTextEntry={true}
+                  keyboardType={'number-pad'}
+                  textContentType={'password'}
+                  onChangeText={this._onPINChanged}
+                />
+                <Text
+                  style={[
+                    s.textErrorInput,
+                    this.state.errorPIN ? s.isShow : s.isHide,
+                  ]}>
+                  {this.state.errorPIN}
+                </Text>
+              </View>
+
+              <View style={s.inputField}>
+                <Text style={s.inputLabel}>
+                  {Platform.OS === 'ios' || Platform.OS === 'android'
+                    ? 'CONFIRM PIN'
+                    : 'CONFIRM PASSWORD'}
+                </Text>
+                <TextInput
+                  label={
+                    Platform.OS === 'ios' || Platform.OS === 'android'
+                      ? 'CONFIRM PIN'
+                      : 'CONFIRM PASSWORD'
+                  }
+                  placeholder={
+                    Platform.OS === 'ios' || Platform.OS === 'android'
+                      ? 'Re-enter your PIN'
+                      : 'Re-enter your password'
+                  }
+                  placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
+                  style={[
+                    s.inputPrimary,
+                    this.state.errorConfPIN ? s.inputError : '',
+                  ]}
+                  value={this.state.confirm_pin}
+                  autoCorrect={false}
+                  underlineColorAndroid="transparent"
+                  secureTextEntry={true}
+                  keyboardType={'number-pad'}
+                  textContentType={'password'}
+                  onChangeText={this._onConfirmPINChanged}
+                />
+                <Text
+                  style={[
+                    s.textErrorInput,
+                    this.state.errorConfPIN ? s.isShow : s.isHide,
+                  ]}>
+                  {this.state.errorConfPIN}
+                </Text>
+              </View>
+
+              <Text style={s.textError}>{this.props.error}</Text>
+
+              <View
+                style={{
+                  marginTop: 6,
+                  flexDirection: 'row',
+                  justifyContent: 'center',
+                }}>
+                <Text style={s.textDefault}>Already have an account? </Text>
+                <Text style={s.textLink} onPress={() => navigate('import')}>
+                  Import Wallet
+                </Text>
+              </View>
+            </KeyboardAvoidingView>
+          </View>
+          {heroDesktop}
+        </ScrollView>
+      </View>
     );
   }
 }

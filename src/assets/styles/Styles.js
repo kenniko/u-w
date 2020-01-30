@@ -104,6 +104,32 @@ export default StyleSheet.create({
   inputError: {
     borderColor: vars.COLOR_ERROR,
   },
+  homeWrpContent: {
+    width: '100%',
+    maxWidth: 435,
+    alignSelf: 'center',
+  },
+  homeWrpAction: {
+    width: '100%',
+    maxWidth: 350,
+    // alignSelf: 'center',
+  },
+  homeButtonBack: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    paddingTop: 30,
+    paddingLeft: vars.GAP_H_CONTAINER,
+    zIndex: 9,
+    backgroundColor: 'rgba(255,255,255,0.8)',
+  },
+  homeBrandLogo: {
+    position: 'absolute',
+    zIndex: 9,
+    top: 30,
+    left: '5%',
+  },
   //   footerViewStyle: {
   //     paddingLeft: 28,
   //     paddingRight: 28,

@@ -1,10 +1,8 @@
 import React, {Component} from 'react';
 import {
-  Platform,
   Dimensions,
   Image,
   ScrollView,
-  StyleSheet,
   Text,
   View,
   Linking,
@@ -25,8 +23,7 @@ import {
   isWeb,
   isLandscape,
   isPortrait,
-  isWidthMin,
-  isHeightMin,
+  isScreenDesktop,
 } from '../actions/mediaQuery';
 
 class Welcome extends Component {
@@ -38,7 +35,7 @@ class Welcome extends Component {
       isWeb: isWeb(),
       isLandscape: isLandscape(),
       isPortrait: isPortrait(),
-      isDesktopScreen: isWidthMin(899) && isHeightMin(449),
+      isDesktopScreen: isScreenDesktop(),
     };
 
     // Event Listener for isDesktopScreen changes
@@ -46,7 +43,7 @@ class Welcome extends Component {
       this.setState({
         isLandscape: isLandscape(),
         isPortrait: isPortrait(),
-        isDesktopScreen: isWidthMin(899) && isHeightMin(449),
+        isDesktopScreen: isScreenDesktop(),
       });
     });
   }
@@ -83,7 +80,7 @@ class Welcome extends Component {
       this.state.isDesktopScreen &&
       this.state.isLandscape && (
         <TouchableOpacity
-          style={styles.brandLogo}
+          style={s.homeBrandLogo}
           activeOpacity={vars.OPACITY_TOUCH}
           onPress={() => Linking.openURL('https://www.unity.sg/')}>
           <Image
@@ -94,7 +91,7 @@ class Welcome extends Component {
       );
     const buttonBack = this.state.isWeb &&
       (!this.state.isDesktopScreen || this.state.isPortrait) && (
-        <View style={styles.buttonBack}>
+        <View style={s.homeButtonBack}>
           <ButtonBack
             title="Back to Home"
             color="#2e384d"
@@ -112,7 +109,6 @@ class Welcome extends Component {
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
           contentContainerStyle={{flexGrow: 1}}>
-          <Spinner visible={this.state.isLoading} />
           {logoUnity}
           <View
             style={[
@@ -129,7 +125,8 @@ class Welcome extends Component {
                 paddingBottom: this.state.isDesktopScreen ? 100 : 10,
               },
             ]}>
-            <View style={styles.wrpContent}>
+            <Spinner visible={this.state.isLoading} />
+            <View style={s.homeWrpContent}>
               <Text style={s.textTitle}>Welcome to Unity Wallet</Text>
               <Text
                 style={[
@@ -143,7 +140,7 @@ class Welcome extends Component {
                 money.
               </Text>
 
-              <View style={styles.wrpAction}>
+              <View style={s.homeWrpAction}>
                 <ButtonPrimary
                   title="Create New Wallet"
                   onPress={() => navigate('create')}
@@ -190,35 +187,6 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(ReduxActions, dispatch);
 }
-
-const styles = StyleSheet.create({
-  wrpContent: {
-    width: '100%',
-    maxWidth: 435,
-    alignSelf: 'center',
-  },
-  wrpAction: {
-    width: '100%',
-    maxWidth: 350,
-    // alignSelf: 'center',
-  },
-  buttonBack: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    paddingTop: 30,
-    paddingLeft: vars.GAP_H_CONTAINER,
-    zIndex: 9,
-    backgroundColor: 'rgba(255,255,255,0.8)',
-  },
-  brandLogo: {
-    position: 'absolute',
-    zIndex: 9,
-    top: 30,
-    left: '5%',
-  },
-});
 
 export default connect(
   mapStateToProps,

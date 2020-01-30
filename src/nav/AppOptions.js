@@ -4,6 +4,7 @@ const AppOptions = {
   initialRouteName: 'dashboard',
   headerMode: 'none',
   // defaultNavigationOptions: {
+  //   animationEnabled: false,
   //   headerStyle: {
   //     display: Platform.OS == 'web' ? 'none' : 'flex',
   //     // elevation: 0, // remove shadow on Android
@@ -13,6 +14,11 @@ const AppOptions = {
   //     // pointerEvents: 'none',
   //   },
   // },
+  transitionConfig: () => ({
+    transitionSpec: {
+      duration: 0,
+    },
+  }),
 };
 
 export default AppOptions;
