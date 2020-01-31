@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {
+  Dimensions,
   Platform,
   View,
   Text,
@@ -7,6 +8,9 @@ import {
   ScrollView,
   Picker,
   KeyboardAvoidingView,
+  TouchableOpacity,
+  Linking,
+  Image,
 } from 'react-native';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
@@ -17,6 +21,15 @@ import {encryptPass, decryptPass} from '../utils/utils';
 import s from '../assets/styles/Styles';
 import {vars} from '../assets/styles/Vars';
 import ButtonPrimary from '../components/ButtonPrimary';
+import ButtonSecondary from '../components/ButtonSecondary';
+import ButtonBack from '../components/ButtonBack';
+import HeroDesktop from '../components/HeroDesktop';
+import {
+  isWeb,
+  isLandscape,
+  isPortrait,
+  isScreenDesktop,
+} from '../actions/mediaQuery';
 
 class Login extends Component {
   static navigationOptions = {
@@ -37,8 +50,20 @@ class Login extends Component {
       errorAddress: '',
       label:
         Platform.OS === 'ios' || Platform.OS === 'android' ? 'PIN' : 'Password',
+      isWeb: isWeb(),
+      isLandscape: isLandscape(),
+      isPortrait: isPortrait(),
+      isScreenDesktop: isScreenDesktop(),
     };
     this.checkWallets = this.checkWallets.bind(this);
+
+    Dimensions.addEventListener('change', () => {
+      this.setState({
+        isLandscape: isLandscape(),
+        isPortrait: isPortrait(),
+        isScreenDesktop: isScreenDesktop(),
+      });
+    });
   }
 
   checkWallets() {
@@ -215,128 +240,176 @@ class Login extends Component {
     if (dropdown == null) {
       dropdown = [];
     }
-    return (
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={{flexGrow: 1}}
-        keyboardShouldPersistTaps="handled">
-        <View style={[s.container, s.conCenter]}>
-          <KeyboardAvoidingView
-            behavior="padding"
-            enabled={Platform.OS === 'ios'}>
-            <Spinner visible={this.state.isLoading} />
-            <Text style={s.textTitle}>Welcome Back!</Text>
-            <View
-              style={{
-                marginBottom: 30,
-                flexDirection: 'row',
-                justifyContent: 'left',
-              }}>
-              <Text style={s.textBody}>Please sign in to your account or </Text>
-              <Text style={s.textLink} onPress={() => navigate('import')}>
-                Import Account
-              </Text>
-            </View>
 
-            <View style={s.inputField}>
-              {this.state.showDeleteAccount ? (
-                <Text
-                  style={[s.textErrorInput, s.inputError]}
-                  disabled={this.state.isLoading}
-                  onPress={() => this._onDeleteAccount()}>
-                  Delete this account
-                </Text>
-              ) : null}
-              <Text style={s.inputLabel}>WALLET ADDRESS</Text>
-              <Picker
-                label={'WALLET ADDRESS'}
-                placeholder="Select a wallet address"
-                placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
-                selectedValue={this.state.address}
-                style={[
-                  s.inputPrimary,
-                  this.state.errorAddress ? s.inputError : '',
-                ]}
-                onValueChange={this._onAddressChanged}>
-                {!this.state.isOneWallet ? (
-                  <Picker.Item value={''} label={'Select a wallet address'} />
-                ) : null}
-                {dropdown.map((wallet, index) => {
-                  return (
-                    <Picker.Item
-                      label={wallet.name + ' : ' + wallet.address}
-                      value={wallet.address}
-                      key={index}
-                    />
-                  );
-                })}
-              </Picker>
-              <Text
-                style={[
-                  s.textErrorInput,
-                  this.state.errorAddress ? s.isShow : s.isHide,
-                ]}>
-                {this.state.errorAddress}
-              </Text>
-            </View>
-
-            <View style={s.inputField}>
-              <Text style={s.inputLabel}>
-                {Platform.OS === 'ios' || Platform.OS === 'android'
-                  ? 'PLEASE ENTER A PIN'
-                  : 'PLEASE ENTER A PASSWORD'}
-              </Text>
-              <TextInput
-                label={
-                  Platform.OS === 'ios' || Platform.OS === 'android'
-                    ? 'PIN'
-                    : 'PASSWORD'
-                }
-                placeholder=""
-                placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
-                style={[
-                  s.inputPrimary,
-                  this.state.errorPIN ? s.inputError : '',
-                ]}
-                value={this.state.pin}
-                autoCorrect={false}
-                underlineColorAndroid="transparent"
-                secureTextEntry={true}
-                keyboardType={'number-pad'}
-                textContentType={'password'}
-                onChangeText={this._onPINChanged}
-              />
-              <Text
-                style={[
-                  s.textErrorInput,
-                  this.state.errorPIN ? s.isShow : s.isHide,
-                ]}>
-                {this.state.errorPIN}
-              </Text>
-            </View>
-
-            <Text style={s.textError}>{this.state.error}</Text>
-
-            <ButtonPrimary
-              title="Continue"
-              onPress={this._onButtonPress}
-              disabled={this.state.isLoading}
-            />
-
-            <View
-              style={{
-                marginTop: 6,
-                flexDirection: 'row',
-                justifyContent: 'center',
-              }}>
-              <Text style={s.textDefault}>Don't have an account? </Text>
-              <Text style={s.textLink} onPress={() => navigate('create')}>
-                Create a new wallet
-              </Text>
-            </View>
-          </KeyboardAvoidingView>
+    const logoUnity = this.state.isWeb &&
+      this.state.isScreenDesktop &&
+      this.state.isLandscape && (
+        <TouchableOpacity
+          style={s.homeBrandLogo}
+          activeOpacity={vars.OPACITY_TOUCH}
+          onPress={() => Linking.openURL('https://www.unity.sg/')}>
+          <Image
+            style={{width: 221, height: 64}}
+            source={require('../assets/img/unity-logo-title.png')}
+          />
+        </TouchableOpacity>
+      );
+    const buttonBack = this.state.isWeb &&
+      (!this.state.isScreenDesktop || this.state.isPortrait) && (
+        <View style={s.homeButtonBack}>
+          <ButtonBack
+            title="Back to Home"
+            color="#2e384d"
+            onPress={() => Linking.openURL('https://www.unity.sg/')}
+          />
         </View>
-      </ScrollView>
+      );
+    const heroDesktop = this.state.isScreenDesktop &&
+      this.state.isLandscape &&
+      this.state.isWeb && <HeroDesktop />;
+
+    return (
+      <View>
+        {buttonBack}
+        <ScrollView
+          contentInsetAdjustmentBehavior="automatic"
+          contentContainerStyle={{flexGrow: 1}}
+          keyboardShouldPersistTaps="handled">
+          {logoUnity}
+          <View
+            style={[
+              s.container,
+              s.conCenter,
+              this.state.isWeb &&
+                this.state.isScreenDesktop &&
+                this.state.isLandscape && {
+                  width: vars.WIDTH_HOME_SIDEBAR,
+                  overflowY: 'hidden',
+                },
+              {
+                marginTop: this.state.isScreenDesktop ? 100 : 50,
+                paddingBottom: this.state.isScreenDesktop ? 100 : 10,
+              },
+            ]}>
+            <Spinner visible={this.state.isLoading} />
+            <KeyboardAvoidingView
+              style={s.homeWrpContent}
+              behavior="padding"
+              enabled={Platform.OS === 'ios'}>
+              <Text style={s.textTitle}>Welcome Back!</Text>
+              <Text style={[s.textBody, {marginBottom: 30}]}>
+                Please sign in to your account or{' '}
+                <Text
+                  style={[s.textLink, s.textBold]}
+                  onPress={() => navigate('import')}>
+                  Import Account
+                </Text>
+              </Text>
+
+              <View style={s.inputField}>
+                {this.state.showDeleteAccount ? (
+                  <Text
+                    style={[s.textLinkDanger, s.textBold]}
+                    disabled={this.state.isLoading}
+                    onPress={() => this._onDeleteAccount()}>
+                    Delete this account
+                  </Text>
+                ) : null}
+                <Text style={s.inputLabel}>WALLET ADDRESS</Text>
+                <Picker
+                  label={'WALLET ADDRESS'}
+                  placeholder="Select a wallet address"
+                  placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
+                  selectedValue={this.state.address}
+                  style={[
+                    s.inputPrimary,
+                    this.state.errorAddress ? s.inputError : '',
+                  ]}
+                  onValueChange={this._onAddressChanged}>
+                  {!this.state.isOneWallet ? (
+                    <Picker.Item value={''} label={'Select a wallet address'} />
+                  ) : null}
+                  {dropdown.map((wallet, index) => {
+                    return (
+                      <Picker.Item
+                        label={wallet.name + ' : ' + wallet.address}
+                        value={wallet.address}
+                        key={index}
+                      />
+                    );
+                  })}
+                </Picker>
+                <Text
+                  style={[
+                    s.textErrorInput,
+                    this.state.errorAddress ? s.isShow : s.isHide,
+                  ]}>
+                  {this.state.errorAddress}
+                </Text>
+              </View>
+
+              <View style={s.inputField}>
+                <Text style={s.inputLabel}>
+                  {Platform.OS === 'ios' || Platform.OS === 'android'
+                    ? 'PLEASE ENTER A PIN'
+                    : 'PLEASE ENTER A PASSWORD'}
+                </Text>
+                <TextInput
+                  label={
+                    Platform.OS === 'ios' || Platform.OS === 'android'
+                      ? 'PIN'
+                      : 'PASSWORD'
+                  }
+                  placeholder=""
+                  placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
+                  style={[
+                    s.inputPrimary,
+                    this.state.errorPIN ? s.inputError : '',
+                  ]}
+                  value={this.state.pin}
+                  autoCorrect={false}
+                  underlineColorAndroid="transparent"
+                  secureTextEntry={true}
+                  keyboardType={'number-pad'}
+                  textContentType={'password'}
+                  onChangeText={this._onPINChanged}
+                />
+                <Text
+                  style={[
+                    s.textErrorInput,
+                    this.state.errorPIN ? s.isShow : s.isHide,
+                  ]}>
+                  {this.state.errorPIN}
+                </Text>
+              </View>
+
+              <Text style={s.textError}>{this.state.error}</Text>
+
+              <ButtonPrimary
+                title="Continue"
+                onPress={this._onButtonPress}
+                disabled={this.state.isLoading}
+              />
+
+              <Text
+                style={[
+                  s.textDefault,
+                  {
+                    marginTop: 6,
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                  },
+                ]}>
+                Don't have an account?{' '}
+                <Text style={s.textLink} onPress={() => navigate('create')}>
+                  Create a new wallet
+                </Text>
+              </Text>
+            </KeyboardAvoidingView>
+          </View>
+          {heroDesktop}
+        </ScrollView>
+      </View>
     );
   }
 }

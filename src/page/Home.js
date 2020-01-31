@@ -95,6 +95,7 @@ const styles = {
     backgroundColor: '#fff',
     flex: 1,
     maxWidth: 500,
+    alignSelf: 'center',
   },
   logoViewStyle: {
     marginTop: 35,
