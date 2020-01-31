@@ -1,17 +1,7 @@
 import React, {Component} from 'react';
-import {
-  View,
-  Text,
-  Button,
-  ScrollView,
-  TouchableOpacity,
-  Clipboard,
-  TouchableHighlight,
-} from 'react-native';
 import Modal from 'modal-enhanced-react-native-web';
 import ConfirmBackup from './seedbackup/ConfirmBackup';
 import ShowSeed from './seedbackup/ShowSeed';
-import {Spinner} from './Spinner';
 
 class SeedBackupModal extends Component {
   constructor(props) {
@@ -28,8 +18,9 @@ class SeedBackupModal extends Component {
 
   render() {
     return (
-      <Modal isVisible={this.props.isVisible}>
-        <Spinner visible={this.props.isLoading} />
+      <Modal
+        // presentationStyle="overFullScreen"
+        isVisible={this.props.isVisible}>
         {this.state.isConfirmPage && (
           <ConfirmBackup confirmPage={this.confirmPage} {...this.props} />
         )}

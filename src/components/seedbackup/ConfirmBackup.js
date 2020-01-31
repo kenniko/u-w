@@ -8,6 +8,10 @@ import {
   Clipboard,
   TouchableHighlight,
 } from 'react-native';
+import IconClose from '../icon/IconClose';
+import ButtonPrimary from '../../components/ButtonPrimary';
+import s from '../../assets/styles/Styles';
+import {vars} from '../../assets/styles/Vars';
 
 class ConfirmBackup extends Component {
   constructor(props) {
@@ -97,12 +101,13 @@ class ConfirmBackup extends Component {
     let btns = [];
     for (let i = 0; i < selectedBtnPhrase.length; i++) {
       btns.push(
-        <View style={styles.seedButtonStyle} key={i}>
-          <TouchableOpacity
-            onPress={() => this.onSelectedPrhaseBtnClick(selectedBtnPhrase[i])}>
-            <Text style={styles.seedText}>{selectedBtnPhrase[i]}</Text>
-          </TouchableOpacity>
-        </View>,
+        <TouchableOpacity
+          style={s.seedOn}
+          key={i}
+          activeOpacity={vars.OPACITY_TOUCH}
+          onPress={() => this.onSelectedPrhaseBtnClick(selectedBtnPhrase[i])}>
+          <Text style={s.seedTextWhite}>{selectedBtnPhrase[i]}</Text>
+        </TouchableOpacity>,
       );
     }
     return btns;
@@ -112,12 +117,13 @@ class ConfirmBackup extends Component {
     let btns = [];
     for (let i = 0; i < randomPhraseArr.length; i++) {
       btns.push(
-        <View style={styles.seedButtonStyle} key={i}>
-          <TouchableOpacity
-            onPress={() => this.onRandomPrhaseBtnClick(randomPhraseArr[i])}>
-            <Text style={styles.seedText}>{randomPhraseArr[i]}</Text>
-          </TouchableOpacity>
-        </View>,
+        <TouchableOpacity
+          style={s.seedOff}
+          key={i}
+          activeOpacity={vars.OPACITY_TOUCH}
+          onPress={() => this.onRandomPrhaseBtnClick(randomPhraseArr[i])}>
+          <Text style={s.seedTextGreen}>{randomPhraseArr[i]}</Text>
+        </TouchableOpacity>,
       );
     }
     return btns;
@@ -125,87 +131,43 @@ class ConfirmBackup extends Component {
 
   render() {
     return (
-      <View style={styles.containerStyle}>
-        <View style={styles.TitleModalStyle}>
-          <Text style={styles.textTitleModal}>Confirm Backup Phrase</Text>
-          <Text style={styles.textContentModal}>
-            Verify your Backup Seed Phrase or {this.props.is_phrase_saved}
+      <View style={s.modalContainer}>
+        <View style={s.modalHeader}>
+          <Text style={s.modalTitle}>BACKUP SEED PHRASE</Text>
+          <TouchableOpacity
+            style={s.modalClose}
+            activeOpacity={vars.OPACITY_TOUCH}
+            onPress={() => this.props.toggleModal()}>
+            <IconClose style={s.modalCloseIcon} fill={vars.COLOR_GREY} />
+          </TouchableOpacity>
+        </View>
+
+        <ScrollView style={s.modalBody}>
+          <Text style={s.textBodyBlack}>
+            Verify your Backup Seed Phrase or{' '}
+            <Text
+              style={[s.textLink, s.textBold]}
+              onPress={() => this.props.confirmPage()}>
+              go back
+            </Text>
           </Text>
-          <Text style={styles.textContentModal}>
-            <TouchableOpacity onPress={() => this.props.confirmPage()}>
-              <Text>Go Back</Text>
-            </TouchableOpacity>
-          </Text>
-          <View>
+          <View style={[s.boxDash, s.wrpSeed]}>
             {this.createSelectedPhraseBtn(this.state.selectedBtnPhrase)}
           </View>
-          <Text style={styles.textContentModal}>
-            Please, tap each word in the correct order
-          </Text>
-          <View style={styles.TitleModalStyle}>
+          <View style={s.wrpSeed}>
             {this.createRandomPhraseBtn(this.state.selectionBtnPhrase)}
           </View>
-        </View>
-        <View style={styles.buttonStyle}>
-          <Button
-            title="Confirm"
-            disabled={!this.state.correctPhraseOrder}
-            onPress={this.onConfirmPhrase}
-          />
-        </View>
+          <View style={{marginTop: 20, marginBottom: 30}}>
+            <ButtonPrimary
+              title="Confirmation"
+              disabled={!this.state.correctPhraseOrder}
+              onPress={this.onConfirmPhrase}
+            />
+          </View>
+        </ScrollView>
       </View>
     );
   }
 }
 
 export default ConfirmBackup;
-
-const styles = {
-  containerStyle: {
-    backgroundColor: '#fff',
-    flex: 1,
-  },
-  TitleModalStyle: {
-    marginTop: 35,
-    marginBottom: 5,
-    marginLeft: 10,
-    marginRight: 10,
-    alignItems: 'center',
-  },
-  seedViewStyle: {
-    marginTop: 35,
-    marginBottom: 5,
-    marginLeft: 10,
-    marginRight: 10,
-    padding: 20,
-    paddingTop: 15,
-    backgroundColor: '#d8d8d8',
-    alignItems: 'center',
-  },
-  textTitleModal: {
-    color: '#7d62d9',
-    fontSize: 20,
-    fontWeight: '500',
-    alignItems: 'center',
-    textAlign: 'center',
-  },
-  textContentModal: {
-    color: '#8e8e8e',
-    fontSize: 15,
-    fontWeight: '500',
-    alignItems: 'center',
-    textAlign: 'center',
-  },
-  seedText: {
-    color: '#003333',
-    fontSize: 15,
-    fontWeight: '600',
-    alignItems: 'center',
-    textAlign: 'center',
-  },
-  buttonStyle: {
-    paddingLeft: 12,
-    paddingRight: 12,
-    marginTop: 50,
-  },
-};

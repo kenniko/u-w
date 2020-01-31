@@ -1,11 +1,15 @@
 import React from 'react';
 import {
+  Dimensions,
   Platform,
   View,
   Text,
   TextInput,
   ScrollView,
   KeyboardAvoidingView,
+  TouchableOpacity,
+  Linking,
+  Image,
 } from 'react-native';
 import {NavigationActions, StackActions} from 'react-navigation';
 import {Spinner} from '../Spinner';
@@ -16,6 +20,14 @@ import {encryptPass} from '../../utils/utils';
 import s from '../../assets/styles/Styles';
 import {vars} from '../../assets/styles/Vars';
 import ButtonPrimary from '../../components/ButtonPrimary';
+import ButtonBack from '../ButtonBack';
+import HeroDesktop from '../HeroDesktop';
+import {
+  isWeb,
+  isLandscape,
+  isPortrait,
+  isScreenDesktop,
+} from '../../actions/mediaQuery';
 
 class ImportScreen1 extends React.Component {
   static navigationOptions = {
@@ -41,7 +53,19 @@ class ImportScreen1 extends React.Component {
       errorFP: '',
       label:
         Platform.OS === 'ios' || Platform.OS === 'android' ? 'PIN' : 'Password',
+      isWeb: isWeb(),
+      isLandscape: isLandscape(),
+      isPortrait: isPortrait(),
+      isScreenDesktop: isScreenDesktop(),
     };
+
+    Dimensions.addEventListener('change', () => {
+      this.setState({
+        isLandscape: isLandscape(),
+        isPortrait: isPortrait(),
+        isScreenDesktop: isScreenDesktop(),
+      });
+    });
   }
 
   redirectTo(page, params) {
@@ -197,171 +221,219 @@ class ImportScreen1 extends React.Component {
   render() {
     const {navigate} = this.props.navigation;
 
-    return (
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={{flexGrow: 1}}
-        keyboardShouldPersistTaps="handled">
-        <View style={[s.container, s.conCenter]}>
-          <KeyboardAvoidingView
-            behavior="padding"
-            enabled={Platform.OS === 'ios'}>
-            <Spinner visible={this.state.isLoading} />
-            <Text style={s.textTitle}>Import Wallet</Text>
-            <View
-              style={{
-                marginBottom: 30,
-                flexDirection: 'row',
-                justifyContent: 'left',
-              }}>
-              <Text style={s.textBody}>
-                Import your wallet from backup seed phrase or{' '}
-              </Text>
-              <Text style={s.textLink} onPress={() => navigate('signin')}>
-                Go Back
-              </Text>
-            </View>
-
-            <View style={s.inputField}>
-              <Text style={s.inputLabel}>BACKUP SEED PHRASE</Text>
-              <TextInput
-                label="BACKUP SEED PHRASE"
-                placeholder="Enter your Backup Seed Phrase"
-                placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
-                style={[
-                  s.inputPrimary,
-                  this.state.errorPhrase ? s.inputError : '',
-                ]}
-                value={this.state.phrase}
-                autoCorrect={false}
-                autoFocus={true}
-                underlineColorAndroid="transparent"
-                textContentType={'name'}
-                onChangeText={this._onPhraseChanged}
-              />
-              <Text
-                style={[s.textErrorInput, !this.state.errorPhrase && s.isHide]}>
-                {this.state.errorPhrase}
-              </Text>
-            </View>
-
-            <View style={s.inputField}>
-              <Text style={s.inputLabel}>WALLET ADDRESS</Text>
-              <TextInput
-                label="WALLET ADDRESS"
-                placeholder="Wallet Address"
-                placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
-                style={[
-                  s.inputPrimary,
-                  this.state.errorAddress ? s.inputError : '',
-                ]}
-                value={this.state.address}
-                autoCorrect={false}
-                autoFocus={false}
-                editable={false}
-                underlineColorAndroid="transparent"
-                textContentType={'username'}
-                onChangeText={this._onAddressChanged}
-              />
-              <Text
-                style={[
-                  s.textErrorInput,
-                  !this.state.errorAddress && s.isHide,
-                ]}>
-                {this.state.errorAddress}
-              </Text>
-            </View>
-
-            <View style={s.inputField}>
-              <Text style={s.inputLabel}>
-                {Platform.OS === 'ios' || Platform.OS === 'android'
-                  ? 'PLEASE ENTER A PIN'
-                  : 'PLEASE ENTER A PASSWORD'}
-              </Text>
-              <TextInput
-                label={
-                  Platform.OS === 'ios' || Platform.OS === 'android'
-                    ? 'PIN'
-                    : 'PASSWORD'
-                }
-                placeholder="Enter 8 characters or more"
-                placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
-                style={[
-                  s.inputPrimary,
-                  this.state.errorPIN ? s.inputError : '',
-                ]}
-                value={this.state.pin}
-                autoCorrect={false}
-                underlineColorAndroid="transparent"
-                secureTextEntry={true}
-                keyboardType={'number-pad'}
-                textContentType={'password'}
-                onChangeText={this._onPINChanged}
-              />
-              <Text
-                style={[
-                  s.textErrorInput,
-                  this.state.errorPIN ? s.isShow : s.isHide,
-                ]}>
-                {this.state.errorPIN}
-              </Text>
-            </View>
-
-            <View style={s.inputField}>
-              <Text style={s.inputLabel}>
-                {Platform.OS === 'ios' || Platform.OS === 'android'
-                  ? 'CONFIRM PIN'
-                  : 'CONFIRM PASSWORD'}
-              </Text>
-              <TextInput
-                label={
-                  Platform.OS === 'ios' || Platform.OS === 'android'
-                    ? 'CONFIRM PIN'
-                    : 'CONFIRM PASSWORD'
-                }
-                placeholder={
-                  Platform.OS === 'ios' || Platform.OS === 'android'
-                    ? 'Re-enter your PIN'
-                    : 'Re-enter your password'
-                }
-                placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
-                style={[
-                  s.inputPrimary,
-                  this.state.errorConfPIN ? s.inputError : '',
-                ]}
-                value={this.state.confirm_pin}
-                autoCorrect={false}
-                underlineColorAndroid="transparent"
-                secureTextEntry={true}
-                keyboardType={'number-pad'}
-                textContentType={'password'}
-                onChangeText={this._onConfirmPINChanged}
-              />
-              <Text
-                style={[
-                  s.textErrorInput,
-                  this.state.errorConfPIN ? s.isShow : s.isHide,
-                ]}>
-                {this.state.errorConfPIN}
-              </Text>
-            </View>
-
-            <Text style={s.textError}>{this.props.error}</Text>
-
-            <View
-              style={{
-                marginTop: 6,
-                flexDirection: 'row',
-                justifyContent: 'center',
-              }}>
-              <Text style={s.textDefault}>Don't have an account? </Text>
-              <Text style={s.textLink} onPress={() => navigate('create')}>
-                Create a new wallet
-              </Text>
-            </View>
-          </KeyboardAvoidingView>
+    const logoUnity = this.state.isWeb &&
+      this.state.isScreenDesktop &&
+      this.state.isLandscape && (
+        <TouchableOpacity
+          style={s.homeBrandLogo}
+          activeOpacity={vars.OPACITY_TOUCH}
+          onPress={() => Linking.openURL('https://www.unity.sg/')}>
+          <Image
+            style={{width: 221, height: 64}}
+            source={require('../../assets/img/unity-logo-title.png')}
+          />
+        </TouchableOpacity>
+      );
+    const buttonBack = this.state.isWeb &&
+      (!this.state.isScreenDesktop || this.state.isPortrait) && (
+        <View style={s.homeButtonBack}>
+          <ButtonBack
+            title="Back to Home"
+            color="#2e384d"
+            onPress={() => Linking.openURL('https://www.unity.sg/')}
+          />
         </View>
-      </ScrollView>
+      );
+    const heroDesktop = this.state.isScreenDesktop &&
+      this.state.isLandscape &&
+      this.state.isWeb && <HeroDesktop />;
+
+    return (
+      <View>
+        {buttonBack}
+        <ScrollView
+          contentInsetAdjustmentBehavior="automatic"
+          contentContainerStyle={{flexGrow: 1}}
+          keyboardShouldPersistTaps="handled">
+          {logoUnity}
+          <View
+            style={[
+              s.container,
+              s.conCenter,
+              this.state.isWeb &&
+                this.state.isScreenDesktop &&
+                this.state.isLandscape && {
+                  width: vars.WIDTH_HOME_SIDEBAR,
+                  overflowY: 'hidden',
+                },
+              {
+                marginTop: this.state.isScreenDesktop ? 100 : 50,
+                paddingBottom: this.state.isScreenDesktop ? 100 : 10,
+              },
+            ]}>
+            <Spinner visible={this.state.isLoading} />
+            <KeyboardAvoidingView
+              style={s.homeWrpContent}
+              behavior="padding"
+              enabled={Platform.OS === 'ios'}>
+              <Text style={s.textTitle}>Import Wallet</Text>
+              <Text style={[s.textBody, {marginBottom: 30}]}>
+                Import your wallet from Backup Seed Phrase or{' '}
+                <Text
+                  style={[s.textLink, s.textBold]}
+                  onPress={() => navigate('signin')}>
+                  Go Back
+                </Text>
+              </Text>
+
+              <View style={s.inputField}>
+                <Text style={s.inputLabel}>BACKUP SEED PHRASE</Text>
+                <TextInput
+                  label="BACKUP SEED PHRASE"
+                  placeholder="Enter your Backup Seed Phrase"
+                  placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
+                  style={[
+                    s.inputPrimary,
+                    this.state.errorPhrase ? s.inputError : '',
+                  ]}
+                  value={this.state.phrase}
+                  autoCorrect={false}
+                  autoFocus={true}
+                  underlineColorAndroid="transparent"
+                  textContentType={'name'}
+                  onChangeText={this._onPhraseChanged}
+                />
+                <Text
+                  style={[
+                    s.textErrorInput,
+                    !this.state.errorPhrase && s.isHide,
+                  ]}>
+                  {this.state.errorPhrase}
+                </Text>
+              </View>
+
+              <View style={s.inputField}>
+                <Text style={s.inputLabel}>WALLET ADDRESS</Text>
+                <TextInput
+                  label="WALLET ADDRESS"
+                  placeholder="Enter your Wallet Address"
+                  placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
+                  style={[
+                    s.inputPrimary,
+                    this.state.errorAddress ? s.inputError : '',
+                  ]}
+                  value={this.state.address}
+                  autoCorrect={false}
+                  autoFocus={false}
+                  editable={false}
+                  underlineColorAndroid="transparent"
+                  textContentType={'username'}
+                  onChangeText={this._onAddressChanged}
+                />
+                <Text
+                  style={[
+                    s.textErrorInput,
+                    !this.state.errorAddress && s.isHide,
+                  ]}>
+                  {this.state.errorAddress}
+                </Text>
+              </View>
+
+              <View style={s.inputField}>
+                <Text style={s.inputLabel}>
+                  {Platform.OS === 'ios' || Platform.OS === 'android'
+                    ? 'CREATE NEW PIN'
+                    : 'CREATE NEW PASSWORD'}
+                </Text>
+                <TextInput
+                  label={
+                    Platform.OS === 'ios' || Platform.OS === 'android'
+                      ? 'PIN'
+                      : 'PASSWORD'
+                  }
+                  placeholder="Enter 8 characters or more"
+                  placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
+                  style={[
+                    s.inputPrimary,
+                    this.state.errorPIN ? s.inputError : '',
+                  ]}
+                  value={this.state.pin}
+                  autoCorrect={false}
+                  underlineColorAndroid="transparent"
+                  secureTextEntry={true}
+                  keyboardType={'number-pad'}
+                  textContentType={'password'}
+                  onChangeText={this._onPINChanged}
+                />
+                <Text
+                  style={[
+                    s.textErrorInput,
+                    this.state.errorPIN ? s.isShow : s.isHide,
+                  ]}>
+                  {this.state.errorPIN}
+                </Text>
+              </View>
+
+              <View style={s.inputField}>
+                <Text style={s.inputLabel}>
+                  {Platform.OS === 'ios' || Platform.OS === 'android'
+                    ? 'CONFIRM PIN'
+                    : 'CONFIRM PASSWORD'}
+                </Text>
+                <TextInput
+                  label={
+                    Platform.OS === 'ios' || Platform.OS === 'android'
+                      ? 'CONFIRM PIN'
+                      : 'CONFIRM PASSWORD'
+                  }
+                  placeholder={
+                    Platform.OS === 'ios' || Platform.OS === 'android'
+                      ? 'Re-enter your PIN'
+                      : 'Re-enter your password'
+                  }
+                  placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
+                  style={[
+                    s.inputPrimary,
+                    this.state.errorConfPIN ? s.inputError : '',
+                  ]}
+                  value={this.state.confirm_pin}
+                  autoCorrect={false}
+                  underlineColorAndroid="transparent"
+                  secureTextEntry={true}
+                  keyboardType={'number-pad'}
+                  textContentType={'password'}
+                  onChangeText={this._onConfirmPINChanged}
+                />
+                <Text
+                  style={[
+                    s.textErrorInput,
+                    this.state.errorConfPIN ? s.isShow : s.isHide,
+                  ]}>
+                  {this.state.errorConfPIN}
+                </Text>
+              </View>
+
+              <Text style={s.textError}>{this.props.error}</Text>
+
+              <Text
+                style={[
+                  s.textDefault,
+                  {
+                    marginTop: 6,
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                  },
+                ]}>
+                Don't have an account?{' '}
+                <Text style={s.textLink} onPress={() => navigate('create')}>
+                  Create a new wallet
+                </Text>
+              </Text>
+            </KeyboardAvoidingView>
+          </View>
+          {heroDesktop}
+        </ScrollView>
+      </View>
     );
   }
 }
@@ -375,79 +447,3 @@ export default reduxForm({
   form: 'import',
   destroyOnUnmount: true,
 })(ImportScreen1);
-
-const styles = {
-  containerStyle: {
-    backgroundColor: '#fff',
-    flex: 1,
-  },
-  logoViewStyle: {
-    marginTop: 35,
-    marginBottom: 5,
-    alignItems: 'center',
-  },
-  logoTextTitle: {
-    color: '#7d62d9',
-    fontSize: 30,
-    fontWeight: '600',
-  },
-  logoTextSubTitle: {
-    color: '#8e8e8e',
-    fontSize: 13,
-    fontWeight: '500',
-  },
-  errorText: {
-    color: '#a94442',
-    fontSize: 13,
-    fontWeight: '500',
-    textAlign: 'right',
-  },
-  linkTextSubTitle: {
-    color: '#7d62d9',
-    fontSize: 13,
-    fontWeight: '500',
-    textAlign: 'center',
-  },
-  inputViewStyle: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 5,
-    paddingLeft: 8,
-    paddingRight: 8,
-    marginLeft: 28,
-    marginRight: 28,
-    marginTop: 8,
-  },
-  inputStyle: {
-    alignItems: 'center',
-    fontSize: 13,
-    backgroundColor: '#fff',
-  },
-  buttonStyle: {
-    paddingLeft: 12,
-    paddingRight: 12,
-    marginTop: 30,
-  },
-  linkStyle: {
-    alignItems: 'center',
-    paddingLeft: 12,
-    paddingRight: 12,
-    marginTop: 30,
-  },
-  errorTextStyle: {
-    alignSelf: 'center',
-    fontSize: 12,
-    color: '#e03131',
-  },
-  footerViewStyle: {
-    paddingLeft: 28,
-    paddingRight: 28,
-    marginTop: 45,
-    flexDirection: 'column',
-  },
-  footerTextStyle: {
-    alignSelf: 'center',
-    fontSize: 12,
-    color: '#8e8e8e',
-  },
-};

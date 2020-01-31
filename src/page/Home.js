@@ -4,6 +4,9 @@ import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as ReduxActions from '../actions';
 import {NavigationActions, StackActions} from 'react-navigation';
+import s from '../assets/styles/Styles';
+import {vars} from '../assets/styles/Vars';
+import ButtonPrimary from '../components/ButtonPrimary';
 
 class Home extends React.Component {
   constructor(props) {
@@ -44,11 +47,11 @@ class Home extends React.Component {
     return (
       <View style={styles.containerStyle}>
         <View style={styles.logoViewStyle}>
-          <Text style={styles.logoTextTitle}>
+          <Text style={s.textTitle}>
             Welcome{' '}
             {this.props.loginData !== null ? this.props.loginData.name : ''}
           </Text>
-          <Text style={styles.logoTextSubTitle}>
+          <Text style={s.textBodyBlack}>
             {this.props.loginData !== null
               ? 'Your address : ' + this.props.loginData.address
               : ''}
@@ -56,7 +59,7 @@ class Home extends React.Component {
         </View>
 
         <View style={styles.buttonStyle}>
-          <Button
+          <ButtonPrimary
             title="Log out"
             onPress={this._onButtonLogoutPress}
             disabled={this.state.isLoading}
@@ -91,6 +94,7 @@ const styles = {
   containerStyle: {
     backgroundColor: '#fff',
     flex: 1,
+    maxWidth: 500,
   },
   logoViewStyle: {
     marginTop: 35,

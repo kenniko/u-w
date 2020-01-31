@@ -37,15 +37,11 @@ class App extends React.Component {
 
   render() {
     return (
-      <SafeAreaView style={{flex: 1, fontFamily: 'San Francisco'}}>
-        <View style={{flex: 1, fontFamily: 'Roboto'}}>
-          <Provider store={store}>
-            <PersistGate loading={null} persistor={persistor}>
-              <AppNav />
-            </PersistGate>
-          </Provider>
-        </View>
-      </SafeAreaView>
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <AppNav />
+        </PersistGate>
+      </Provider>
     );
   }
 }
