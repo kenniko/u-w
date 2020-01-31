@@ -272,8 +272,8 @@ class RegisterScreen1 extends React.Component {
                   },
                 ]}>
                 Already have an account?{' '}
-                <Text style={s.textLink} onPress={() => navigate('import')}>
-                  Import Wallet
+                <Text style={s.textLink} onPress={() => navigate('signin')}>
+                  Sign In Wallet
                 </Text>
               </Text>
             </KeyboardAvoidingView>
