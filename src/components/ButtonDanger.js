@@ -7,7 +7,7 @@ export default class ButtonDanger extends React.Component {
     return (
       <TouchableOpacity
         onPress={this.props.onPress}
-        style={styles.buttonDanger}
+        style={[styles.buttonDanger, this.props.disabled && {opacity: 0.5}]}
         activeOpacity={vars.OPACITY_TOUCH}
         disabled={this.props.disabled}>
         <Text style={styles.buttonDangerText}>{this.props.title}</Text>

@@ -156,6 +156,7 @@ export default StyleSheet.create({
     flex: 1,
     backgroundColor: '#ffffff',
     maxWidth: 540,
+    width: '100%',
     borderRadius: 7,
     alignSelf: 'center',
   },
@@ -183,6 +184,39 @@ export default StyleSheet.create({
     flex: 1,
     paddingVertical: 30,
     paddingHorizontal: 20,
+  },
+  seedOn: {
+    backgroundColor: vars.COLOR_SUCCESS,
+    borderRadius: 4,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+    margin: 5,
+  },
+  seedTextWhite: {
+    fontFamily: 'Rubik-Regular',
+    fontSize: 15,
+    color: '#ffffff',
+  },
+  wrpSeed: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    flexWrap: 'wrap',
+  },
+  seedOff: {
+    backgroundColor: '#ffffff',
+    borderRadius: 4,
+    borderWidth: 1,
+    borderStyle: 'solid',
+    borderColor: vars.COLOR_GREY_LIGHT,
+    paddingHorizontal: 10,
+    paddingVertical: 7,
+    margin: 5,
+  },
+  seedTextGreen: {
+    fontFamily: 'Rubik-Regular',
+    fontSize: 15,
+    color: vars.COLOR_SUCCESS,
   },
 
   //   footerViewStyle: {

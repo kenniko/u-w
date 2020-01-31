@@ -1,6 +1,6 @@
 import React, {Component} from 'react';
 import {
-  Dimensions,
+  // Dimensions,
   View,
   Text,
   Button,
@@ -13,21 +13,21 @@ import IconClose from '../icon/IconClose';
 import ButtonPrimary from '../../components/ButtonPrimary';
 import s from '../../assets/styles/Styles';
 import {vars} from '../../assets/styles/Vars';
-import {isScreenDesktop} from '../../actions/mediaQuery';
+// import {isScreenDesktop} from '../../actions/mediaQuery';
 
 class ShowSeed extends Component {
   constructor(props) {
     super(props);
     this.state = {
       error: '',
-      isScreenDesktop: isScreenDesktop(),
+      // isScreenDesktop: isScreenDesktop(),
     };
 
-    Dimensions.addEventListener('change', () => {
-      this.setState({
-        isScreenDesktop: isScreenDesktop(),
-      });
-    });
+    // Dimensions.addEventListener('change', () => {
+    //   this.setState({
+    //     isScreenDesktop: isScreenDesktop(),
+    //   });
+    // });
   }
 
   render() {

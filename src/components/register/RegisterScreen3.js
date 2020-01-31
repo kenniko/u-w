@@ -37,8 +37,6 @@ class RegisterScreen2 extends Component {
         isScreenDesktop: isScreenDesktop(),
       });
     });
-
-    this.refs.ListView_Reference.scrollTo({animated: false}, 0);
   }
 
   redirectTo(page, params) {

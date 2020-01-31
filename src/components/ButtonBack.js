@@ -10,7 +10,11 @@ export default class ButtonBack extends React.Component {
       <TouchableOpacity
         onPress={this.props.onPress}
         activeOpacity={vars.OPACITY_TOUCH}
-        style={[styles.buttonBack, this.props.hide && s.isHide]}
+        style={[
+          styles.buttonBack,
+          this.props.hide && s.isHide,
+          this.props.disabled && {opacity: 0.5},
+        ]}
         disabled={this.props.disabled}>
         <IconChevronLeft
           style={styles.buttonBackIcon}
