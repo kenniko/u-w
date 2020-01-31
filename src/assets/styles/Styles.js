@@ -62,6 +62,13 @@ export default StyleSheet.create({
     color: vars.COLOR_PRIMARY,
     marginVertical: vars.GAP_TEXT,
   },
+  textLinkDanger: {
+    fontFamily: 'Rubik-Regular',
+    fontSize: 15,
+    lineHeight: 22,
+    color: vars.COLOR_DANGER,
+    marginVertical: vars.GAP_TEXT,
+  },
   textBold: {
     fontFamily: 'Rubik-Bold',
   },
