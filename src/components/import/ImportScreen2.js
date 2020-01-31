@@ -1,5 +1,9 @@
 import React from 'react';
 import {
+  Dimensions,
+  TouchableOpacity,
+  Linking,
+  Image,
   Platform,
   View,
   Text,
@@ -13,7 +17,15 @@ import PropTypes from 'prop-types';
 import {reduxForm} from 'redux-form';
 import s from '../../assets/styles/Styles';
 import {vars} from '../../assets/styles/Vars';
-import ButtonPrimary from '../ButtonPrimary';
+import ButtonPrimary from '../../components/ButtonPrimary';
+import ButtonBack from '../../components/ButtonBack';
+import HeroDesktop from '../../components/HeroDesktop';
+import {
+  isWeb,
+  isLandscape,
+  isPortrait,
+  isScreenDesktop,
+} from '../../actions/mediaQuery';
 
 class ImportScreen2 extends React.Component {
   static navigationOptions = {
@@ -30,7 +42,19 @@ class ImportScreen2 extends React.Component {
       telegram_id: '',
       error: '',
       errorEmail: '',
+      isWeb: isWeb(),
+      isLandscape: isLandscape(),
+      isPortrait: isPortrait(),
+      isScreenDesktop: isScreenDesktop(),
     };
+
+    Dimensions.addEventListener('change', () => {
+      this.setState({
+        isLandscape: isLandscape(),
+        isPortrait: isPortrait(),
+        isScreenDesktop: isScreenDesktop(),
+      });
+    });
   }
 
   redirectTo(page, params) {
@@ -128,102 +152,152 @@ class ImportScreen2 extends React.Component {
   render() {
     const {handleSubmit} = this.props;
 
-    return (
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        contentContainerStyle={{flexGrow: 1}}
-        keyboardShouldPersistTaps="handled">
-        <View style={[s.container, s.conCenter]}>
-          <KeyboardAvoidingView
-            behavior="padding"
-            enabled={Platform.OS === 'ios'}>
-            <Spinner visible={this.state.isLoading} />
-            <Text style={s.textTitle}>Import Wallet</Text>
-            <Text style={[s.textBody, {marginBottom: 30}]}>
-              Fill out the details below to create your secure wallet.
-            </Text>
-
-            <View
-              style={{
-                marginTop: 6,
-                flexDirection: 'row',
-                justifyContent: 'left',
-              }}>
-              <Text
-                style={s.textLink}
-                onPress={() => this.props.onGoToHandler(1)}>
-                &#60; BACK
-              </Text>
-            </View>
-
-            <View style={[s.inputField, {marginTop: 20}]}>
-              <Text style={s.inputLabel}>FULL NAME (Optional)</Text>
-              <TextInput
-                label="Name"
-                placeholder="What's your full name?"
-                placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
-                style={[s.inputPrimary]}
-                value={this.state.name}
-                autoCorrect={false}
-                autoFocus={true}
-                underlineColorAndroid="transparent"
-                textContentType={'name'}
-                onChangeText={this._onNameChanged}
-              />
-            </View>
-
-            <View style={s.inputField}>
-              <Text style={s.inputLabel}>EMAIL ADDRESS (Optional)</Text>
-              <TextInput
-                label="Email"
-                placeholder="you@example.com"
-                placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
-                style={[
-                  s.inputPrimary,
-                  this.state.errorEmail ? s.inputError : '',
-                ]}
-                value={this.state.email}
-                autoCorrect={false}
-                textContentType={'emailAddress'}
-                underlineColorAndroid="transparent"
-                onChangeText={this._onEmailChanged}
-              />
-              <Text
-                style={[s.textErrorInput, !this.state.errorEmail && s.isHide]}>
-                {this.state.errorEmail}
-              </Text>
-            </View>
-
-            <View style={s.inputField}>
-              <Text style={s.inputLabel}>TELEGRAM ID (Optional)</Text>
-              <TextInput
-                label="Telegram ID"
-                placeholder="Your telegram ID"
-                placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
-                style={[
-                  s.inputPrimary,
-                  this.state.errorPass ? s.inputError : '',
-                ]}
-                value={this.state.telegram_id}
-                autoCorrect={false}
-                underlineColorAndroid="transparent"
-                onChangeText={this._onTelegramIDChanged}
-              />
-              <Text style={s.textHelp}>
-                This will allow automatic VIP membership for token holders
-              </Text>
-            </View>
-
-            <Text style={s.textError}>{this.props.error}</Text>
-
-            <ButtonPrimary
-              title="Continue"
-              onPress={handleSubmit(this._onButtonPress)}
-              disabled={this.state.isLoading}
-            />
-          </KeyboardAvoidingView>
+    const logoUnity = this.state.isWeb &&
+      this.state.isScreenDesktop &&
+      this.state.isLandscape && (
+        <TouchableOpacity
+          style={s.homeBrandLogo}
+          activeOpacity={vars.OPACITY_TOUCH}
+          onPress={() => Linking.openURL('https://www.unity.sg/')}>
+          <Image
+            style={{width: 221, height: 64}}
+            source={require('../../assets/img/unity-logo-title.png')}
+          />
+        </TouchableOpacity>
+      );
+    const buttonBack = this.state.isWeb &&
+      (!this.state.isScreenDesktop || this.state.isPortrait) && (
+        <View style={s.homeButtonBack}>
+          <ButtonBack
+            title="Back to Home"
+            color="#2e384d"
+            onPress={() => Linking.openURL('https://www.unity.sg/')}
+          />
         </View>
-      </ScrollView>
+      );
+    const heroDesktop = this.state.isScreenDesktop &&
+      this.state.isLandscape &&
+      this.state.isWeb && <HeroDesktop />;
+
+    return (
+      <View>
+        {buttonBack}
+        <ScrollView
+          contentInsetAdjustmentBehavior="automatic"
+          contentContainerStyle={{flexGrow: 1}}
+          keyboardShouldPersistTaps="handled">
+          {logoUnity}
+          <View
+            style={[
+              s.container,
+              s.conCenter,
+              this.state.isWeb &&
+                this.state.isScreenDesktop &&
+                this.state.isLandscape && {
+                  width: vars.WIDTH_HOME_SIDEBAR,
+                  overflowY: 'hidden',
+                },
+              {
+                marginTop: this.state.isScreenDesktop ? 100 : 50,
+                paddingBottom: this.state.isScreenDesktop ? 100 : 10,
+              },
+            ]}>
+            <Spinner visible={this.state.isLoading} />
+            <KeyboardAvoidingView
+              style={s.homeWrpContent}
+              behavior="padding"
+              enabled={Platform.OS === 'ios'}>
+              <Text style={s.textTitle}>Import Wallet</Text>
+              <Text style={[s.textBody, {marginBottom: 30}]}>
+                Fill out the details below to create your secure wallet.
+              </Text>
+
+              <View
+                style={{
+                  marginTop: 6,
+                  flexDirection: 'row',
+                  justifyContent: 'left',
+                }}>
+                <ButtonBack
+                  title="Re-import"
+                  color={vars.COLOR_PRIMARY}
+                  onPress={() => this.props.onGoToHandler()}
+                />
+              </View>
+
+              <View style={[s.inputField, {marginTop: 20}]}>
+                <Text style={s.inputLabel}>FULL NAME (Optional)</Text>
+                <TextInput
+                  label="Name"
+                  placeholder="What's your full name?"
+                  placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
+                  style={[s.inputPrimary]}
+                  value={this.state.name}
+                  autoCorrect={false}
+                  autoFocus={true}
+                  underlineColorAndroid="transparent"
+                  textContentType={'name'}
+                  onChangeText={this._onNameChanged}
+                />
+              </View>
+
+              <View style={s.inputField}>
+                <Text style={s.inputLabel}>EMAIL ADDRESS (Optional)</Text>
+                <TextInput
+                  label="Email"
+                  placeholder="you@example.com"
+                  placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
+                  style={[
+                    s.inputPrimary,
+                    this.state.errorEmail ? s.inputError : '',
+                  ]}
+                  value={this.state.email}
+                  autoCorrect={false}
+                  textContentType={'emailAddress'}
+                  underlineColorAndroid="transparent"
+                  onChangeText={this._onEmailChanged}
+                />
+                <Text
+                  style={[
+                    s.textErrorInput,
+                    !this.state.errorEmail && s.isHide,
+                  ]}>
+                  {this.state.errorEmail}
+                </Text>
+              </View>
+
+              <View style={s.inputField}>
+                <Text style={s.inputLabel}>TELEGRAM ID (Optional)</Text>
+                <TextInput
+                  label="Telegram ID"
+                  placeholder="Your telegram ID"
+                  placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
+                  style={[
+                    s.inputPrimary,
+                    this.state.errorPass ? s.inputError : '',
+                  ]}
+                  value={this.state.telegram_id}
+                  autoCorrect={false}
+                  underlineColorAndroid="transparent"
+                  onChangeText={this._onTelegramIDChanged}
+                />
+                <Text style={s.textHelp}>
+                  This will allow automatic VIP membership for token holders
+                </Text>
+              </View>
+
+              <Text style={s.textError}>{this.props.error}</Text>
+
+              <ButtonPrimary
+                title="Continue"
+                onPress={handleSubmit(this._onButtonPress)}
+                disabled={this.state.isLoading}
+              />
+            </KeyboardAvoidingView>
+          </View>
+          {heroDesktop}
+        </ScrollView>
+      </View>
     );
   }
 }

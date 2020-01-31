@@ -20,8 +20,8 @@ import {encryptPass} from '../../utils/utils';
 import s from '../../assets/styles/Styles';
 import {vars} from '../../assets/styles/Vars';
 import ButtonPrimary from '../../components/ButtonPrimary';
-import ButtonBack from '../ButtonBack';
-import HeroDesktop from '../HeroDesktop';
+import ButtonBack from '../../components/ButtonBack';
+import HeroDesktop from '../../components/HeroDesktop';
 import {
   isWeb,
   isLandscape,
