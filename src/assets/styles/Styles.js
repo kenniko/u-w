@@ -21,7 +21,7 @@ export default StyleSheet.create({
   },
   textTitle: {
     fontFamily: 'Rubik-Medium',
-    fontWeight: '500',
+    // fontWeight: '500',
     fontSize: 28,
     lineHeight: 32,
     color: vars.COLOR_TEXT_TITLE,
@@ -32,6 +32,13 @@ export default StyleSheet.create({
     fontSize: 15,
     lineHeight: 22,
     color: vars.COLOR_TEXT_BODY,
+    marginVertical: vars.GAP_TEXT,
+  },
+  textBodyBlack: {
+    fontFamily: 'Rubik-Regular',
+    fontSize: 15,
+    lineHeight: 22,
+    color: vars.COLOR_TEXT_TITLE,
     marginVertical: vars.GAP_TEXT,
   },
   textHelp: {
@@ -55,9 +62,12 @@ export default StyleSheet.create({
     color: vars.COLOR_PRIMARY,
     marginVertical: vars.GAP_TEXT,
   },
+  textBold: {
+    fontFamily: 'Rubik-Bold',
+  },
   textSeparator: {
     fontFamily: 'Rubik-Medium',
-    fontWeight: '500',
+    // fontWeight: '500',
     fontSize: 15,
     lineHeight: 22,
     alignSelf: 'center',
@@ -83,7 +93,7 @@ export default StyleSheet.create({
   },
   inputLabel: {
     fontFamily: 'Rubik-Medium',
-    fontWeight: '500',
+    // fontWeight: '500',
     color: vars.COLOR_TEXT_LABEL,
     fontSize: 12,
     lineHeight: 14,
@@ -130,6 +140,51 @@ export default StyleSheet.create({
     top: 30,
     left: '5%',
   },
+  boxDash: {
+    width: '100%',
+    borderColor: '#D8E9FD',
+    borderRadius: 10,
+    borderWidth: 3,
+    borderStyle: 'dashed',
+    paddingVertical: 20,
+    paddingHorizontal: 30,
+    alignSelf: 'center',
+    marginVertical: 20,
+    textAlign: 'center',
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+    maxWidth: 540,
+    borderRadius: 7,
+    alignSelf: 'center',
+  },
+  modalHeader: {
+    borderBottomColor: vars.COLOR_MODAL_BORDER,
+    borderBottomWidth: 1,
+    height: 77,
+    padding: 24,
+    paddingBottom: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  modalTitle: {
+    fontFamily: 'Rubik-Medium',
+    fontSize: 15,
+    color: vars.COLOR_TEXT_TITLE,
+  },
+  modalClose: {},
+  modalCloseIcon: {
+    width: 'auto',
+    height: 26,
+  },
+  modalBody: {
+    flex: 1,
+    paddingVertical: 30,
+    paddingHorizontal: 20,
+  },
+
   //   footerViewStyle: {
   //     paddingLeft: 28,
   //     paddingRight: 28,

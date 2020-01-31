@@ -45,14 +45,14 @@ class RegisterScreen1 extends React.Component {
       isWeb: isWeb(),
       isLandscape: isLandscape(),
       isPortrait: isPortrait(),
-      isDesktopScreen: isScreenDesktop(),
+      isScreenDesktop: isScreenDesktop(),
     };
 
     Dimensions.addEventListener('change', () => {
       this.setState({
         isLandscape: isLandscape(),
         isPortrait: isPortrait(),
-        isDesktopScreen: isScreenDesktop(),
+        isScreenDesktop: isScreenDesktop(),
       });
     });
   }
@@ -126,7 +126,7 @@ class RegisterScreen1 extends React.Component {
     const {navigate} = this.props.navigation;
 
     const logoUnity = this.state.isWeb &&
-      this.state.isDesktopScreen &&
+      this.state.isScreenDesktop &&
       this.state.isLandscape && (
         <TouchableOpacity
           style={s.homeBrandLogo}
@@ -139,7 +139,7 @@ class RegisterScreen1 extends React.Component {
         </TouchableOpacity>
       );
     const buttonBack = this.state.isWeb &&
-      (!this.state.isDesktopScreen || this.state.isPortrait) && (
+      (!this.state.isScreenDesktop || this.state.isPortrait) && (
         <View style={s.homeButtonBack}>
           <ButtonBack
             title="Back to Home"
@@ -148,7 +148,7 @@ class RegisterScreen1 extends React.Component {
           />
         </View>
       );
-    const heroDesktop = this.state.isDesktopScreen &&
+    const heroDesktop = this.state.isScreenDesktop &&
       this.state.isLandscape &&
       this.state.isWeb && <HeroDesktop />;
 
@@ -165,14 +165,14 @@ class RegisterScreen1 extends React.Component {
               s.container,
               s.conCenter,
               this.state.isWeb &&
-                this.state.isDesktopScreen &&
+                this.state.isScreenDesktop &&
                 this.state.isLandscape && {
                   width: vars.WIDTH_HOME_SIDEBAR,
                   overflowY: 'hidden',
                 },
               {
-                marginTop: this.state.isDesktopScreen ? 100 : 50,
-                paddingBottom: this.state.isDesktopScreen ? 100 : 10,
+                marginTop: this.state.isScreenDesktop ? 100 : 50,
+                paddingBottom: this.state.isScreenDesktop ? 100 : 10,
               },
             ]}>
             <Spinner visible={this.state.isLoading} />
@@ -262,17 +262,20 @@ class RegisterScreen1 extends React.Component {
 
               <Text style={s.textError}>{this.props.error}</Text>
 
-              <View
-                style={{
-                  marginTop: 6,
-                  flexDirection: 'row',
-                  justifyContent: 'center',
-                }}>
-                <Text style={s.textDefault}>Already have an account? </Text>
+              <Text
+                style={[
+                  s.textDefault,
+                  {
+                    marginTop: 6,
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                  },
+                ]}>
+                Already have an account?{' '}
                 <Text style={s.textLink} onPress={() => navigate('import')}>
                   Import Wallet
                 </Text>
-              </View>
+              </Text>
             </KeyboardAvoidingView>
           </View>
           {heroDesktop}

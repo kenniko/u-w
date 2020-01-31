@@ -27,7 +27,9 @@ class SeedBackupModal extends Component {
 
   render() {
     return (
-      <Modal isVisible={this.props.isVisible}>
+      <Modal
+        // presentationStyle="overFullScreen"
+        isVisible={this.props.isVisible}>
         {this.state.isConfirmPage && (
           <ConfirmBackup confirmPage={this.confirmPage} {...this.props} />
         )}

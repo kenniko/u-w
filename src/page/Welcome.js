@@ -35,15 +35,14 @@ class Welcome extends Component {
       isWeb: isWeb(),
       isLandscape: isLandscape(),
       isPortrait: isPortrait(),
-      isDesktopScreen: isScreenDesktop(),
+      isScreenDesktop: isScreenDesktop(),
     };
 
-    // Event Listener for isDesktopScreen changes
     Dimensions.addEventListener('change', () => {
       this.setState({
         isLandscape: isLandscape(),
         isPortrait: isPortrait(),
-        isDesktopScreen: isScreenDesktop(),
+        isScreenDesktop: isScreenDesktop(),
       });
     });
   }
@@ -77,7 +76,7 @@ class Welcome extends Component {
     const {navigate} = this.props.navigation;
 
     const logoUnity = this.state.isWeb &&
-      this.state.isDesktopScreen &&
+      this.state.isScreenDesktop &&
       this.state.isLandscape && (
         <TouchableOpacity
           style={s.homeBrandLogo}
@@ -90,7 +89,7 @@ class Welcome extends Component {
         </TouchableOpacity>
       );
     const buttonBack = this.state.isWeb &&
-      (!this.state.isDesktopScreen || this.state.isPortrait) && (
+      (!this.state.isScreenDesktop || this.state.isPortrait) && (
         <View style={s.homeButtonBack}>
           <ButtonBack
             title="Back to Home"
@@ -99,7 +98,7 @@ class Welcome extends Component {
           />
         </View>
       );
-    const heroDesktop = this.state.isDesktopScreen &&
+    const heroDesktop = this.state.isScreenDesktop &&
       this.state.isLandscape &&
       this.state.isWeb && <HeroDesktop />;
 
@@ -115,14 +114,14 @@ class Welcome extends Component {
               s.container,
               s.conCenter,
               this.state.isWeb &&
-                this.state.isDesktopScreen &&
+                this.state.isScreenDesktop &&
                 this.state.isLandscape && {
                   width: vars.WIDTH_HOME_SIDEBAR,
                   overflowY: 'hidden',
                 },
               {
-                marginTop: this.state.isDesktopScreen ? 100 : 50,
-                paddingBottom: this.state.isDesktopScreen ? 100 : 10,
+                marginTop: this.state.isScreenDesktop ? 100 : 50,
+                paddingBottom: this.state.isScreenDesktop ? 100 : 10,
               },
             ]}>
             <Spinner visible={this.state.isLoading} />
@@ -131,7 +130,7 @@ class Welcome extends Component {
               <Text
                 style={[
                   s.textBody,
-                  {marginBottom: this.state.isDesktopScreen ? 80 : 40},
+                  {marginBottom: this.state.isScreenDesktop ? 80 : 40},
                 ]}>
                 If you've already created an account before you can import it
                 below or create a new wallet in a few seconds for free. Please
