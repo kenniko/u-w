@@ -20,6 +20,7 @@ class ShowSeed extends Component {
     super(props);
     this.state = {
       error: '',
+      message: '',
       // isScreenDesktop: isScreenDesktop(),
     };
 
@@ -28,6 +29,14 @@ class ShowSeed extends Component {
     //     isScreenDesktop: isScreenDesktop(),
     //   });
     // });
+    this.copySeed = this.copySeed.bind(this);
+  }
+
+  copySeed() {
+    Clipboard.setString(this.props.phrase);
+    this.setState({
+      message: 'Copied!',
+    });
   }
 
   render() {
@@ -57,9 +66,7 @@ class ShowSeed extends Component {
             your wallet.
           </Text>
           <Text style={s.textBodyBlack}>
-            <Text
-              style={[s.textLink, s.textBold]}
-              onPress={() => Clipboard.setString(this.props.phrase)}>
+            <Text style={[s.textLink, s.textBold]} onPress={this.copySeed}>
               Copy
             </Text>{' '}
             and save this Backup Seed Phrase
@@ -67,6 +74,7 @@ class ShowSeed extends Component {
           <View style={s.boxDash}>
             <Text style={s.textBodyBlack}>{this.props.phrase}</Text>
           </View>
+          <Text style={s.textError}>{this.state.message}</Text>
           <View style={{marginTop: 20, marginBottom: 30}}>
             <ButtonPrimary
               title="I Have Saved This Backup Phrase"
