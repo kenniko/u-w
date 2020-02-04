@@ -66,7 +66,7 @@ class ShowSeed extends Component {
             your wallet.
           </Text>
           <Text style={s.textBodyBlack}>
-            <Text style={[s.textLink, s.textBold]} onPress={this.copySeed}>
+            <Text style={[s.textLink]} onPress={this.copySeed}>
               Copy
             </Text>{' '}
             and save this Backup Seed Phrase

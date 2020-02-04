@@ -279,9 +279,7 @@ class ImportScreen1 extends React.Component {
               <Text style={s.textTitle}>Import Wallet</Text>
               <Text style={[s.textBody, {marginBottom: 30}]}>
                 Import your wallet from Backup Seed Phrase or{' '}
-                <Text
-                  style={[s.textLink, s.textBold]}
-                  onPress={() => navigate('signin')}>
+                <Text style={[s.textLink]} onPress={() => navigate('signin')}>
                   Go Back
                 </Text>
               </Text>

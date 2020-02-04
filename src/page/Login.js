@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {
+  StyleSheet,
   Dimensions,
   Platform,
   View,
@@ -30,6 +31,7 @@ import {
   isPortrait,
   isScreenDesktop,
 } from '../actions/mediaQuery';
+import Styles from '../assets/styles/Styles';
 
 class Login extends Component {
   static navigationOptions = {
@@ -298,24 +300,24 @@ class Login extends Component {
               enabled={Platform.OS === 'ios'}>
               <Text style={s.textTitle}>Welcome Back!</Text>
               <Text style={[s.textBody, {marginBottom: 30}]}>
-                Please sign in to your account or{' '}
-                <Text
-                  style={[s.textLink, s.textBold]}
-                  onPress={() => navigate('import')}>
-                  Import Account
+                Please sign-in below or{' '}
+                <Text style={[s.textLink]} onPress={() => navigate('import')}>
+                  Import Wallet
                 </Text>
               </Text>
 
               <View style={s.inputField}>
-                {this.state.showDeleteAccount ? (
-                  <Text
-                    style={[s.textLinkDanger, s.textBold]}
-                    disabled={this.state.isLoading}
-                    onPress={() => this._onDeleteAccount()}>
-                    Delete this account
-                  </Text>
-                ) : null}
-                <Text style={s.inputLabel}>WALLET ADDRESS</Text>
+                <View style={styles.wrpLabelInline}>
+                  <Text style={s.inputLabel}>WALLET ADDRESS</Text>
+                  {this.state.showDeleteAccount ? (
+                    <Text
+                      style={[s.textLinkDanger, styles.linkRemoveWallet]}
+                      disabled={this.state.isLoading}
+                      onPress={() => this._onDeleteAccount()}>
+                      Remove wallet
+                    </Text>
+                  ) : null}
+                </View>
                 <Picker
                   label={'WALLET ADDRESS'}
                   placeholder="Select a wallet address"
@@ -400,7 +402,7 @@ class Login extends Component {
                     justifyContent: 'center',
                   },
                 ]}>
-                Don't have an account?{' '}
+                Need another wallet?{' '}
                 <Text style={s.textLink} onPress={() => navigate('create')}>
                   Create a new wallet
                 </Text>
@@ -436,3 +438,14 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps,
 )(Login);
+
+const styles = StyleSheet.create({
+  wrpLabelInline: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  linkRemoveWallet: {
+    marginTop: -8,
+    marginBottom: 4,
+  },
+});
