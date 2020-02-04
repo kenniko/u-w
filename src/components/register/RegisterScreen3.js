@@ -31,6 +31,8 @@ class RegisterScreen2 extends Component {
       goProcess: false,
       correctPhraseOrder: false,
       isScreenDesktop: isScreenDesktop(),
+      disButtonContinue: true,
+      seconds: 5,
     };
 
     Dimensions.addEventListener('change', () => {
@@ -38,6 +40,26 @@ class RegisterScreen2 extends Component {
         isScreenDesktop: isScreenDesktop(),
       });
     });
+  }
+
+  componentDidMount() {
+    this.interval = setInterval(() => {
+      const {seconds} = this.state;
+      if (seconds > 0) {
+        this.setState({seconds: seconds - 1}, () => {
+          if (this.state.seconds < 1) {
+            this.setState({disButtonContinue: false});
+          }
+        });
+      } else {
+        this.setState({disButtonContinue: false});
+        clearInterval(this.interval);
+      }
+    }, 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
   }
 
   redirectTo(page, params) {
@@ -100,6 +122,12 @@ class RegisterScreen2 extends Component {
 
   render() {
     const {handleSubmit} = this.props;
+    let continueBtnText = '';
+    if (this.state.seconds <= 0) {
+      continueBtnText = '';
+    } else {
+      continueBtnText = ' in ' + this.state.seconds + 's...';
+    }
 
     return (
       <ScrollView
@@ -196,9 +224,9 @@ class RegisterScreen2 extends Component {
 
           <View style={styles.buttonAction}>
             <ButtonDanger
-              title="Continue without backup"
+              title={'Continue without backup ' + continueBtnText}
               onPress={handleSubmit(this._onButtonPress)}
-              disabled={this.state.isLoading}
+              disabled={this.state.isLoading || this.state.disButtonContinue}
             />
           </View>
 
@@ -235,7 +263,7 @@ const styles = StyleSheet.create({
   messageTitle: {
     color: vars.COLOR_SUCCESS,
     lineHeight: 32,
-    marginTop: 90,
+    marginTop: 30,
     fontFamily: 'Rubik-Light',
     fontWeight: 300,
   },

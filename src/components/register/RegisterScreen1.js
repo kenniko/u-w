@@ -124,6 +124,26 @@ class RegisterScreen1 extends React.Component {
 
   render() {
     const {navigate} = this.props.navigation;
+    let signInLink = null;
+    if (this.props.listWallet != null || this.props.listWallet.length > 0) {
+      signInLink = (
+        <Text
+          style={[
+            s.textDefault,
+            {
+              marginTop: 6,
+              flexDirection: 'row',
+              justifyContent: 'center',
+            },
+          ]}>
+          You can also{' '}
+          <Text style={s.textLink} onPress={() => navigate('signin')}>
+            Sign-in
+          </Text>{' '}
+          to your current wallet.
+        </Text>
+      );
+    }
 
     const logoUnity = this.state.isWeb &&
       this.state.isScreenDesktop &&
@@ -262,6 +282,7 @@ class RegisterScreen1 extends React.Component {
 
               <Text style={s.textError}>{this.props.error}</Text>
 
+              {signInLink}
               <Text
                 style={[
                   s.textDefault,
@@ -271,10 +292,11 @@ class RegisterScreen1 extends React.Component {
                     justifyContent: 'center',
                   },
                 ]}>
-                Already have an account?{' '}
-                <Text style={s.textLink} onPress={() => navigate('signin')}>
-                  Sign In Wallet
-                </Text>
+                Need to{' '}
+                <Text style={s.textLink} onPress={() => navigate('import')}>
+                  Import A Wallet
+                </Text>{' '}
+                from a backup phrase?
               </Text>
             </KeyboardAvoidingView>
           </View>
