@@ -137,9 +137,7 @@ class ConfirmBackup extends Component {
         <ScrollView style={s.modalBody}>
           <Text style={s.textBodyBlack}>
             Verify your Backup Seed Phrase or{' '}
-            <Text
-              style={[s.textLink, s.textBold]}
-              onPress={() => this.props.confirmPage()}>
+            <Text style={[s.textLink]} onPress={() => this.props.confirmPage()}>
               go back
             </Text>
           </Text>

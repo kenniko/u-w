@@ -58,7 +58,7 @@ class ShowSeed extends Component {
           </Text>
           <Text style={s.textBodyBlack}>
             <Text
-              style={[s.textLink, s.textBold]}
+              style={[s.textLink]}
               onPress={() => Clipboard.setString(this.props.phrase)}>
               Copy
             </Text>{' '}

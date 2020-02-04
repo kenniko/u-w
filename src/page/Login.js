@@ -298,21 +298,19 @@ class Login extends Component {
               enabled={Platform.OS === 'ios'}>
               <Text style={s.textTitle}>Welcome Back!</Text>
               <Text style={[s.textBody, {marginBottom: 30}]}>
-                Please sign in to your account or{' '}
-                <Text
-                  style={[s.textLink, s.textBold]}
-                  onPress={() => navigate('import')}>
-                  Import Account
+                Please sign-in below or{' '}
+                <Text style={[s.textLink]} onPress={() => navigate('import')}>
+                  Import Wallet
                 </Text>
               </Text>
 
               <View style={s.inputField}>
                 {this.state.showDeleteAccount ? (
                   <Text
-                    style={[s.textLinkDanger, s.textBold]}
+                    style={[s.textLinkDanger]}
                     disabled={this.state.isLoading}
                     onPress={() => this._onDeleteAccount()}>
-                    Delete this account
+                    Remove wallet
                   </Text>
                 ) : null}
                 <Text style={s.inputLabel}>WALLET ADDRESS</Text>
@@ -400,7 +398,7 @@ class Login extends Component {
                     justifyContent: 'center',
                   },
                 ]}>
-                Don't have an account?{' '}
+                Need another wallet?{' '}
                 <Text style={s.textLink} onPress={() => navigate('create')}>
                   Create a new wallet
                 </Text>

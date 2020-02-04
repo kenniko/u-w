@@ -90,7 +90,7 @@ export default connect(
   mapDispatchToProps,
 )(Home);
 
-const styles = {
+const styles = StyleSheet.create({
   containerStyle: {
     backgroundColor: '#fff',
     flex: 1,
@@ -156,4 +156,4 @@ const styles = {
     fontSize: 12,
     color: '#8e8e8e',
   },
-};
+});
