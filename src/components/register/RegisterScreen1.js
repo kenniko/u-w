@@ -125,7 +125,7 @@ class RegisterScreen1 extends React.Component {
   render() {
     const {navigate} = this.props.navigation;
     let signInLink = null;
-    if (this.props.listWallet != null || this.props.listWallet.length > 0) {
+    if (this.props.listWallet != null && this.props.listWallet.length > 0) {
       signInLink = (
         <Text
           style={[
