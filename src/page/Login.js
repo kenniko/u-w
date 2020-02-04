@@ -1,5 +1,6 @@
 import React, {Component} from 'react';
 import {
+  StyleSheet,
   Dimensions,
   Platform,
   View,
@@ -30,6 +31,7 @@ import {
   isPortrait,
   isScreenDesktop,
 } from '../actions/mediaQuery';
+import Styles from '../assets/styles/Styles';
 
 class Login extends Component {
   static navigationOptions = {
@@ -305,15 +307,17 @@ class Login extends Component {
               </Text>
 
               <View style={s.inputField}>
-                {this.state.showDeleteAccount ? (
-                  <Text
-                    style={[s.textLinkDanger]}
-                    disabled={this.state.isLoading}
-                    onPress={() => this._onDeleteAccount()}>
-                    Remove wallet
-                  </Text>
-                ) : null}
-                <Text style={s.inputLabel}>WALLET ADDRESS</Text>
+                <View style={styles.wrpLabelInline}>
+                  <Text style={s.inputLabel}>WALLET ADDRESS</Text>
+                  {this.state.showDeleteAccount ? (
+                    <Text
+                      style={[s.textLinkDanger, styles.linkRemoveWallet]}
+                      disabled={this.state.isLoading}
+                      onPress={() => this._onDeleteAccount()}>
+                      Remove wallet
+                    </Text>
+                  ) : null}
+                </View>
                 <Picker
                   label={'WALLET ADDRESS'}
                   placeholder="Select a wallet address"
@@ -434,3 +438,14 @@ export default connect(
   mapStateToProps,
   mapDispatchToProps,
 )(Login);
+
+const styles = StyleSheet.create({
+  wrpLabelInline: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  linkRemoveWallet: {
+    marginTop: -8,
+    marginBottom: 4,
+  },
+});
