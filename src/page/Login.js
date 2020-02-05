@@ -18,11 +18,10 @@ import {bindActionCreators} from 'redux';
 import * as ReduxActions from '../actions';
 import {Spinner} from '../components/Spinner';
 import {NavigationActions, StackActions} from 'react-navigation';
-import {encryptPass, decryptPass} from '../utils/utils';
+import {decryptPass} from '../utils/utils';
 import s from '../assets/styles/Styles';
 import {vars} from '../assets/styles/Vars';
 import ButtonPrimary from '../components/ButtonPrimary';
-import ButtonSecondary from '../components/ButtonSecondary';
 import ButtonBack from '../components/ButtonBack';
 import HeroDesktop from '../components/HeroDesktop';
 import {
@@ -31,7 +30,6 @@ import {
   isPortrait,
   isScreenDesktop,
 } from '../actions/mediaQuery';
-import Styles from '../assets/styles/Styles';
 
 class Login extends Component {
   static navigationOptions = {
@@ -124,7 +122,7 @@ class Login extends Component {
     return this.state.address.trim().length > 0;
   };
 
-  _onAddressChanged = (address, i) => {
+  _onAddressChanged = address => {
     this.setState(
       {
         address: address,
@@ -419,7 +417,7 @@ class Login extends Component {
 // The function takes data from the app current state,
 // and insert/links it into the props of our component.
 // This function makes Redux know that this component needs to be passed a piece of the state
-function mapStateToProps(state, props) {
+function mapStateToProps(state) {
   return {
     error: state.loginReducer.error,
     listWallet: state.loginReducer.listWallet,

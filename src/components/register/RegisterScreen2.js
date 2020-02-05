@@ -10,7 +10,6 @@ import {
   TouchableOpacity,
   Linking,
   Image,
-  StyleSheet,
 } from 'react-native';
 import {Spinner} from '../Spinner';
 import PropTypes from 'prop-types';
@@ -93,7 +92,7 @@ class RegisterScreen1 extends React.Component {
     this.timer = setTimeout(this.props.onNextHandler, 1000);
   }
 
-  _onButtonPress = e => {
+  _onButtonPress = () => {
     if (!this._onValidateEmail()) {
       return;
     }
@@ -252,7 +251,7 @@ class RegisterScreen1 extends React.Component {
               <Text style={s.textError}>{this.props.error}</Text>
 
               <ButtonPrimary
-                title="Create My Wallet"
+                title="Skip and Create My Wallet"
                 onPress={handleSubmit(this._onButtonPress)}
                 disabled={this.state.isLoading}
               />

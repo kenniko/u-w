@@ -3,11 +3,9 @@ import {
   // Dimensions,
   View,
   Text,
-  Button,
   ScrollView,
   TouchableOpacity,
   Clipboard,
-  TouchableHighlight,
 } from 'react-native';
 import IconClose from '../icon/IconClose';
 import ButtonPrimary from '../../components/ButtonPrimary';

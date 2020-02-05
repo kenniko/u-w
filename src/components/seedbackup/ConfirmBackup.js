@@ -1,13 +1,5 @@
 import React, {Component} from 'react';
-import {
-  View,
-  Text,
-  Button,
-  ScrollView,
-  TouchableOpacity,
-  Clipboard,
-  TouchableHighlight,
-} from 'react-native';
+import {View, Text, ScrollView, TouchableOpacity} from 'react-native';
 import IconClose from '../icon/IconClose';
 import ButtonPrimary from '../../components/ButtonPrimary';
 import s from '../../assets/styles/Styles';

@@ -3,19 +3,16 @@ import {
   Dimensions,
   View,
   Text,
-  Button,
   ScrollView,
   TouchableOpacity,
   Image,
-  Clipboard,
-  TouchableHighlight,
   StyleSheet,
 } from 'react-native';
 import SeedBackupModal from '../SeedBackupModal';
-import {Field, reduxForm} from 'redux-form';
+import {reduxForm} from 'redux-form';
 import {Spinner} from '../Spinner';
 import {NavigationActions, StackActions} from 'react-navigation';
-import IconEyeSlash from '../icon/IconEyeSlash';
+import IconEye from '../icon/IconEye';
 import ButtonDanger from '../ButtonDanger';
 import s from '../../assets/styles/Styles';
 import {vars} from '../../assets/styles/Vars';
@@ -32,7 +29,7 @@ class RegisterScreen2 extends Component {
       correctPhraseOrder: false,
       isScreenDesktop: isScreenDesktop(),
       disButtonContinue: true,
-      seconds: 5,
+      seconds: 6,
     };
 
     Dimensions.addEventListener('change', () => {
@@ -118,7 +115,7 @@ class RegisterScreen2 extends Component {
     });
   };
 
-  _onButtonSavedModal = e => {};
+  _onButtonSavedModal = () => {};
 
   render() {
     const {handleSubmit} = this.props;
@@ -164,10 +161,7 @@ class RegisterScreen2 extends Component {
           </Text>
           <Text style={styles.logoTextSubTitle}>
             Please click{' '}
-            <IconEyeSlash
-              style={styles.subtitleIcon}
-              fill={vars.COLOR_PRIMARY}
-            />{' '}
+            <IconEye style={styles.subtitleIcon} fill={vars.COLOR_PRIMARY} />{' '}
             below to reveal your Backup Seed Phrase and write or copy this
             somewhere secure that only you can access.
           </Text>
@@ -214,7 +208,7 @@ class RegisterScreen2 extends Component {
             ]}
             activeOpacity={vars.OPACITY_TOUCH}
             onPress={() => this.toggleModal()}>
-            <IconEyeSlash style={styles.seedIcon} fill={vars.COLOR_PRIMARY} />
+            <IconEye style={styles.seedIcon} fill={vars.COLOR_PRIMARY} />
             <Text style={styles.seedText}>
               Click Here to Backup Seed Phrase
             </Text>

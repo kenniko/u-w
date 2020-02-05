@@ -298,6 +298,24 @@ class RegisterScreen1 extends React.Component {
                 </Text>{' '}
                 from a backup phrase?
               </Text>
+
+              {this.props.loginData !== null && (
+                <Text
+                  style={[
+                    s.textDefault,
+                    {
+                      marginTop: 6,
+                      flexDirection: 'row',
+                      justifyContent: 'center',
+                    },
+                  ]}>
+                  You can also{' '}
+                  <Text style={s.textLink} onPress={() => navigate('signin')}>
+                    Sign-in
+                  </Text>{' '}
+                  to your current wallet.
+                </Text>
+              )}
             </KeyboardAvoidingView>
           </View>
           {heroDesktop}

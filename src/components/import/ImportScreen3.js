@@ -18,7 +18,6 @@ import {encryptPass} from '../../utils/utils';
 import {NavigationActions, StackActions} from 'react-navigation';
 import s from '../../assets/styles/Styles';
 import {vars} from '../../assets/styles/Vars';
-import ButtonPrimary from '../../components/ButtonPrimary';
 import ButtonBack from '../../components/ButtonBack';
 import HeroDesktop from '../../components/HeroDesktop';
 import {
