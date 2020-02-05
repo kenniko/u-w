@@ -262,6 +262,24 @@ class RegisterScreen1 extends React.Component {
 
               <Text style={s.textError}>{this.props.error}</Text>
 
+              {this.props.loginData !== null && (
+                <Text
+                  style={[
+                    s.textDefault,
+                    {
+                      marginTop: 6,
+                      flexDirection: 'row',
+                      justifyContent: 'center',
+                    },
+                  ]}>
+                  Need to{' '}
+                  <Text style={s.textLink} onPress={() => navigate('import')}>
+                    Import A Wallet
+                  </Text>{' '}
+                  from a backup phrase?
+                </Text>
+              )}
+
               <Text
                 style={[
                   s.textDefault,
@@ -271,10 +289,11 @@ class RegisterScreen1 extends React.Component {
                     justifyContent: 'center',
                   },
                 ]}>
-                Already have an account?{' '}
-                <Text style={s.textLink} onPress={() => navigate('import')}>
-                  Import Wallet
-                </Text>
+                You can also{' '}
+                <Text style={s.textLink} onPress={() => navigate('signin')}>
+                  Sign-in
+                </Text>{' '}
+                to your current wallet.
               </Text>
             </KeyboardAvoidingView>
           </View>
@@ -283,6 +302,12 @@ class RegisterScreen1 extends React.Component {
       </View>
     );
   }
+}
+
+function mapStateToProps(state, props) {
+  return {
+    loginData: state.loginReducer.loginData,
+  };
 }
 
 RegisterScreen1.propTypes = {

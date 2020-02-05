@@ -252,7 +252,7 @@ class RegisterScreen1 extends React.Component {
               <Text style={s.textError}>{this.props.error}</Text>
 
               <ButtonPrimary
-                title="Create My Wallet"
+                title="Skip and Create My Wallet"
                 onPress={handleSubmit(this._onButtonPress)}
                 disabled={this.state.isLoading}
               />

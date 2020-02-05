@@ -15,7 +15,7 @@ import SeedBackupModal from '../SeedBackupModal';
 import {Field, reduxForm} from 'redux-form';
 import {Spinner} from '../Spinner';
 import {NavigationActions, StackActions} from 'react-navigation';
-import IconEyeSlash from '../icon/IconEyeSlash';
+import IconEye from '../icon/IconEye';
 import ButtonDanger from '../ButtonDanger';
 import s from '../../assets/styles/Styles';
 import {vars} from '../../assets/styles/Vars';
@@ -26,6 +26,8 @@ class RegisterScreen2 extends Component {
     super(props);
     this.state = {
       isLoading: false,
+      isWaitingCountdown: true,
+      countdownSeconds: 5,
       error: '',
       isModalVisible: false,
       correctPhraseOrder: false,
@@ -130,10 +132,7 @@ class RegisterScreen2 extends Component {
           </Text>
           <Text style={styles.logoTextSubTitle}>
             Please click{' '}
-            <IconEyeSlash
-              style={styles.subtitleIcon}
-              fill={vars.COLOR_PRIMARY}
-            />{' '}
+            <IconEye style={styles.subtitleIcon} fill={vars.COLOR_PRIMARY} />{' '}
             below to reveal your Backup Seed Phrase and write or copy this
             somewhere secure that only you can access.
           </Text>
@@ -180,7 +179,7 @@ class RegisterScreen2 extends Component {
             ]}
             activeOpacity={vars.OPACITY_TOUCH}
             onPress={() => this.toggleModal()}>
-            <IconEyeSlash style={styles.seedIcon} fill={vars.COLOR_PRIMARY} />
+            <IconEye style={styles.seedIcon} fill={vars.COLOR_PRIMARY} />
             <Text style={styles.seedText}>
               Click Here to Backup Seed Phrase
             </Text>
@@ -190,9 +189,13 @@ class RegisterScreen2 extends Component {
 
           <View style={styles.buttonAction}>
             <ButtonDanger
-              title="Continue without backup"
+              title={
+                'Continue without backup in ' +
+                this.state.countdownSecond +
+                's...'
+              }
               onPress={handleSubmit(this._onButtonPress)}
-              disabled={this.state.isLoading}
+              disabled={this.state.isLoading || this.state.isWaitingCountdown}
             />
           </View>
 
@@ -229,7 +232,7 @@ const styles = StyleSheet.create({
   messageTitle: {
     color: vars.COLOR_SUCCESS,
     lineHeight: 32,
-    marginTop: 90,
+    marginTop: 30,
     fontFamily: 'Rubik-Light',
     fontWeight: 300,
   },
