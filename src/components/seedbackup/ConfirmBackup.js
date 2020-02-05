@@ -20,10 +20,12 @@ class ConfirmBackup extends Component {
       selectionBtnPhrase: this.shuffleArray(this.props.phrase.split(' ')),
       selectedBtnPhrase: [],
       correctPhraseOrder: false,
+      isLoading: false,
     };
 
     this.onRandomPrhaseBtnClick = this.onRandomPrhaseBtnClick.bind(this);
     this.onSelectedPrhaseBtnClick = this.onSelectedPrhaseBtnClick.bind(this);
+    this.onConfirmPhrase = this.onConfirmPhrase.bind(this);
   }
 
   shuffleArray(a) {
@@ -51,14 +53,21 @@ class ConfirmBackup extends Component {
         correctPhraseOrder:
           this.state.selectedBtnPhrase.join(' ') === this.props.phrase,
       },
-      () => this.props.phraseOrder(this.state.correctPhraseOrder),
+      () => this.props.setPhraseSaved(this.state.correctPhraseOrder),
     );
-    console.log(this.state.selectedBtnPhrase.join(' '));
-    console.log(this.props.phrase);
+  }
+
+  onConfirmPhrase() {
+    this.props.setPhraseSaved(this.state.correctPhraseOrder);
+    if (this.state.correctPhraseOrder) {
+      this.props.goProcess(true);
+      this.props.toggleModal();
+    } else {
+      this.props.goProcess(false);
+    }
   }
 
   onSelectedPrhaseBtnClick(e) {
-    console.log(e);
     this.setState(
       {
         selectedBtnPhrase: this.removeThisArrayItem(
@@ -74,7 +83,6 @@ class ConfirmBackup extends Component {
   }
 
   onRandomPrhaseBtnClick(e) {
-    console.log(e);
     this.setState({
       selectionBtnPhrase: this.removeThisArrayItem(
         this.state.selectionBtnPhrase,
@@ -151,7 +159,7 @@ class ConfirmBackup extends Component {
             <ButtonPrimary
               title="Confirmation"
               disabled={!this.state.correctPhraseOrder}
-              onPress={() => this.props._onButtonPress()}
+              onPress={this.onConfirmPhrase}
             />
           </View>
         </ScrollView>

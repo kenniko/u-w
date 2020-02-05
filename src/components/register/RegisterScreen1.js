@@ -124,6 +124,24 @@ class RegisterScreen1 extends React.Component {
 
   render() {
     const {navigate} = this.props.navigation;
+    const signInLink = this.props.listWallet != null &&
+      this.props.listWallet.length > 0 && (
+        <Text
+          style={[
+            s.textDefault,
+            {
+              marginTop: 6,
+              flexDirection: 'row',
+              justifyContent: 'center',
+            },
+          ]}>
+          You can also{' '}
+          <Text style={s.textLink} onPress={() => navigate('signin')}>
+            Sign-in
+          </Text>{' '}
+          to your current wallet.
+        </Text>
+      );
 
     const logoUnity = this.state.isWeb &&
       this.state.isScreenDesktop &&
@@ -278,23 +296,7 @@ class RegisterScreen1 extends React.Component {
                 from a backup phrase?
               </Text>
 
-              {this.props.loginData !== null && (
-                <Text
-                  style={[
-                    s.textDefault,
-                    {
-                      marginTop: 6,
-                      flexDirection: 'row',
-                      justifyContent: 'center',
-                    },
-                  ]}>
-                  You can also{' '}
-                  <Text style={s.textLink} onPress={() => navigate('signin')}>
-                    Sign-in
-                  </Text>{' '}
-                  to your current wallet.
-                </Text>
-              )}
+              {signInLink}
             </KeyboardAvoidingView>
           </View>
           {heroDesktop}

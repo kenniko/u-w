@@ -26,12 +26,13 @@ class RegisterScreen2 extends Component {
     super(props);
     this.state = {
       isLoading: false,
-      isWaitingCountdown: true,
-      countdownSeconds: 5,
       error: '',
       isModalVisible: false,
+      goProcess: false,
       correctPhraseOrder: false,
       isScreenDesktop: isScreenDesktop(),
+      disButtonContinue: true,
+      seconds: 5,
     };
 
     Dimensions.addEventListener('change', () => {
@@ -39,6 +40,26 @@ class RegisterScreen2 extends Component {
         isScreenDesktop: isScreenDesktop(),
       });
     });
+  }
+
+  componentDidMount() {
+    this.interval = setInterval(() => {
+      const {seconds} = this.state;
+      if (seconds > 0) {
+        this.setState({seconds: seconds - 1}, () => {
+          if (this.state.seconds < 1) {
+            this.setState({disButtonContinue: false});
+          }
+        });
+      } else {
+        this.setState({disButtonContinue: false});
+        clearInterval(this.interval);
+      }
+    }, 1000);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
   }
 
   redirectTo(page, params) {
@@ -56,11 +77,15 @@ class RegisterScreen2 extends Component {
   }
 
   toggleModal = () => {
-    this.setState({isModalVisible: !this.state.isModalVisible});
+    this.setState({isModalVisible: !this.state.isModalVisible}, () => {
+      if (this.state.goProcess) {
+        this._onButtonPress();
+      }
+    });
   };
 
-  phraseOrder = a => {
-    this.props.setPhraseSaved(a ? true : false);
+  goProcess = a => {
+    this.setState({goProcess: a});
   };
 
   _onButtonPress = () => {
@@ -78,11 +103,12 @@ class RegisterScreen2 extends Component {
           data.pin = ini.props.signup_data.pin;
           data.use_fingerprint = ini.props.signup_data.use_fingerprint;
           data.fingerprint = ini.props.signup_data.fingerprint;
-          data.is_phrase_saved = ini.props.signup_data.is_phrase_saved;
+          data.is_phrase_saved = ini.props.is_phrase_saved;
           data.phrase_encrypt = ini.props.signup_data.phrase_encrypt;
           ini.props.setAddress(null);
           ini.props.setPhrase(null);
           ini.props.setSignupData(null);
+          ini.props.setPhraseSaved(false);
           ini.props.onBack(1);
           ini.props.setLoginData(data);
           ini.props.setWalletList(ini.props.listWallet, data);
@@ -96,6 +122,12 @@ class RegisterScreen2 extends Component {
 
   render() {
     const {handleSubmit} = this.props;
+    let continueBtnText = '';
+    if (this.state.seconds <= 0) {
+      continueBtnText = '';
+    } else {
+      continueBtnText = ' in ' + this.state.seconds + 's...';
+    }
 
     return (
       <ScrollView
@@ -106,7 +138,7 @@ class RegisterScreen2 extends Component {
         <SeedBackupModal
           isVisible={this.state.isModalVisible}
           toggleModal={this.toggleModal}
-          phraseOrder={this.phraseOrder}
+          goProcess={this.goProcess}
           _onButtonPress={this._onButtonPress}
           {...this.props}
         />
@@ -189,13 +221,9 @@ class RegisterScreen2 extends Component {
 
           <View style={styles.buttonAction}>
             <ButtonDanger
-              title={
-                'Continue without backup in ' +
-                this.state.countdownSecond +
-                's...'
-              }
+              title={'Continue without backup ' + continueBtnText}
               onPress={handleSubmit(this._onButtonPress)}
-              disabled={this.state.isLoading || this.state.isWaitingCountdown}
+              disabled={this.state.isLoading || this.state.disButtonContinue}
             />
           </View>
 

@@ -1,13 +1,4 @@
 import React, {Component} from 'react';
-import {
-  View,
-  Text,
-  Button,
-  ScrollView,
-  TouchableOpacity,
-  Clipboard,
-  TouchableHighlight,
-} from 'react-native';
 import Modal from 'modal-enhanced-react-native-web';
 import ConfirmBackup from './seedbackup/ConfirmBackup';
 import ShowSeed from './seedbackup/ShowSeed';
