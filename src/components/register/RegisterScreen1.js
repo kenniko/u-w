@@ -262,6 +262,22 @@ class RegisterScreen1 extends React.Component {
 
               <Text style={s.textError}>{this.props.error}</Text>
 
+              <Text
+                style={[
+                  s.textDefault,
+                  {
+                    marginTop: 6,
+                    flexDirection: 'row',
+                    justifyContent: 'center',
+                  },
+                ]}>
+                Need to{' '}
+                <Text style={s.textLink} onPress={() => navigate('import')}>
+                  Import A Wallet
+                </Text>{' '}
+                from a backup phrase?
+              </Text>
+
               {this.props.loginData !== null && (
                 <Text
                   style={[
@@ -272,29 +288,13 @@ class RegisterScreen1 extends React.Component {
                       justifyContent: 'center',
                     },
                   ]}>
-                  Need to{' '}
-                  <Text style={s.textLink} onPress={() => navigate('import')}>
-                    Import A Wallet
+                  You can also{' '}
+                  <Text style={s.textLink} onPress={() => navigate('signin')}>
+                    Sign-in
                   </Text>{' '}
-                  from a backup phrase?
+                  to your current wallet.
                 </Text>
               )}
-
-              <Text
-                style={[
-                  s.textDefault,
-                  {
-                    marginTop: 6,
-                    flexDirection: 'row',
-                    justifyContent: 'center',
-                  },
-                ]}>
-                You can also{' '}
-                <Text style={s.textLink} onPress={() => navigate('signin')}>
-                  Sign-in
-                </Text>{' '}
-                to your current wallet.
-              </Text>
             </KeyboardAvoidingView>
           </View>
           {heroDesktop}
