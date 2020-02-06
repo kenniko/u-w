@@ -67,6 +67,14 @@ class Home extends React.Component {
       </View>
     );
   }
+
+  // render() {
+  //   return (
+  //     <View>
+  //       <Text>Test render</Text>
+  //     </View>
+  //   );
+  // }
 }
 
 function mapStateToProps(state, props) {

@@ -58,15 +58,15 @@ class Import extends Component {
     const {import_screen} = this.props;
     return (
       <View>
-        {import_screen === 1 && (
+        {import_screen === 1 ? (
           <ImportScreen1 onGoToHandler={this.onGoToHandler} {...this.props} />
-        )}
-        {import_screen === 2 && (
+        ) : null}
+        {import_screen === 2 ? (
           <ImportScreen2 onGoToHandler={this.onGoToHandler} {...this.props} />
-        )}
-        {import_screen === 3 && (
+        ) : null}
+        {import_screen === 3 ? (
           <ImportScreen3 onGoToHandler={this.onGoToHandler} {...this.props} />
-        )}
+        ) : null}
       </View>
     );
   }

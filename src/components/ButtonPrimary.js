@@ -17,7 +17,10 @@ export default class ButtonPrimary extends React.Component {
     return (
       <TouchableOpacity
         onPress={this.props.onPress}
-        style={[styles.buttonPrimary, this.props.disabled && {opacity: 0.5}]}
+        style={[
+          styles.buttonPrimary,
+          this.props.disabled ? {opacity: 0.5} : null,
+        ]}
         activeOpacity={vars.OPACITY_TOUCH}
         // ref={this.buttonPrimary}
         disabled={this.props.disabled}>

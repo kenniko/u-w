@@ -66,20 +66,20 @@ class Invite extends Component {
     const {screen} = this.props;
     return (
       <View>
-        {screen === 1 && (
+        {screen === 1 ? (
           <RegisterScreen1
             onNextHandler={this.onNextHandler}
             onBackHandler={this.onBackHandler}
             {...this.props}
           />
-        )}
-        {screen === 2 && (
+        ) : null}
+        {screen === 2 ? (
           <RegisterScreen2
             onNextHandler={this.onNextHandler}
             onBackHandler={this.onBackHandler}
             {...this.props}
           />
-        )}
+        ) : null}
       </View>
     );
   }

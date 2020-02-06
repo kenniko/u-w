@@ -124,8 +124,8 @@ class RegisterScreen1 extends React.Component {
 
   render() {
     const {navigate} = this.props.navigation;
-    const signInLink = this.props.listWallet != null &&
-      this.props.listWallet.length > 0 && (
+    const signInLink =
+      this.props.listWallet != null && this.props.listWallet.length > 0 ? (
         <Text
           style={[
             s.textDefault,
@@ -141,11 +141,12 @@ class RegisterScreen1 extends React.Component {
           </Text>{' '}
           to your current wallet.
         </Text>
-      );
+      ) : null;
 
-    const logoUnity = this.state.isWeb &&
+    const logoUnity =
+      this.state.isWeb &&
       this.state.isScreenDesktop &&
-      this.state.isLandscape && (
+      this.state.isLandscape ? (
         <TouchableOpacity
           style={s.homeBrandLogo}
           activeOpacity={vars.OPACITY_TOUCH}
@@ -155,9 +156,10 @@ class RegisterScreen1 extends React.Component {
             source={require('../../assets/img/unity-logo-title.png')}
           />
         </TouchableOpacity>
-      );
-    const buttonBack = this.state.isWeb &&
-      (!this.state.isScreenDesktop || this.state.isPortrait) && (
+      ) : null;
+    const buttonBack =
+      this.state.isWeb &&
+      (!this.state.isScreenDesktop || this.state.isPortrait) ? (
         <View style={s.homeButtonBack}>
           <ButtonBack
             title="Back to Home"
@@ -165,10 +167,13 @@ class RegisterScreen1 extends React.Component {
             onPress={() => Linking.openURL('https://www.unity.sg/')}
           />
         </View>
-      );
-    const heroDesktop = this.state.isScreenDesktop &&
+      ) : null;
+    const heroDesktop =
+      this.state.isScreenDesktop &&
       this.state.isLandscape &&
-      this.state.isWeb && <HeroDesktop />;
+      this.state.isWeb ? (
+        <HeroDesktop />
+      ) : null;
 
     return (
       <View>
@@ -183,11 +188,13 @@ class RegisterScreen1 extends React.Component {
               s.container,
               s.conCenter,
               this.state.isWeb &&
-                this.state.isScreenDesktop &&
-                this.state.isLandscape && {
-                  width: vars.WIDTH_HOME_SIDEBAR,
-                  overflowY: 'hidden',
-                },
+              this.state.isScreenDesktop &&
+              this.state.isLandscape
+                ? {
+                    width: vars.WIDTH_HOME_SIDEBAR,
+                    overflowY: 'hidden',
+                  }
+                : null,
               {
                 marginTop: this.state.isScreenDesktop ? 100 : 50,
                 paddingBottom: this.state.isScreenDesktop ? 100 : 10,

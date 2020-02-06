@@ -12,8 +12,8 @@ export default class ButtonBack extends React.Component {
         activeOpacity={vars.OPACITY_TOUCH}
         style={[
           styles.buttonBack,
-          this.props.hide && s.isHide,
-          this.props.disabled && {opacity: 0.5},
+          this.props.hide ? s.isHide : null,
+          this.props.disabled ? {opacity: 0.5} : null,
         ]}
         disabled={this.props.disabled}>
         <IconChevronLeft

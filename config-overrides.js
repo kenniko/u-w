@@ -20,6 +20,8 @@ module.exports = function override(config, env) {
   addModuleToMainRule(config, '@react-navigation');
   addModuleToMainRule(config, 'react-native-gesture-handler');
   addModuleToMainRule(config, 'react-native-screens');
+  addModuleToMainRule(config, 'react-native-safe-area-context');
+  addModuleToMainRule(config, '@react-native-community/masked-view');
   addModuleToMainRule(config, '@react-native-community/async-storage');
   addModuleToMainRule(config, 'react-native-modal');
   addModuleToMainRule(config, 'react-native-animatable');

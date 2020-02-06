@@ -21,10 +21,9 @@ class SeedBackupModal extends Component {
       <Modal
         // presentationStyle="overFullScreen"
         isVisible={this.props.isVisible}>
-        {this.state.isConfirmPage && (
+        {this.state.isConfirmPage ? (
           <ConfirmBackup confirmPage={this.confirmPage} {...this.props} />
-        )}
-        {!this.state.isConfirmPage && (
+        ) : (
           <ShowSeed confirmPage={this.confirmPage} {...this.props} />
         )}
       </Modal>
