@@ -1,5 +1,4 @@
 import {INIT_IMPORT, IMPORT_GOTO, IMPORT_DATA} from './types';
-import {API} from '../utils/axios';
 
 export const initImport = () => {
   return {type: INIT_IMPORT};

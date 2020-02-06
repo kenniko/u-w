@@ -10,7 +10,6 @@ import {
   TouchableOpacity,
   Linking,
   Image,
-  StyleSheet,
 } from 'react-native';
 import {Spinner} from '../Spinner';
 import PropTypes from 'prop-types';
@@ -169,7 +168,7 @@ class RegisterScreen1 extends React.Component {
             <KeyboardAvoidingView
               style={s.homeWrpContent}
               behavior="padding"
-              enabled={Platform.OS == 'ios'}>
+              enabled={Platform.OS === 'ios'}>
               <Text style={s.textTitle}>New Wallet</Text>
               <Text style={[s.textBody, {marginBottom: 30}]}>
                 Fill out the details below to create your secure wallet.

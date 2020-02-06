@@ -1,25 +1,22 @@
 import React, {Component} from 'react';
 import {
   Dimensions,
-  View,
-  Text,
-  Button,
-  ScrollView,
-  TouchableOpacity,
   Image,
-  Clipboard,
-  TouchableHighlight,
+  ScrollView,
   StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import SeedBackupModal from '../SeedBackupModal';
-import {Field, reduxForm} from 'redux-form';
-import {Spinner} from '../Spinner';
 import {NavigationActions, StackActions} from 'react-navigation';
-import IconEye from '../icon/IconEye';
-import ButtonDanger from '../ButtonDanger';
+import {reduxForm} from 'redux-form';
+import {isScreenDesktop} from '../../actions/mediaQuery';
 import s from '../../assets/styles/Styles';
 import {vars} from '../../assets/styles/Vars';
-import {isScreenDesktop} from '../../actions/mediaQuery';
+import ButtonDanger from '../ButtonDanger';
+import IconEye from '../icon/IconEye';
+import SeedBackupModal from '../SeedBackupModal';
+import {Spinner} from '../Spinner';
 
 class RegisterScreen2 extends Component {
   constructor(props) {

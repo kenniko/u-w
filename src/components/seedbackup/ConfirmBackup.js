@@ -1,17 +1,9 @@
 import React, {Component} from 'react';
-import {
-  View,
-  Text,
-  Button,
-  ScrollView,
-  TouchableOpacity,
-  Clipboard,
-  TouchableHighlight,
-} from 'react-native';
-import IconClose from '../icon/IconClose';
-import ButtonPrimary from '../../components/ButtonPrimary';
+import {ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import s from '../../assets/styles/Styles';
 import {vars} from '../../assets/styles/Vars';
+import ButtonPrimary from '../../components/ButtonPrimary';
+import IconClose from '../icon/IconClose';
 
 class ConfirmBackup extends Component {
   constructor(props) {

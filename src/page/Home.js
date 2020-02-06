@@ -1,11 +1,10 @@
 import React from 'react';
-import {View, Text, StyleSheet, Button} from 'react-native';
+import {View, Text, StyleSheet} from 'react-native';
 import {connect} from 'react-redux';
 import {bindActionCreators} from 'redux';
 import * as ReduxActions from '../actions';
 import {NavigationActions, StackActions} from 'react-navigation';
 import s from '../assets/styles/Styles';
-import {vars} from '../assets/styles/Vars';
 import ButtonPrimary from '../components/ButtonPrimary';
 
 class Home extends React.Component {

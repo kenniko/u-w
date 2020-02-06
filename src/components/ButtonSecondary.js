@@ -1,5 +1,5 @@
 import React from 'react';
-import {TouchableOpacity, Text, StyleSheet, Dimensions} from 'react-native';
+import {TouchableOpacity, Text, StyleSheet} from 'react-native';
 import {vars} from '../assets/styles/Vars';
 
 export default class ButtonSecondary extends React.Component {

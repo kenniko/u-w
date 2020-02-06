@@ -306,12 +306,6 @@ class RegisterScreen1 extends React.Component {
   }
 }
 
-function mapStateToProps(state, props) {
-  return {
-    loginData: state.loginReducer.loginData,
-  };
-}
-
 RegisterScreen1.propTypes = {
   onNextHandler: PropTypes.func,
   onBackHandler: PropTypes.func,

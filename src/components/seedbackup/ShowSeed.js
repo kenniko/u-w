@@ -1,19 +1,15 @@
 import React, {Component} from 'react';
 import {
-  // Dimensions,
-  View,
-  Text,
-  Button,
-  ScrollView,
-  TouchableOpacity,
   Clipboard,
-  TouchableHighlight,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
-import IconClose from '../icon/IconClose';
-import ButtonPrimary from '../../components/ButtonPrimary';
 import s from '../../assets/styles/Styles';
 import {vars} from '../../assets/styles/Vars';
-// import {isScreenDesktop} from '../../actions/mediaQuery';
+import ButtonPrimary from '../../components/ButtonPrimary';
+import IconClose from '../icon/IconClose';
 
 class ShowSeed extends Component {
   constructor(props) {

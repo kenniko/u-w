@@ -1,33 +1,32 @@
+import {address, encryptSeed} from '@waves/ts-lib-crypto';
+import PropTypes from 'prop-types';
 import React from 'react';
 import {
   Dimensions,
+  Image,
+  KeyboardAvoidingView,
+  Linking,
   Platform,
-  View,
+  ScrollView,
   Text,
   TextInput,
-  ScrollView,
-  KeyboardAvoidingView,
   TouchableOpacity,
-  Linking,
-  Image,
+  View,
 } from 'react-native';
 import {NavigationActions, StackActions} from 'react-navigation';
-import {Spinner} from '../Spinner';
-import PropTypes from 'prop-types';
 import {reduxForm} from 'redux-form';
-import {address, encryptSeed} from '@waves/ts-lib-crypto';
-import {encryptPass} from '../../utils/utils';
-import s from '../../assets/styles/Styles';
-import {vars} from '../../assets/styles/Vars';
-import ButtonPrimary from '../../components/ButtonPrimary';
-import ButtonBack from '../../components/ButtonBack';
-import HeroDesktop from '../../components/HeroDesktop';
 import {
-  isWeb,
   isLandscape,
   isPortrait,
   isScreenDesktop,
+  isWeb,
 } from '../../actions/mediaQuery';
+import s from '../../assets/styles/Styles';
+import {vars} from '../../assets/styles/Vars';
+import ButtonBack from '../../components/ButtonBack';
+import HeroDesktop from '../../components/HeroDesktop';
+import {encryptPass} from '../../utils/utils';
+import {Spinner} from '../Spinner';
 
 class ImportScreen1 extends React.Component {
   static navigationOptions = {
