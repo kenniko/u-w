@@ -241,9 +241,10 @@ class Login extends Component {
       dropdown = [];
     }
 
-    const logoUnity = this.state.isWeb &&
+    const logoUnity =
+      this.state.isWeb &&
       this.state.isScreenDesktop &&
-      this.state.isLandscape && (
+      this.state.isLandscape ? (
         <TouchableOpacity
           style={s.homeBrandLogo}
           activeOpacity={vars.OPACITY_TOUCH}
@@ -253,9 +254,10 @@ class Login extends Component {
             source={require('../assets/img/unity-logo-title.png')}
           />
         </TouchableOpacity>
-      );
-    const buttonBack = this.state.isWeb &&
-      (!this.state.isScreenDesktop || this.state.isPortrait) && (
+      ) : null;
+    const buttonBack =
+      this.state.isWeb &&
+      (!this.state.isScreenDesktop || this.state.isPortrait) ? (
         <View style={s.homeButtonBack}>
           <ButtonBack
             title="Back to Home"
@@ -263,10 +265,13 @@ class Login extends Component {
             onPress={() => Linking.openURL('https://www.unity.sg/')}
           />
         </View>
-      );
-    const heroDesktop = this.state.isScreenDesktop &&
+      ) : null;
+    const heroDesktop =
+      this.state.isScreenDesktop &&
       this.state.isLandscape &&
-      this.state.isWeb && <HeroDesktop />;
+      this.state.isWeb ? (
+        <HeroDesktop />
+      ) : null;
 
     return (
       <View>
@@ -281,11 +286,13 @@ class Login extends Component {
               s.container,
               s.conCenter,
               this.state.isWeb &&
-                this.state.isScreenDesktop &&
-                this.state.isLandscape && {
-                  width: vars.WIDTH_HOME_SIDEBAR,
-                  overflowY: 'hidden',
-                },
+              this.state.isScreenDesktop &&
+              this.state.isLandscape
+                ? {
+                    width: vars.WIDTH_HOME_SIDEBAR,
+                    overflowY: 'hidden',
+                  }
+                : null,
               {
                 marginTop: this.state.isScreenDesktop ? 100 : 50,
                 paddingBottom: this.state.isScreenDesktop ? 100 : 10,

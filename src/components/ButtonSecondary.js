@@ -1,5 +1,5 @@
 import React from 'react';
-import {TouchableOpacity, Text, StyleSheet, Dimensions} from 'react-native';
+import {TouchableOpacity, Text, StyleSheet} from 'react-native';
 import {vars} from '../assets/styles/Vars';
 
 export default class ButtonSecondary extends React.Component {
@@ -43,7 +43,10 @@ export default class ButtonSecondary extends React.Component {
     return (
       <TouchableOpacity
         onPress={this.props.onPress}
-        style={[styles.buttonSecondary, this.props.disabled && {opacity: 0.5}]}
+        style={[
+          styles.buttonSecondary,
+          this.props.disabled ? {opacity: 0.5} : null,
+        ]}
         activeOpacity={vars.OPACITY_TOUCH}
         disabled={this.props.disabled}>
         <Text style={styles.buttonSecondaryText}>{this.props.title}</Text>

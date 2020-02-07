@@ -6,7 +6,11 @@ import {vars} from '../assets/styles/Vars';
 class Spinner extends React.Component {
   render() {
     return (
-      <View style={[styles.containerOverlay, !this.props.visible && s.isHide]}>
+      <View
+        style={[
+          styles.containerOverlay,
+          !this.props.visible ? s.isHide : null,
+        ]}>
         <ActivityIndicator size="large" color={vars.COLOR_PRIMARY} />
         <Text style={styles.spinnerText}>Loading...</Text>
       </View>
