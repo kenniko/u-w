@@ -124,7 +124,7 @@ class ImportScreen1 extends React.Component {
   }
 
   _onValidatePIN = () => {
-    return this.state.pin.trim().length > 7;
+    return this.state.pin.length > 7;
   };
 
   _onPINChanged = pin => {
@@ -137,6 +137,16 @@ class ImportScreen1 extends React.Component {
         this.setState({errorPIN: ''});
       }
     });
+  };
+
+  _onPINEnd = () => {
+    if (!this._onValidatePIN()) {
+      this.setState({
+        errorPIN: this.state.label + ' must be at least 8 characters.',
+      });
+    } else {
+      this.setState({errorPIN: ''});
+    }
   };
 
   _onConfirmPINChanged = confirm_pin => {
@@ -368,6 +378,7 @@ class ImportScreen1 extends React.Component {
                   keyboardType={'number-pad'}
                   textContentType={'password'}
                   onChangeText={this._onPINChanged}
+                  onEndEditing={this._onPINEnd}
                 />
                 <Text
                   style={[

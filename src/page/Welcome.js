@@ -58,6 +58,10 @@ class Welcome extends Component {
     }
   }
 
+  componentWillUnmount() {
+    //
+  }
+
   redirectTo(page, params) {
     this.props.navigation.dispatch(
       StackActions.reset({

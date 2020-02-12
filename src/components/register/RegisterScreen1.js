@@ -67,6 +67,9 @@ class RegisterScreen1 extends React.Component {
       this.state.errorPIN !== '' ||
       this.state.errorConfPIN !== ''
     ) {
+      this.setState({
+        isLoading: false,
+      });
       return false;
     }
     this.props.setSignupData({
@@ -81,27 +84,34 @@ class RegisterScreen1 extends React.Component {
       telegram_id: null,
       referrer_id: null,
     });
-    this.setState({isLoading: true}, () => this.setTimer());
+    this.setTimer();
   };
 
   _onValidatePIN = () => {
-    return this.state.pin.trim().length > 7;
+    return this.state.pin.length > 7;
   };
 
   _onPINChanged = pin => {
     this.setState({pin: pin.trim()}, () => {
-      if (!this._onValidatePIN()) {
-        this.setState({
-          errorPIN: this.state.label + ' must be at least 8 characters.',
-        });
-      } else {
+      if (this._onValidatePIN()) {
         this.setState({errorPIN: ''});
       }
     });
   };
 
-  _onConfirmPINChanged = confirm_pin => {
-    this.setState({confirm_pin: confirm_pin.trim()}, () => {
+  _onPINEnd = () => {
+    if (!this._onValidatePIN()) {
+      this.setState({
+        errorPIN: this.state.label + ' must be at least 8 characters.',
+      });
+    } else {
+      this.setState({errorPIN: ''});
+    }
+  };
+
+  _onConfirmPINChanged = event => {
+    const {eventCount, target, text} = event.nativeEvent;
+    this.setState({confirm_pin: text.trim()}, () => {
       if (!this._onValidateConfPIN()) {
         this.setState({
           errorConfPIN:
@@ -111,15 +121,21 @@ class RegisterScreen1 extends React.Component {
             this.state.label,
         });
       } else {
-        this.setState({errorConfPIN: ''}, () => {
-          this.gotoNext();
-        });
+        this.setState(
+          {
+            errorConfPIN: '',
+            isLoading: true,
+          },
+          () => this.gotoNext(),
+        );
       }
     });
   };
 
+  _onConfirmPINCEnd = () => {};
+
   _onValidateConfPIN = () => {
-    return this.state.pin.trim() === this.state.confirm_pin.trim();
+    return this.state.pin === this.state.confirm_pin;
   };
 
   render() {
@@ -233,9 +249,21 @@ class RegisterScreen1 extends React.Component {
                   autoFocus={true}
                   underlineColorAndroid="transparent"
                   secureTextEntry={true}
+                  blurOnSubmit={true}
                   keyboardType={'number-pad'}
-                  textContentType={'password'}
+                  textContentType={
+                    Platform.OS === 'ios' || Platform.OS === 'android'
+                      ? 'telephoneNumber'
+                      : 'password'
+                  }
+                  type={
+                    Platform.OS === 'ios' || Platform.OS === 'android'
+                      ? 'number'
+                      : 'text'
+                  }
                   onChangeText={this._onPINChanged}
+                  onEndEditing={this._onPINEnd}
+                  editable={!this.state.isLoading}
                 />
                 <Text
                   style={[
@@ -272,9 +300,21 @@ class RegisterScreen1 extends React.Component {
                   autoCorrect={false}
                   underlineColorAndroid="transparent"
                   secureTextEntry={true}
+                  blurOnSubmit={true}
                   keyboardType={'number-pad'}
-                  textContentType={'password'}
-                  onChangeText={this._onConfirmPINChanged}
+                  textContentType={
+                    Platform.OS === 'ios' || Platform.OS === 'android'
+                      ? 'telephoneNumber'
+                      : 'password'
+                  }
+                  type={
+                    Platform.OS === 'ios' || Platform.OS === 'android'
+                      ? 'number'
+                      : 'text'
+                  }
+                  onChange={this._onConfirmPINChanged}
+                  onEndEditing={this._onConfirmPINCEnd}
+                  editable={!this.state.isLoading}
                 />
                 <Text
                   style={[

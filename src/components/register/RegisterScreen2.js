@@ -96,19 +96,21 @@ class RegisterScreen1 extends React.Component {
     if (!this._onValidateEmail()) {
       return;
     }
-    this.props.setSignupData({
-      address: this.props.address,
-      pin: this.props.signup_data.pin,
-      use_fingerprint: this.props.signup_data.use_fingerprint,
-      fingerprint: this.props.signup_data.fingerprint,
-      is_phrase_saved: false,
-      phrase_encrypt: this.props.signup_data.phrase_encrypt,
-      email: this.state.email,
-      name: this._onSetName(),
-      telegram_id: this.state.telegram_id,
-      referrer_id: null,
+    this.setState({isLoading: true}, () => {
+      this.props.setSignupData({
+        address: this.props.address,
+        pin: this.props.signup_data.pin,
+        use_fingerprint: this.props.signup_data.use_fingerprint,
+        fingerprint: this.props.signup_data.fingerprint,
+        is_phrase_saved: false,
+        phrase_encrypt: this.props.signup_data.phrase_encrypt,
+        email: this.state.email,
+        name: this._onSetName(),
+        telegram_id: this.state.telegram_id,
+        referrer_id: null,
+      });
+      this.setTimer();
     });
-    this.setState({isLoading: true}, () => this.setTimer());
   };
 
   render() {
@@ -182,10 +184,11 @@ class RegisterScreen1 extends React.Component {
               </Text>
 
               <View
+                // eslint-disable-next-line react-native/no-inline-styles
                 style={{
                   marginTop: 6,
                   flexDirection: 'row',
-                  justifyContent: 'left',
+                  justifyContent: 'flex-start',
                 }}>
                 <ButtonBack
                   title="Re-create Password"

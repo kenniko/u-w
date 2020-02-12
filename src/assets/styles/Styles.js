@@ -184,7 +184,7 @@ export default StyleSheet.create({
   },
   modalClose: {},
   modalCloseIcon: {
-    width: 'auto',
+    width: 26,
     height: 26,
   },
   modalBody: {

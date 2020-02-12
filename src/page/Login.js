@@ -41,8 +41,6 @@ class Login extends Component {
     super(props);
     this.state = {
       isLoading: false,
-      showDeleteAccount: false,
-      isOneWallet: true,
       address: '',
       pin: '',
       error: '',
@@ -56,6 +54,7 @@ class Login extends Component {
       isScreenDesktop: isScreenDesktop(),
     };
     this.checkWallets = this.checkWallets.bind(this);
+    this._isPINAllowed = this._isPINAllowed.bind(this);
 
     Dimensions.addEventListener('change', () => {
       this.setState({
@@ -76,18 +75,14 @@ class Login extends Component {
     } else {
       this.props.initLogin();
     }
-    this.setState({
-      isOneWallet: this.props.listWallet.length < 2 ? true : false,
-      showDeleteAccount: this.props.listWallet.length === 1 ? true : false,
-      address:
-        this.props.listWallet.length === 1
-          ? this.props.listWallet[0].address
-          : this.state.address,
-    });
   }
 
   componentDidMount() {
     this.checkWallets();
+  }
+
+  componentWillUnmount() {
+    //
   }
 
   redirectTo(page, params) {
@@ -119,14 +114,13 @@ class Login extends Component {
   };
 
   _onValidateAddress = () => {
-    return this.state.address.trim().length > 0;
+    return this.state.address.length > 0;
   };
 
   _onAddressChanged = address => {
     this.setState(
       {
         address: address,
-        showDeleteAccount: address !== '' ? true : false,
       },
       () => {
         if (!this._onValidateAddress()) {
@@ -240,6 +234,28 @@ class Login extends Component {
     if (dropdown == null) {
       dropdown = [];
     }
+    let address =
+      dropdown.length === 1 ? dropdown[0].address : this.state.address;
+    let showDeleteAccount = address !== '' ? true : false;
+
+    if (dropdown.length > 1) {
+      let em = false;
+      for (var i = 0; i < dropdown.length; i++) {
+        if (dropdown[i].address === '') {
+          em = true;
+        }
+      }
+      if (!em) {
+        dropdown.unshift({address: ''});
+      }
+    }
+    let dropItem = dropdown.map((wallet, index) => {
+      let label =
+        wallet.address !== ''
+          ? wallet.name + ' : ' + wallet.address
+          : 'Select a address';
+      return <Picker.Item label={label} value={wallet.address} key={index} />;
+    });
 
     const logoUnity =
       this.state.isWeb &&
@@ -314,7 +330,7 @@ class Login extends Component {
               <View style={s.inputField}>
                 <View style={styles.wrpLabelInline}>
                   <Text style={s.inputLabel}>WALLET ADDRESS</Text>
-                  {this.state.showDeleteAccount ? (
+                  {showDeleteAccount ? (
                     <Text
                       style={[s.textLinkDanger, styles.linkRemoveWallet]}
                       disabled={this.state.isLoading}
@@ -327,24 +343,13 @@ class Login extends Component {
                   label={'WALLET ADDRESS'}
                   placeholder="Select a wallet address"
                   placeholderTextColor={vars.COLOR_TEXT_PLACEHOLDER}
-                  selectedValue={this.state.address}
+                  selectedValue={address}
                   style={[
                     s.inputPrimary,
                     this.state.errorAddress ? s.inputError : '',
                   ]}
                   onValueChange={this._onAddressChanged}>
-                  {!this.state.isOneWallet ? (
-                    <Picker.Item value={''} label={'Select a wallet address'} />
-                  ) : null}
-                  {dropdown.map((wallet, index) => {
-                    return (
-                      <Picker.Item
-                        label={wallet.name + ' : ' + wallet.address}
-                        value={wallet.address}
-                        key={index}
-                      />
-                    );
-                  })}
+                  {dropItem}
                 </Picker>
                 <Text
                   style={[

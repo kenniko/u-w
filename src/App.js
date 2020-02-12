@@ -8,7 +8,7 @@ import {PersistGate} from 'redux-persist/integration/react';
 import {store, persistor} from './store';
 import isElectron from 'is-electron';
 import packageJson from '../package.json';
-
+import 'react-native-gesture-handler';
 import codePush from 'react-native-code-push';
 
 let currentPlatform = Platform.OS;

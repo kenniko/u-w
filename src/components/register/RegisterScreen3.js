@@ -132,13 +132,6 @@ class RegisterScreen2 extends Component {
         contentInsetAdjustmentBehavior="automatic"
         contentContainerStyle={{flexGrow: 1}}
         keyboardShouldPersistTaps={'handled'}>
-        <SeedBackupModal
-          isVisible={this.state.isModalVisible}
-          toggleModal={this.toggleModal}
-          goProcess={this.goProcess}
-          _onButtonPress={this._onButtonPress}
-          {...this.props}
-        />
         <View
           style={[
             s.container,
@@ -146,6 +139,13 @@ class RegisterScreen2 extends Component {
             styles.containerSeed,
             {paddingHorizontal: this.state.isScreenDesktop ? 28 : '5%'},
           ]}>
+          <SeedBackupModal
+            isVisible={this.state.isModalVisible}
+            toggleModal={this.toggleModal}
+            goProcess={this.goProcess}
+            _onButtonPress={this._onButtonPress}
+            {...this.props}
+          />
           <Spinner visible={this.state.isLoading} />
           <Image
             style={{width: 221, height: 64, alignSelf: 'center'}}
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
     lineHeight: 32,
     marginTop: 30,
     fontFamily: 'Rubik-Light',
-    fontWeight: 300,
+    fontWeight: '300',
   },
   logoTextSubTitle: {
     marginTop: 20,
@@ -271,9 +271,10 @@ const styles = StyleSheet.create({
   },
   subtitleIcon: {
     height: 15,
-    width: 'auto',
+    minWidth: 15,
+    width: 15,
     marginHorizontal: 3,
-    transform: 'translateY(2px)',
+    //transform: 'translateY(2px)',
   },
   wrpWarning: {
     marginVertical: 10,
@@ -283,7 +284,7 @@ const styles = StyleSheet.create({
   },
   warningTitle: {
     fontFamily: 'Rubik-Medium',
-    fontWeight: 500,
+    fontWeight: '500',
     fontSize: 17,
     lineHeight: 20,
     color: vars.COLOR_TEXT_TITLE,
@@ -297,7 +298,7 @@ const styles = StyleSheet.create({
   },
   seedIcon: {
     height: 38,
-    width: 'auto',
+    minWidth: 38,
     alignSelf: 'center',
     marginBottom: 8,
   },
@@ -310,7 +311,7 @@ const styles = StyleSheet.create({
   buttonAction: {
     marginTop: 20,
     maxWidth: 540,
-    width: '100%',
+    minWidth: 240,
     alignSelf: 'center',
   },
 });

@@ -1,7 +1,9 @@
 import React, {Component} from 'react';
 import Modal from 'modal-enhanced-react-native-web';
+import ModalNative from 'react-native-modal';
 import ConfirmBackup from './seedbackup/ConfirmBackup';
 import ShowSeed from './seedbackup/ShowSeed';
+import {View, Platform} from 'react-native';
 
 class SeedBackupModal extends Component {
   constructor(props) {
@@ -18,15 +20,29 @@ class SeedBackupModal extends Component {
 
   render() {
     return (
-      <Modal
-        // presentationStyle="overFullScreen"
-        isVisible={this.props.isVisible}>
-        {this.state.isConfirmPage ? (
-          <ConfirmBackup confirmPage={this.confirmPage} {...this.props} />
+      <View>
+        {Platform.OS === 'ios' || Platform.OS === 'android' ? (
+          <ModalNative
+            // presentationStyle="overFullScreen"
+            isVisible={this.props.isVisible}>
+            {this.state.isConfirmPage ? (
+              <ConfirmBackup confirmPage={this.confirmPage} {...this.props} />
+            ) : (
+              <ShowSeed confirmPage={this.confirmPage} {...this.props} />
+            )}
+          </ModalNative>
         ) : (
-          <ShowSeed confirmPage={this.confirmPage} {...this.props} />
+          <Modal
+            // presentationStyle="overFullScreen"
+            isVisible={this.props.isVisible}>
+            {this.state.isConfirmPage ? (
+              <ConfirmBackup confirmPage={this.confirmPage} {...this.props} />
+            ) : (
+              <ShowSeed confirmPage={this.confirmPage} {...this.props} />
+            )}
+          </Modal>
         )}
-      </Modal>
+      </View>
     );
   }
 }
