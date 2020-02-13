@@ -1,7 +1,8 @@
 import React from 'react';
 import {name as appName} from './app.json';
 import {AppRegistry, ScrollView} from 'react-native';
-import {createBrowserApp} from '@react-navigation/web';
+//import {createBrowserApp} from '@react-navigation/web';
+import {createBrowserApp} from '@react-navigation/web/src';
 import * as serviceWorker from './serviceWorker';
 import AppStack from './nav/AppStack';
 import {Provider} from 'react-redux';

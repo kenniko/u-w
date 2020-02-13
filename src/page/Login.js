@@ -55,6 +55,7 @@ class Login extends Component {
     };
     this.checkWallets = this.checkWallets.bind(this);
     this._isPINAllowed = this._isPINAllowed.bind(this);
+    this._onButtonPress = this._onButtonPress.bind(this);
 
     Dimensions.addEventListener('change', () => {
       this.setState({
@@ -253,7 +254,7 @@ class Login extends Component {
       let label =
         wallet.address !== ''
           ? wallet.name + ' : ' + wallet.address
-          : 'Select a address';
+          : 'Select a wallet address';
       return <Picker.Item label={label} value={wallet.address} key={index} />;
     });
 

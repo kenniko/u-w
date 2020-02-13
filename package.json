@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "private": true,
   "homepage": "./",
-  "main": "public/electron.js",
+  "main": "src/electron-starter.js",
   "license": "MIT",
   "author": {
     "name": "Unity Team",
@@ -130,7 +130,7 @@
   "scripts": {
     "web": "cross-env EXTEND_ESLINT=true react-app-rewired start",
     "web-build": "cross-env EXTEND_ESLINT=true react-app-rewired build",
-    "desktop": "concurrently \"cross-env BROWSER=none yarn web\" \"wait-on http://localhost:3000 && electron .\"",
+    "desktop": "concurrently \"cross-env BROWSER=none yarn web\" \"wait-on http://localhost:8181 && electron .\"",
     "desktop-build": "concurrently \"rm -rf build && yarn web-build\" \"wait-on build/index.html && npx electron-builder -mwl --publish never\"",
     "desktop-build-m": "concurrently \"rm -rf build && yarn web-build\" \"wait-on build/index.html && npx electron-builder -m --publish never\"",
     "desktop-build-w": "concurrently \"rm -rf build && yarn web-build\" \"wait-on build/index.html && npx electron-builder -w --publish never\"",
@@ -146,6 +146,7 @@
     "lint": "eslint .",
     "make-cert-win": "npx electron-builder create-self-signed-cert -p unity",
     "postinstall": "jetifier -r",
+    "electron": "electron .",
     "clear": "rm -rf $TMPDIR/react-*; rm -rf $TMPDIR/metro-*; watchman watch-del-all; rm -rf build/ & rm -rf node_modules/; yarn cache clean --force; yarn install"
   }
 }
