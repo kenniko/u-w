@@ -66,9 +66,10 @@
       "target": "dmg"
     },
     "linux": {
-      "category": "Productivity",
+      "category": "Network",
       "icon": "public/icon.png",
-      "target": "AppImage"
+      "executableName": "Unity Wallet",
+      "target": "deb"
     }
   },
   "dependencies": {
