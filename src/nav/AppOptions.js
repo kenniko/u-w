@@ -1,4 +1,4 @@
-// import {Platform} from 'react-native'
+// import {Platform} from 'react-native';
 
 const AppOptions = {
   initialRouteName: 'launch',
@@ -16,9 +16,9 @@ const AppOptions = {
   // },
   transitionConfig: () => ({
     transitionSpec: {
-      duration: 0
-    }
-  })
-}
+      duration: 0,
+    },
+  }),
+};
 
-export default AppOptions
+export default AppOptions;
