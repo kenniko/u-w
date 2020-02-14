@@ -1,7 +1,7 @@
-// import {Platform} from 'react-native';
+// import {Platform} from 'react-native'
 
 const AppOptions = {
-  initialRouteName: 'dashboard',
+  initialRouteName: 'launch',
   headerMode: 'none',
   // defaultNavigationOptions: {
   //   animationEnabled: false,
@@ -16,9 +16,9 @@ const AppOptions = {
   // },
   transitionConfig: () => ({
     transitionSpec: {
-      duration: 0,
-    },
-  }),
-};
+      duration: 0
+    }
+  })
+}
 
-export default AppOptions;
+export default AppOptions
