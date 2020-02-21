@@ -167,11 +167,9 @@ class Welcome extends Component {
               </View>
 
               <Text style={s.textError}>{this.props.error}</Text>
-            </View>
 
-            {/* <View style={[styles.footerViewStyle]}>
-              <Text style={styles.footerTextStyle}>Unity Wallet v1.0.0</Text>
-            </View> */}
+              <Text style={s.textVersion}>Unity Wallet v1.0.1</Text>
+            </View>
           </View>
           {heroDesktop}
         </ScrollView>

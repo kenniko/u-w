@@ -1,4 +1,4 @@
 <resources>
-	<string moduleConfig="true" name="reactNativeCodePush_androidDeploymentKey">deployment-key-here</string>
+    <string name="CodePushDeploymentKey" moduleConfig="true" translatable="false">N4ke30zJRqDFGtdcJBFKJ46Cupomta9uyOOFi</string>
     <string name="app_name">UnityWallet</string>
 </resources>

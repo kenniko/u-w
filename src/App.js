@@ -26,15 +26,6 @@ const AppNav = createAppContainer(AppStack, AppOptions);
 
 //const App: () => React$Node = () => {
 class App extends React.Component {
-  // componentDidMount() {
-  //   codePush.sync({
-  //     updateDialog: true,
-  //     installMode: codePush.InstallMode.IMMEDIATE,
-  //     checkFrequency: codePush.CheckFrequency.ON_APP_START,
-  //     installMode: codePush.InstallMode.IMMEDIATE
-  //   });
-  // }
-
   render() {
     return (
       <Provider store={store}>
@@ -46,4 +37,8 @@ class App extends React.Component {
   }
 }
 
-export default App;
+export default codePush({
+  checkFrequency: codePush.CheckFrequency.ON_APP_RESUME,
+  updateDialog: true,
+  installMode: codePush.InstallMode.IMMEDIATE,
+})(App);

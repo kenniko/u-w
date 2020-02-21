@@ -220,7 +220,6 @@ class ImportScreen2 extends React.Component {
               </Text>
 
               <View
-                // eslint-disable-next-line react-native/no-inline-styles
                 style={{
                   marginTop: 6,
                   flexDirection: 'row',

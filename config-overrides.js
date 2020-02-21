@@ -21,8 +21,6 @@ module.exports = function override(config, env) {
   addModuleToMainRule(config, 'react-native-gesture-handler');
   addModuleToMainRule(config, 'react-native-screens');
   addModuleToMainRule(config, '@react-native-community/async-storage');
-  addModuleToMainRule(config, 'react-native-loading-spinner-overlay');
-  addModuleToMainRule(config, '@material-ui/core');
   addModuleToMainRule(config, 'react-native-modal');
   addModuleToMainRule(config, 'react-native-animatable');
   addModuleToMainRule(config, 'modal-enhanced-react-native-web');

@@ -81,6 +81,14 @@ export default StyleSheet.create({
     color: vars.COLOR_TEXT_BODY,
     marginVertical: vars.GAP_TEXT,
   },
+  textVersion: {
+    fontFamily: 'Rubik-Regular',
+    fontSize: 13,
+    lineHeight: 20,
+    alignSelf: 'center',
+    color: vars.COLOR_TEXT_BODY,
+    marginVertical: vars.GAP_TEXT,
+  },
   textError: {
     fontFamily: 'Rubik-Regular',
     alignSelf: 'center',

@@ -6,11 +6,16 @@
 3. Run `npm install -g code-push-cli` to install Code Push CLI
 4. Run `code-push register` to login to [App Center](https://appcenter.ms/)
 5. Run `code-push app add YourAppNameAndroid android react-native` to add app on App Center for Android app
-6. Run `code-push app add YourAppNameIos android react-native` to add app on App Center for iOS app
+6. Run `code-push app add YourAppNameIos ios react-native` to add app on App Center for iOS app
 
  _*don't forget to **save** your **Deployment key**_
 
-7. Run `npx react-native link react-native-code-push` then paste your Android and iOS **staging** deployment key 
+7. Follow setup instruction for each device here: [Android](https://github.com/microsoft/react-native-code-push/blob/master/docs/setup-android.md), [iOS](https://github.com/microsoft/react-native-code-push/blob/master/docs/setup-ios.md), [Windows Mobile](https://github.com/microsoft/react-native-code-push/blob/master/docs/setup-windows.md)
+8. Paste your Android and iOS **staging** deployment key in `packages/mobile/android/app/src/main/res/values/strings.xml` 
+
+```
+<string name="CodePushDeploymentKey" moduleConfig="true" translatable="false">deployment-key-here</string>
+```
 
 _*you can change to production deployment key later_.
 
@@ -78,9 +83,10 @@ provider: github
 ### Test Mobile App (AppCenter.ms Code-Push)
 
 1. Run `yarn android` or `yarn ios`
-2. Make any visual change so you can notice the update easily
-3. Run `code-push release-react YourAppNameAndroid android` (for iOS use **"YourAppNameIos ios"**)
-4. You will see update popup on your mobile screen.
+2. "Disable Fast Refresh" in the React Native developer menu. See documentation [here](https://facebook.github.io/react-native/docs/debugging).
+3. Make any visual change so you can notice the update easily
+4. Run `code-push release-react YourAppNameAndroid android` (for iOS use **"YourAppNameIos ios"**)
+5. Wait a while. You will see update popup on your mobile screen.
 
 ## Production
 
@@ -95,12 +101,17 @@ Coming soon
 - [React Native: Code Push_(Part 3) iOS Staging](https://www.youtube.com/watch?v=HRB3purgRdU)
 - [React Native: Code Push_(Part 4) iOS Production](https://www.youtube.com/watch?v=0QmLWH5otZc)
 - [How to rapidly update your React Native android project using Code Push without app store upload](https://www.youtube.com/watch?v=Jo7AV5etOsA)
+- [Code Push API](https://github.com/microsoft/react-native-code-push/blob/master/docs/api-js.md#codepush)
 
 ### Electron.js AutoUpdater
 
 - [Electron Documentation - autoUpdater](https://electronjs.org/docs/api/auto-updater)
 - [Electron Builder Auto Update](https://www.electron.build/auto-update)
 - [Creating and deploying an auto-updating Electron app for Mac and Windows using electron-builder](https://medium.com/@johndyer24/creating-and-deploying-an-auto-updating-electron-app-for-mac-and-windows-using-electron-builder-6a3982c0cee6)
+
+### Production
+
+- [Generate APK debug pada React-Native](https://medium.com/@rey1024/generate-apk-debug-pada-react-native-75c4d538d6df)
 
 ## All Script
 
@@ -115,6 +126,8 @@ Coming soon
 - Run `yarn desktop-build-w` to build desktop app for Windows only
 - Run `yarn desktop-build-l` to build desktop app for Linux only
 
+- Run `yarn makecert-w` to make certivication desktop app for Windows only ***this script only support on Windows**
+
 - Run `yarn desktop-deploy` to publish release to GitHub for all platform (Mac, Windows & Linux) ***this script only support on Mac**
 - Run `yarn desktop-deploy-m` to publish release to GitHub for Mac only ***this script only support on Mac**
 - Run `yarn desktop-deploy-w` to publish release to GitHub for Windows only
@@ -122,3 +135,9 @@ Coming soon
 
 - Run `yarn android` to preview on android
 - Run `yarn ios` to preview on iOS
+
+- Run `yarn clear` to clear dependencies and clear cache for Mac only ***this script only support on Mac**
+- Run `yarn clear-w` to clear dependencies and clear cache for Windows only
+- Run `yarn clear-a` to rebuild gradle Android
+
+- Run `yarn uninstall-a` to uninstall app on Android device
