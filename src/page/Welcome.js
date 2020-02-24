@@ -168,7 +168,7 @@ class Welcome extends Component {
 
               <Text style={s.textError}>{this.props.error}</Text>
 
-              <Text style={s.textVersion}>Unity Wallet v1.0.1</Text>
+              <Text style={s.textVersion}>Unity Wallet v1.0.2</Text>
             </View>
           </View>
           {heroDesktop}

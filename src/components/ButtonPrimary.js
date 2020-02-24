@@ -32,6 +32,7 @@ export default class ButtonPrimary extends React.Component {
 
 const styles = StyleSheet.create({
   buttonPrimary: {
+    // backgroundColor: 'black',
     backgroundColor: vars.COLOR_PRIMARY,
     height: 50,
     borderRadius: 3,

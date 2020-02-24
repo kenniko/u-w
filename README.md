@@ -90,7 +90,11 @@ provider: github
 
 ## Production
 
-Coming soon
+### Android APK Debug
+
+1. Run `yarn cearl-a` to clear cache gradlew
+2. Run `yarn android:build-w` to build APK on Windows (for Mac use `yarn android:build-m`)
+3. APK Debug created on the following folder `android/app/build/outputs/apk/`
 
 ## References & Usefull Link
 

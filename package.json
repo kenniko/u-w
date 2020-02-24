@@ -90,6 +90,7 @@
     "react-native": "0.61.5",
     "react-native-code-push": "^6.1.0",
     "react-native-elements": "^1.2.7",
+    "react-native-flash-message": "^0.1.15",
     "react-native-gesture-handler": "^1.5.2",
     "react-native-modal": "^11.5.3",
     "react-native-reanimated": "^1.4.0",
@@ -138,6 +139,8 @@
     "desktop:deploy-w": "concurrently \"rm -rf build && yarn web:build\" \"wait-on build/index.html && npx electron-builder -w --publish always\"",
     "desktop:deploy-l": "concurrently \"rm -rf build && yarn web:build\" \"wait-on build/index.html && npx electron-builder -l --publish always\"",
     "android": "react-native run-android",
+    "android:build-w": "mkdir android\\app\\build\\intermediates\\assets\\debug && react-native bundle --dev false --platform android --entry-file index.js --bundle-output ./android/app/build/intermediates/assets/debug/index.android.bundle --assets-dkiokjnhjhynest ./android/app/build/intermediates/res/merged/debug && cd android && gradlew assembleDebug && cd ..",
+    "android:clear": "rm -rf android\\.gradle android\\app\\src\\main\\assets\\index.android.bundle && react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res && cd android && gradlew clean cleanBuildCache && cd ..",
     "ios": "react-native run-ios",
     "start": "react-native start",
     "test": "jest",
@@ -147,7 +150,6 @@
     "electron": "electron .",
     "clear": "rm -rf $TMPDIR/react-*; rm -rf $TMPDIR/metro-*; watchman watch-del-all; rm -rf build/ & rm -rf node_modules/; yarn cache clean --force; yarn install",
     "clear-w": "rm -rf build node_modules package-lock.json yarn.lock yarn-error.log",
-    "clear-a": "cd android && gradlew clean && cd ..",
     "uninstall-a": "adb uninstall com.unitywallet"
   }
 }
