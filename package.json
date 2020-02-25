@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "private": true,
   "homepage": "./",
-  "main": "src/electron-starter.js",
+  "main": "public/electron.js",
   "license": "MIT",
   "author": {
     "name": "Unity Team",

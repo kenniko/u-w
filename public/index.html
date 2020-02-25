@@ -6,83 +6,94 @@
     <title>Unity Wallet</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <!-- Favicon -->
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-    <link rel="manifest" href="site.webmanifest">
-    <link rel="mask-icon" href="safari-pinned-tab.svg" color="#3b90f4">
-    <meta name="msapplication-TileColor" content="#ffffff">
-    <meta name="theme-color" content="#ffffff">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png" />
+    <link rel="manifest" href="site.webmanifest" />
+    <link rel="mask-icon" href="safari-pinned-tab.svg" color="#3b90f4" />
+    <meta name="msapplication-TileColor" content="#ffffff" />
+    <meta name="theme-color" content="#ffffff" />
     <!-- Stylesheet -->
-    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="main.css" />
   </head>
 
   <body>
     <div id="root"></div>
-    <div id="notification" class="hidden" style="display: none;">
-      <p id="message"></p>
-      <button id="close-button" onClick="closeNotification()">
-        Close
+    <!-- <div id="notification" class="alert alert-info alert-dismissible" style="display: none;"> -->
+    <div id="notification" class="alert alert-info alert-dismissible is-hide" style="display: none;">
+      <button
+        id="close-button"
+        type="button"
+        class="close"
+      >
+        ×
       </button>
-      <button id="restart-button" onClick="restartApp()" class="hidden">
-        Restart
-      </button>
+      <h5>❕ Update Installed</h5>
+      <p><button
+        id="restart-button"
+        type="button"
+        class="action"
+      >
+        Relaunch
+      </button> app to finish updating.</p>
     </div>
     <script>
-    if (typeof ipcRenderer !== 'undefined') {
+      if (typeof ipcRenderer !== 'undefined') {
+        const $notification = document.getElementById('notification');
+        const message = document.getElementById('message');
+        const $closeButton = document.getElementById('close-button');
+        const $restartButton = document.getElementById('restart-button');
 
-      const notification = document.getElementById('notification');
-      const message = document.getElementById('message');
-      const closeButton = document.getElementById('close-button');
-      const restartButton = document.getElementById('restart-button');
+        // ipcRenderer.on('update_available', (event, info) => {
+        //   // ipcRenderer.removeAllListeners('update_available');
+        //   message.innerText = 'New update is available v' + info.version;
+        //   closeButton.innerText = 'Close';
+        //   notification.classList.remove('is-hide');
+        //   notification.classList.add('is-show');
+        // });
 
-      ipcRenderer.on('update_available', (event, info) => {
-        // ipcRenderer.removeAllListeners('update_available');
-        message.innerText = 'New update is available v'+info.version;
-        closeButton.innerText = 'Close';
-        notification.classList.remove('hidden');
-        notification.classList.add('show');
-      });
+        // ipcRenderer.on('download_progress', (event, data) => {
+        //   // ipcRenderer.removeAllListeners('download_progress');
+        //   const percent = Math.floor(data.percent);
+        //   const speed =
+        //     data.bytesPerSecond > 1024 * 1024
+        //       ? Math.round(data.bytesPerSecond / 1024 / 1024, 2) + '  Mb/s'
+        //       : Math.round(data.bytesPerSecond / 1024, 2) + '  kb/s';
+        //   message.innerText =
+        //     'Download progress... ' + percent + '% (' + speed + ')';
+        //   closeButton.innerText = 'Close';
+        //   notification.classList.remove('is-hide');
+        //   notification.classList.add('is-show');
+        // });
 
-      ipcRenderer.on('download_progress', (event, data) => {
-        // ipcRenderer.removeAllListeners('download_progress');
-        const percent = Math.floor(data.percent);
-        const speed = (data.bytesPerSecond > 1024 * 1024) ? Math.round(data.bytesPerSecond / 1024 / 1024, 2) + '  Mb/s' : Math.round(data.bytesPerSecond / 1024, 2) + '  kb/s';
-        message.innerText = 'Download progress... '+percent+'% ('+speed+')';
-        closeButton.innerText = 'Close';
-        notification.classList.remove('hidden');
-        notification.classList.add('show');
-      });
+        ipcRenderer.on('update_downloaded', () => {
+          // ipcRenderer.removeAllListeners('update_downloaded');
+          // message.innerText = 'Update Downloaded. Restart now?';
+          // closeButton.innerText = 'Later';
+          // restartButton.classList.remove('is-hide');
+          $notification.classList.remove('is-hide');
+          $notification.classList.add('is-show');
+        });
 
-      ipcRenderer.on('update_downloaded', () => {
-        // ipcRenderer.removeAllListeners('update_downloaded');
-        message.innerText = 'Update Downloaded. Restart now?';
-        closeButton.innerText = 'Later';
-        restartButton.classList.remove('hidden');
-        notification.classList.remove('hidden');
-        notification.classList.add('show');
-      });
+        ipcRenderer.on('error', (event, err) => {
+          // ipcRenderer.removeAllListeners('error');
+          // message.innerText = 'Error on update.';
+          console.log('Error:');
+          console.log(err);
+          // closeButton.innerText = 'Close';
+          // notification.classList.remove('is-hide');
+          // notification.classList.add('is-show');
+        });
 
-      ipcRenderer.on('error', (event, err) => {
-        // ipcRenderer.removeAllListeners('error');
-        // message.innerText = 'Error on update.';
-        console.log('Error:');
-        console.log(err);
-        // closeButton.innerText = 'Close';
-        // notification.classList.remove('hidden');
-        // notification.classList.add('show');
-      });
+        $closeButton.addEventListener('click', (e) => {
+          $notification.classList.add('is-hide');
+          $notification.classList.remove('is-show');
+        });
 
-      function closeNotification() {
-        notification.classList.add('hidden');
-        notification.classList.remove('show');
+        $restartButton.addEventListener('click', function(e) {
+          ipcRenderer.send('restart_app');
+        });
       }
-
-      function restartApp() {
-        ipcRenderer.send('restart_app');
-      }
-    }
-    
     </script>
   </body>
 </html>
